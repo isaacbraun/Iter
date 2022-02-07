@@ -1,0 +1,14 @@
+iter-app/node_modules/
+iter-app/.expo/
+iter-app/dist/
+iter-app/npm-debug.*
+iter-app/*.jks
+iter-app/*.p8
+iter-app/*.p12
+iter-app/*.key
+iter-app/*.mobileprovision
+iter-app/*.orig.*
+iter-app/web-build/
+
+# macOS
+iter-app/.DS_Store
