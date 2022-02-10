@@ -13,7 +13,36 @@ import { Slider } from 'react-native-elements';
 
 export default function HomeScreen({ navigation }) {
     const [searchValue, setSearchValue] = useState(null);
-    const [timelineValue, setTimelineValue] = useState(0)
+    const [timelineMin, setTimelineMin] = useState(0);
+    const [timelineMax, setTimelineMax] = useState(10);
+    const [timelineValue, setTimelineValue] = useState(0);
+    const [timelineState, setTimelineState] = useState(false);
+    // let timer;
+
+    // const playTimeline = () => {
+    //     if (!timer) {
+    //         setTimelineState(true);
+    //         let newVal = timelineValue;
+    //         if (newVal < timelineMax) {
+    //             newVal++;
+    //             setTimelineValue(newVal);
+    //         }
+    //         timer = setInterval(() => {
+    //             if (newVal < timelineMax) {
+    //                 newVal++;
+    //                 setTimelineValue(newVal);
+    //             } else {
+    //                 stopTimeline();
+    //             }
+    //         }, 1000);
+    //     }
+    // };
+    
+    // const stopTimeline = () => {
+    //     clearInterval(timer);
+    //     timer = null;
+    //     setTimelineState(false);
+    // };
 
     return(
         <View style={styles.main}>
@@ -50,16 +79,20 @@ export default function HomeScreen({ navigation }) {
                 <View style={styles.timelineContainer}>
                     <Pressable
                         style={[styles.button, styles.play]}
-                        onPress={() => navigation.navigate('Settings')}
+                        // onPress={!timelineState ? playTimeline : stopTimeline}
                     >
-                        <FontAwesome name="play" size={24} color={ Colors.blue } />
+                        { !timelineState ?
+                            <FontAwesome name="play" size={24} color={ Colors.blue } />
+                            :
+                            <FontAwesome name="pause" size={24} color={ Colors.blue } />
+                        }
                     </Pressable>
                     <View style={styles.timeline}>
                         <Slider 
                             value={timelineValue}
                             onValueChange={setTimelineValue}
-                            maximumValue={10}
-                            minimumValue={0}
+                            maximumValue={timelineMax}
+                            minimumValue={timelineMin}
                             step={1}
                             allowTouchTrack
                             trackStyle={{ height: 3}}
