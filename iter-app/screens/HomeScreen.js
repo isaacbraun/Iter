@@ -65,13 +65,13 @@ export default function HomeScreen({ navigation }) {
                 <View style={styles.buttonsContainer}>
                     <Pressable
                         style={[styles.button, {marginBottom: 15}]}
-                        onPress={() => navigation.navigate('FlightPlan')}
+                        onPress={() => navigation.navigate('Settings')} // ORIGIN
                     >
                         <Feather name="navigation" size={24} color={ Colors.blue } />
                     </Pressable>
                     <Pressable
                         style={[styles.button, {backgroundColor: Colors.blue, marginBottom: 15}]}
-                        onPress={() => navigation.navigate('Settings')}
+                        onPress={() => navigation.navigate('FlightPlan')} // Add Path / Re-Evaluate
                     >
                         <Feather name="plus" size={28} color={ Colors.background } />
                     </Pressable>
