@@ -8,7 +8,7 @@ import {
     Keyboard
 } from 'react-native';
 import { FlightPlanStyles as styles } from '../styles';
-import { Feather, FontAwesome, Ionicons } from '@expo/vector-icons';
+import { Feather, Ionicons } from '@expo/vector-icons';
 import { Colors } from '../components/Tools';
 
 export default function FlightPlanScreen({ navigation }) {
@@ -34,19 +34,21 @@ export default function FlightPlanScreen({ navigation }) {
 
                     {/* Navbar */}
                     <View style={styles.navbar}>
-                        <Pressable
-                            style={[styles.button, styles.navbarButton]}
-                            onPress={() => navigation.navigate('Home')}
-                        >
-                            <Ionicons name="ios-arrow-back" size={24} color={Colors.blue} />
-                        </Pressable>
-                        <Text style={styles.navbarText}>Chart Paths</Text>
-                        <Pressable
-                            style={[styles.button, styles.navbarButton]}
-                            onPress={() => navigation.navigate('Settings')}
-                        >
-                            <Feather name="menu" size={24} color={ Colors.text } />
-                        </Pressable>
+                        <View style={styles.navbarInner}>
+                            <Pressable
+                                style={[styles.button, styles.navbarButton]}
+                                onPress={() => navigation.navigate('Home')}
+                            >
+                                <Ionicons name="ios-arrow-back" size={24} color={Colors.blue} />
+                            </Pressable>
+                            <Text style={styles.navbarText}>Chart Paths</Text>
+                            <Pressable
+                                style={[styles.button, styles.navbarButton]}
+                                onPress={() => navigation.navigate('Settings')}
+                            >
+                                <Feather name="menu" size={24} color={ Colors.text } />
+                            </Pressable>
+                        </View>
                     </View>
 
                     {/* Path Toggle Switch */}
@@ -84,7 +86,7 @@ export default function FlightPlanScreen({ navigation }) {
                                 <View style={styles.flowLine} />
                             </View>
                             <View style={styles.inputInner}>
-                                <Text style={styles.inputText}>Destination</Text>
+                                <Text style={styles.inputText}>Start</Text>
                                 <View style={styles.inputBoxContainer}>
                                     <TextInput
                                         style={styles.inputBox}

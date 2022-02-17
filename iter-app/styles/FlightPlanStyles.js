@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingTop: 44,
+        paddingTop: 40,
     },
     button: {
         display: 'flex',
@@ -36,15 +36,23 @@ const styles = StyleSheet.create({
 
     navbar: {
         width: '100%',
-        paddingBottom: 15,
-
-        borderBottomColor: Colors.text,
-        borderBottomWidth: 1,
-
+        overflow: 'hidden',
+        paddingBottom: 5,
+    },
+    navbarInner: {
+        width: '100%',
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
+        paddingBottom: 10,
+
+        backgroundColor: Colors.background,
+        shadowColor: '#000',
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity:  0.4,
+        shadowRadius: 3,
+        elevation: 5,
     },
     navbarText: {
         color: Colors.text,
@@ -60,7 +68,7 @@ const styles = StyleSheet.create({
     pathSwitch: {
         height: 45,
         width: '85%',
-        marginTop: 30,
+        marginTop:25,
 
         display: 'flex',
         flexDirection: 'row',
@@ -151,7 +159,6 @@ const styles = StyleSheet.create({
     inputBox: {
         height: 45,
         flexGrow: 1,
-        // marginRight: 15,
         padding: 10,
 
         fontSize: 16,
@@ -175,7 +182,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 45,
         paddingHorizontal: 15,
-        paddingBottom: 60,
+        paddingBottom: 55,
 
         display: 'flex',
         flexDirection: 'row',

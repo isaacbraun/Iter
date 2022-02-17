@@ -1,13 +1,11 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
 import { Colors } from '../components/Tools';
+
+const ScreenWidth = Dimensions.get("window").width;
 
 const styles = StyleSheet.create({
     main: {
         flex: 1,
-        backgroundColor: '#000',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingTop: 44,
     },
     button: {
         display: 'flex',
@@ -21,6 +19,12 @@ const styles = StyleSheet.create({
         borderRadius: 3,
         backgroundColor: Colors.background
     },
+
+    map: {
+        width: ScreenWidth,
+        height: Dimensions.get('window').height,
+        zIndex: 0,
+    },
     
     searchContainer: {
         display: 'flex',
@@ -29,10 +33,11 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
 
         height: 45,
-        width: '100%',
-        marginTop: 10,
+        width: ScreenWidth,
+        top: 44,
+        position: 'absolute',
         paddingHorizontal: 15,
-
+        zIndex: 1,
     },
     search: {
         height: 45,
@@ -49,27 +54,51 @@ const styles = StyleSheet.create({
         color: Colors.text,
         marginLeft: 15,
     },
-    
-    bottom: {
-        width: '100%',
-        paddingHorizontal: 15,
-        paddingBottom: 30,
 
+    loading: {
+        position: 'absolute',
+        top: 104,
+        zIndex: 1,
+
+        width: ScreenWidth,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
+    loadingInner: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        marginHorizontal: '15%',
+
+        borderRadius: 3,
+        backgroundColor: Colors.background,
+    },
+    
     buttonsContainer: {
         display: 'flex',
         alignItems: 'flex-end',
-
-        width: '100%',
+        width: 45,
+        position: 'absolute',
+        bottom: 100,
+        right: 15,
+        zIndex: 1,
     },
     timelineContainer: {
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
+        position: 'absolute',
+        bottom: 30,
 
         height: 45,
-        width: '100%',
+        width: ScreenWidth - 30,
         paddingHorizontal: 10,
+        marginHorizontal: 15,
+        zIndex: 1,
 
         borderRadius: 3,
         backgroundColor: Colors.background,
