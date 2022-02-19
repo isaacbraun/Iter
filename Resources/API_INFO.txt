@@ -1,6 +1,6 @@
 A typical METAR contains data for the temperature, dew point, wind direction and speed, precipitation, cloud cover and heights, visibility, and barometric pressure.
 
-A METAR may also contain information onprecipitation amounts, lightning, and other information that would be of interest to pilots or meteorologists such as a pilot report or PIREP, colour states and runway visual range (RVR).
+A METAR may also contain information on precipitation amounts, lightning, and other information that would be of interest to pilots or meteorologists such as a pilot report or PIREP, colour states and runway visual range (RVR).
 
 METAR Pieces
 - temperature - T
@@ -12,11 +12,11 @@ METAR Pieces
 - cloud cover - Center icon pie chart
 - cloud heights - CIG
 - barometric pressure - ALTM?
-- flight category/rules - center dot color etc
+- flight category/rules - center dot color etc.
     - VFR
     - Marginal VFR
     - IFR
     - Low IFR
 
 
-May have to get forcasted data and calculate flight rules manually. Maybe ask Prof about switching to displaying METARs or TAFs, not forecasted. But it is possible just tough. 
+May have to get forecasted data and calculate flight rules manually. Maybe ask Prof about switching to displaying METARs or TAFs, not forecasted. But it is possible just tough. 

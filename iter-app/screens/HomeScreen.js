@@ -13,7 +13,7 @@ import * as Location from 'expo-location';
 import { Feather, FontAwesome } from '@expo/vector-icons'; 
 import { Slider } from 'react-native-elements';
 
-import { Colors } from '../components/Tools';
+import { Colors, getLatLng } from '../components/Tools';
 import { HomeScreenStyles as styles } from '../styles';
 
 export default function HomeScreen({ navigation }) {
@@ -33,9 +33,35 @@ export default function HomeScreen({ navigation }) {
     });
     const [location, setLocation] = useState(null);
 
+    const airports = require('airport-codes').toJSON();
+    const [metars, setMetars] = useState(null);
+    const converter = require('react-native-xml2js');
+
+    const getAllMetars = () => {
+        return fetch('https://www.aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&requestType=retrieve&format=xml&hoursBeforeNow=1')
+        .then(response => response.text())
+        .then(text => converter.parseString(text, function (err, result) {
+            var reduced = [];
+            for (const item in result.response.data[0].METAR) {
+                let value = result.response.data[0].METAR[item];
+                if (value.hasOwnProperty('longitude') && value.hasOwnProperty('latitude')) {
+                    value.longitude = value.longitude[0];
+                    value.latitude = value.latitude[0];
+                    reduced.push(value);
+                }
+            }
+            setMetars(reduced);
+        }))
+        .catch((error) => {
+            console.error(error);
+        })
+    };
+
     // Get User Location
-	useEffect(() => {(
-        async () => {
+	useEffect(() => {
+        getAllMetars();
+        console.log(metars);
+        (async () => {
             let { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
                 Alert.alert('Location Access Needed for Best Functionality');
@@ -137,7 +163,22 @@ export default function HomeScreen({ navigation }) {
                     }}
                     onRegionChangeComplete={(region) => setRegion(region)}
                     mapPadding={{ left: 6, right: 6, top: 0, bottom: 40 }}
-                />
+                >
+                {metars ?
+                    metars.map((marker, index) => {
+                        return (
+                            <Marker
+                                key={index}
+                                coordinate={getLatLng(Number(marker.latitude), Number(marker.longitude))}
+                                // title={marker.iata + ": " + marker.name}
+                                title={marker.station_id[0]}
+                                description={"Replace with Metar Info Maybe?"}
+                            />
+                        )
+                    })
+                    : null
+                }
+                </MapView>
             </TouchableWithoutFeedback>
 
             {/* Bottom Timeline + Buttons */}
