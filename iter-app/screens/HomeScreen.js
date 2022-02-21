@@ -17,85 +17,6 @@ import { Colors, getLatLng } from '../components/Tools';
 import { HomeScreenStyles as styles } from '../styles';
 
 export default function HomeScreen({ navigation }) {
-    const [searchValue, setSearchValue] = useState(null);
-    const [timelineMin, setTimelineMin] = useState(0);
-    const [timelineMax, setTimelineMax] = useState(10);
-    const [timelineValue, setTimelineValue] = useState(0);
-    const [timelineState, setTimelineState] = useState(false);
-
-    const mapRef = useRef(null);
-    const [loading, setLoading] = useState(false);
-    const [region, setRegion] = useState({
-        latitude: 47.116,
-        longitude: -101.299,
-        latitudeDelta: 50,
-        longitudeDelta: 10,
-    });
-    const [location, setLocation] = useState(null);
-
-    const airports = require('airport-codes').toJSON();
-    const [metars, setMetars] = useState(null);
-    const converter = require('react-native-xml2js');
-
-    const getAllMetars = () => {
-        return fetch('https://www.aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&requestType=retrieve&format=xml&hoursBeforeNow=1')
-        .then(response => response.text())
-        .then(text => converter.parseString(text, function (err, result) {
-            var reduced = [];
-            for (const item in result.response.data[0].METAR) {
-                let value = result.response.data[0].METAR[item];
-                if (value.hasOwnProperty('longitude') && value.hasOwnProperty('latitude')) {
-                    value.longitude = value.longitude[0];
-                    value.latitude = value.latitude[0];
-                    reduced.push(value);
-                }
-            }
-            setMetars(reduced);
-        }))
-        .catch((error) => {
-            console.error(error);
-        })
-    };
-
-    // Get User Location
-	useEffect(() => {
-        getAllMetars();
-        console.log(metars);
-        (async () => {
-            let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== 'granted') {
-                Alert.alert('Location Access Needed for Best Functionality');
-                return;
-            }
-
-            setLoading(true);
-            let location = await Location.getCurrentPositionAsync({});
-            setLocation(location);
-            mapRef.current.animateToRegion(
-                {
-                    latitude: location.coords.latitude,
-                    longitude: location.coords.longitude,
-                    latitudeDelta: 0.06,
-                    longitudeDelta: 0.04,
-                },
-                2000
-            );
-            setLoading(false);
-		})();
-	}, []);
-
-    const goToOrigin = () => {
-        mapRef.current.animateToRegion(
-            {
-                latitude: location ? location.coords.latitude : 47.116,
-                longitude: location ? location.coords.longitude : -101.299,
-                latitudeDelta: 0.06,
-                longitudeDelta: 0.04,
-            },
-            1000
-        );
-    };
-
     // let timer;
 
     // const playTimeline = () => {
@@ -123,13 +44,87 @@ export default function HomeScreen({ navigation }) {
     //     setTimelineState(false);
     // };
 
+
+    const [searchValue, setSearchValue] = useState(null);
+    const [timelineMin, setTimelineMin] = useState(0);
+    const [timelineMax, setTimelineMax] = useState(10);
+    const [timelineValue, setTimelineValue] = useState(0);
+    const [timelineState, setTimelineState] = useState(false);
+
+    const mapRef = useRef(null);
+    const [loading, setLoading] = useState(false);
+    const [region, setRegion] = useState({
+        latitude: 47.116,
+        longitude: -101.299,
+        latitudeDelta: 50,
+        longitudeDelta: 10,
+    });
+    const [location, setLocation] = useState(null);
+
+    const airports = require('airport-codes');
+    console.log(airports);
+    const [metars, setMetars] = useState(null);
+    const converter = require('react-native-xml2js');
+
+    const getAllMetars = () => {
+        let fetchString = "https://www.aviationweather.gov/adds/dataserver_current/current/metars.cache.xml";
+        // let fetchString = "https://www.aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&requestType=retrieve&format=xml&stationString=~us&hoursBeforeNow=1&mostRecent=true"
+
+        return fetch(fetchString)
+        .then(response => response.text())
+        .then(text => converter.parseString(text, function (err, result) {
+            setMetars(result.response.data[0].METAR);
+        }))
+        .catch((error) => {
+            console.error(error);
+        })
+    };
+
+    // Get User Location
+	useEffect(() => {
+        getAllMetars();
+        (async () => {
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                Alert.alert('Location Access Needed for Best Functionality');
+                return;
+            }
+
+            setLoading(true);
+            let location = await Location.getCurrentPositionAsync({});
+            setLocation(location);
+            mapRef.current.animateToRegion(
+                {
+                    latitude: location.coords.latitude,
+                    longitude: location.coords.longitude,
+                    latitudeDelta: 0.2,
+                    longitudeDelta: 0.16,
+                },
+                2000
+            );
+            setLoading(false);
+		})();
+	}, []);
+
+    const goToOrigin = () => {
+        mapRef.current.animateToRegion(
+            {
+                latitude: location ? location.coords.latitude : 47.116,
+                longitude: location ? location.coords.longitude : -101.299,
+                latitudeDelta: 0.2,
+                longitudeDelta: 0.16,
+            },
+            1000
+        );
+    };
+
     return(
         <View style={styles.main}>
             {/* Search Bar + Menu Button */}
             <View style={styles.searchContainer}>
                 <TextInput
                     style={styles.search}
-                    placeholder="Search Airports"
+                    placeholder="Search Airport or City"
                     placeholderTextColor={Colors.text}
                     value={searchValue}
                     onChangeText={setSearchValue}
@@ -166,15 +161,23 @@ export default function HomeScreen({ navigation }) {
                 >
                 {metars ?
                     metars.map((marker, index) => {
-                        return (
-                            <Marker
-                                key={index}
-                                coordinate={getLatLng(Number(marker.latitude), Number(marker.longitude))}
-                                // title={marker.iata + ": " + marker.name}
-                                title={marker.station_id[0]}
-                                description={"Replace with Metar Info Maybe?"}
-                            />
-                        )
+                        if (marker.hasOwnProperty('longitude') && marker.hasOwnProperty('latitude')) {
+                            let airportInfo = null;
+                            airportInfo = airports.findWhere({ icao: marker.station_id[0] });
+                            // && airportInfo.get('dst') == "A"
+                            if (airportInfo) {
+                                let name = airportInfo.get('name');
+                                return (
+                                    <Marker
+                                        key={index}
+                                        coordinate={getLatLng(Number(marker.latitude[0]), Number(marker.longitude[0]))}
+                                        title={marker.station_id[0] + ": " + name}
+                                        description={"Replace with Metar Info Maybe?"}
+                                        tracksViewChanges={false}
+                                    />
+                                ) 
+                            }
+                        }
                     })
                     : null
                 }
