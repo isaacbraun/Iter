@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     pathSwitch: {
         height: 45,
         width: '85%',
-        marginTop:25,
+        marginTop: 25,
 
         display: 'flex',
         flexDirection: 'row',
