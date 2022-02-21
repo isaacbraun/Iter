@@ -7,6 +7,7 @@ import {
     Keyboard,
     Alert,
     TouchableWithoutFeedback,
+    Dimensions,
 } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
@@ -15,6 +16,7 @@ import { Slider } from 'react-native-elements';
 
 import { Colors, getLatLng } from '../components/Tools';
 import { HomeScreenStyles as styles } from '../styles';
+import { ListItem } from 'react-native-elements/dist/list/ListItem';
 
 export default function HomeScreen({ navigation }) {
     // let timer;
@@ -56,14 +58,15 @@ export default function HomeScreen({ navigation }) {
     const [region, setRegion] = useState({
         latitude: 47.116,
         longitude: -101.299,
-        latitudeDelta: 50,
+        latitudeDelta: 30,
         longitudeDelta: 10,
     });
+
     const [location, setLocation] = useState(null);
 
     const airports = require('airport-codes');
-    console.log(airports);
     const [metars, setMetars] = useState(null);
+    const [viewMarkers, setViewMarkers] = useState(null);
     const converter = require('react-native-xml2js');
 
     const getAllMetars = () => {
@@ -78,6 +81,28 @@ export default function HomeScreen({ navigation }) {
         .catch((error) => {
             console.error(error);
         })
+    };
+
+    const getViewMetars = (region) => {
+        let tempArray = [];
+        if (metars) {
+            for (const item of metars) {
+                if (item.hasOwnProperty('longitude') && item.hasOwnProperty('latitude')) {
+                    if (
+                        (item.latitude[0] <= region.latitude + region.latitudeDelta) && (item.latitude[0] >= region.latitude - region.latitudeDelta)
+                        && (item.longitude[0] <= region.longitude + region.longitudeDelta) && (item.longitude[0] >= region.longitude - region.longitudeDelta)
+                    ) {
+                        tempArray.push(item);
+                    }
+                }
+            }
+            setViewMarkers(tempArray);
+        }
+    }
+
+    const onRegionChange = (region) => {
+        setRegion(region);
+        getViewMetars(region);
     };
 
     // Get User Location
@@ -97,8 +122,8 @@ export default function HomeScreen({ navigation }) {
                 {
                     latitude: location.coords.latitude,
                     longitude: location.coords.longitude,
-                    latitudeDelta: 0.2,
-                    longitudeDelta: 0.16,
+                    latitudeDelta: 1,
+                    longitudeDelta: 0.5,
                 },
                 2000
             );
@@ -111,8 +136,8 @@ export default function HomeScreen({ navigation }) {
             {
                 latitude: location ? location.coords.latitude : 47.116,
                 longitude: location ? location.coords.longitude : -101.299,
-                latitudeDelta: 0.2,
-                longitudeDelta: 0.16,
+                latitudeDelta: 1,
+                longitudeDelta: 0.5,
             },
             1000
         );
@@ -120,6 +145,43 @@ export default function HomeScreen({ navigation }) {
 
     return(
         <View style={styles.main}>
+            {/* Map View */}
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <MapView
+                    ref={mapRef}
+                    style={styles.map}
+                    initialRegion={{
+                        latitude: 47.116,
+                        longitude: -101.299,
+                        latitudeDelta: 30,
+                        longitudeDelta: 10,
+                    }}
+                    onRegionChangeComplete={(region) => onRegionChange(region)}
+                    mapPadding={{ left: 6, right: 6, top: 0, bottom: 40 }}
+                >
+                {viewMarkers ?
+                    viewMarkers.map((marker, index) => {
+                        // let airportInfo = null;
+                        // airportInfo = airports.findWhere({ icao: marker.station_id[0] });
+                        // // && airportInfo.get('dst') == "A"
+                        // if (airportInfo) {
+                        // let name = airportInfo.get('name');
+                        return (
+                            <Marker
+                                key={index}
+                                coordinate={getLatLng(Number(marker.latitude[0]), Number(marker.longitude[0]))}
+                                // title={marker.station_id[0] + ": " + name}
+                                title={marker.station_id[0]}
+                                description={"Replace with Metar Info"}
+                                tracksViewChanges={false}
+                            />
+                        )
+                    })
+                    : null
+                }
+                </MapView>
+            </TouchableWithoutFeedback>
+
             {/* Search Bar + Menu Button */}
             <View style={styles.searchContainer}>
                 <TextInput
@@ -144,45 +206,6 @@ export default function HomeScreen({ navigation }) {
                     </View>
                 </View> : null
             }
-
-            {/* Map View */}
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <MapView
-                    ref={mapRef}
-                    style={styles.map}
-                    initialRegion={{
-                        latitude: 47.116,
-                        longitude: -101.299,
-                        latitudeDelta: 50,
-                        longitudeDelta: 10,
-                    }}
-                    onRegionChangeComplete={(region) => setRegion(region)}
-                    mapPadding={{ left: 6, right: 6, top: 0, bottom: 40 }}
-                >
-                {metars ?
-                    metars.map((marker, index) => {
-                        if (marker.hasOwnProperty('longitude') && marker.hasOwnProperty('latitude')) {
-                            let airportInfo = null;
-                            airportInfo = airports.findWhere({ icao: marker.station_id[0] });
-                            // && airportInfo.get('dst') == "A"
-                            if (airportInfo) {
-                                let name = airportInfo.get('name');
-                                return (
-                                    <Marker
-                                        key={index}
-                                        coordinate={getLatLng(Number(marker.latitude[0]), Number(marker.longitude[0]))}
-                                        title={marker.station_id[0] + ": " + name}
-                                        description={"Replace with Metar Info Maybe?"}
-                                        tracksViewChanges={false}
-                                    />
-                                ) 
-                            }
-                        }
-                    })
-                    : null
-                }
-                </MapView>
-            </TouchableWithoutFeedback>
 
             {/* Bottom Timeline + Buttons */}
             <View style={styles.buttonsContainer}>

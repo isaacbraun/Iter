@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 100,
         right: 15,
-        zIndex: 1,
+        zIndex: 3,
     },
     timelineContainer: {
         display: 'flex',
