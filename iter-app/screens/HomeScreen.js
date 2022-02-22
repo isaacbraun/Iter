@@ -14,7 +14,7 @@ import * as Location from 'expo-location';
 import { Feather, FontAwesome } from '@expo/vector-icons'; 
 import { Slider } from 'react-native-elements';
 
-import { Colors, getLatLng } from '../components/Tools';
+import { Colors, getLatLng, level_1_airports, level_2_airports, level_3_airports } from '../components/Tools';
 import { HomeScreenStyles as styles } from '../styles';
 import { ListItem } from 'react-native-elements/dist/list/ListItem';
 
@@ -64,7 +64,14 @@ export default function HomeScreen({ navigation }) {
 
     const [location, setLocation] = useState(null);
 
-    const airports = require('airport-codes');
+    const airports = require('airport-codes').toJSON();
+    // console.log(airports.findWhere({ icao: "KCLE" }).get('name'));
+    // console.log(airports);
+    // for (let value of airports) {
+    //     if (value.name.substring(value.name.length - 4) == "Intl") {
+    //         console.log(value);
+    //     }
+    // }
     const [metars, setMetars] = useState(null);
     const [viewMarkers, setViewMarkers] = useState(null);
     const converter = require('react-native-xml2js');
@@ -92,7 +99,24 @@ export default function HomeScreen({ navigation }) {
                         (item.latitude[0] <= region.latitude + region.latitudeDelta) && (item.latitude[0] >= region.latitude - region.latitudeDelta)
                         && (item.longitude[0] <= region.longitude + region.longitudeDelta) && (item.longitude[0] >= region.longitude - region.longitudeDelta)
                     ) {
-                        tempArray.push(item);
+                        if (region.longitudeDelta >= 50 && region.latitudeDelta >= 70) {
+                            if (level_1_airports.hasOwnProperty(item.station_id[0])) {
+                                tempArray.push(item);
+                            }
+                        }
+                        else if (region.longitudeDelta >= 20 && region.latitudeDelta >= 30) {
+                            if (level_2_airports.hasOwnProperty(item.station_id[0])) {
+                                tempArray.push(item);
+                            }
+                        }
+                        else if (region.longitudeDelta >= 10 && region.latitudeDelta >= 15) {
+                            if (level_3_airports.hasOwnProperty(item.station_id[0])) {
+                                tempArray.push(item);
+                            }
+                        }
+                        else {
+                            tempArray.push(item);
+                        }
                     }
                 }
             }
@@ -103,6 +127,7 @@ export default function HomeScreen({ navigation }) {
     const onRegionChange = (region) => {
         setRegion(region);
         getViewMetars(region);
+        console.log(region);
     };
 
     // Get User Location

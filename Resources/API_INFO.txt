@@ -1,3 +1,5 @@
+API = https://www.aviationweather.gov/dataserver
+
 A typical METAR contains data for the temperature, dew point, wind direction and speed, precipitation, cloud cover and heights, visibility, and barometric pressure.
 
 A METAR may also contain information on precipitation amounts, lightning, and other information that would be of interest to pilots or meteorologists such as a pilot report or PIREP, colour states and runway visual range (RVR).
