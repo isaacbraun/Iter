@@ -1,5 +1,7 @@
 // const convert = require('xml-js');
 
+import styles from '../styles/HomeStyles';
+
 export const Colors = {
     background: "#fff",
     text: "#6F7371",
@@ -200,4 +202,41 @@ export const imageList = {
     'VCSS' : require('../assets/weather/VCSS.png'),
     'VCTS' : require('../assets/weather/VCTS.png'),
     'VIRGA' : require('../assets/weather/VIRGA.png'),
+};
+
+export const barbList = {
+    5 : {
+
+    },
+    10 : {
+        right: 10,
+    },
+    15 : {
+        bottom: 5,
+    },
+    20 : {
+        bottom: 5,
+        right: 10,
+    },
+    25 : {
+        bottom: 10,
+    },
+    30 : {
+        bottom: 10,
+        right: 10,
+    },
+    35 : {
+        bottom: 15,
+    },
+    40 : {
+        bottom: 15,
+        right: 20,
+    },
+    45 : {
+        bottom: 20,
+    },
+    50 : styles.fifty,
+    55 : styles.fiftyFive,
+    60 : styles.sixty,
+    65 : styles.sixtyFive,
 };

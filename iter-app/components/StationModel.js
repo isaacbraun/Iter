@@ -4,7 +4,7 @@ import {
     View,
     Image,
 } from 'react-native';
-import { Colors, imageList } from '../components/Tools';
+import { Colors, imageList, barbList } from '../components/Tools';
 import { StationModelStyles as styles } from '../styles';
 
 export function Middle(props) {
@@ -46,15 +46,21 @@ export function Middle(props) {
             fill = "M";
             break;
     }
-
+    
     let direction = null;
+    let speed = null;
+    let featherArray = [];
     if (props.speed > 0) {
         direction = String(props.direction) + "deg";
+        speed = Math.ceil(props.speed / 5) * 5;
+        for (let i = 0; i <= speed / 5; i++) {
+            let feather = (
+                <View key={i} style={[styles.windFeather, barbList[i * 5], props.gust == i * 5 ? styles.gust : null]} />
+            );
+            featherArray[i] = (feather);
+        }
     }
-    let barb = null;
-    switch (props.speed) {
-
-    }
+    
 
     return(
         <View>
@@ -74,7 +80,7 @@ export function Middle(props) {
             </View>
             { props.speed > 0 ?
                 <View style={[
-                    styles.windbarb,
+                    styles.windbarbContainer,
                     {transform: [
                         {translateX: 8 - (2 / 2)},
                         {translateY: 8 - (25 / 2)},
@@ -82,9 +88,12 @@ export function Middle(props) {
                         {translateX: -(8 - (2 / 2))},
                         {translateY: -(8 - (25 / 2))},
                     ]}
-                    
                   ]}>
-
+                        <View style={styles.windbarb}>
+                            {featherArray.map((elem, index) => (
+                                elem
+                            ))}
+                        </View>
                 </View>
                 : null
             }
@@ -128,6 +137,11 @@ export default function StationModel(props) {
         }
     }
 
+    let gust = null;
+    if (props.hasOwnProperty('wind_gust_kt')) {
+        gust = Math.ceil(props.wind_gust_kt / 5) * 5
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.left}>
@@ -146,6 +160,7 @@ export default function StationModel(props) {
                     cover={cover}
                     direction={props.wind_dir_degrees}
                     speed={props.wind_speed_kt}
+                    gust={gust}
                 />
             </View>
             <View style={styles.right}>

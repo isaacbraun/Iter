@@ -90,13 +90,30 @@ const styles = StyleSheet.create({
         fontSize: 10,
     },
 
-    windbarb: {
+    windbarbContainer: {
         position: 'absolute',
         top: 8,
         left: 8,
+    },
+    windbarb: {
+        // position: 'relative',
+        // top: 0,
+        // right: 0,
         width: 2,
         height: 25,
         backgroundColor: "#000",
+    },
+    windFeather: {
+        position: 'absolute',
+        right: 0,
+        bottom: 0,
+        width: 2,
+        height: 10,
+        backgroundColor: '#000',
+        transform: [{ rotate: "100deg" }]
+    },
+    gust: {
+        backgroundColor: Colors.red,
     },
     
     right: {
