@@ -1,7 +1,3 @@
-// const convert = require('xml-js');
-
-import styles from '../styles/HomeStyles';
-
 export const Colors = {
     background: "#fff",
     text: "#6F7371",
@@ -235,8 +231,20 @@ export const barbList = {
     45 : {
         bottom: 20,
     },
-    50 : styles.fifty,
-    55 : styles.fiftyFive,
-    60 : styles.sixty,
-    65 : styles.sixtyFive,
+    50 : {
+        bottom: 15,
+        right: 20,
+    },
+    55 : {
+        bottom: 15,
+        right: 20,
+    },
+    60 : {
+        bottom: 15,
+        right: 20,
+    },
+    65 : {
+        bottom: 15,
+        right: 20,
+    },
 };

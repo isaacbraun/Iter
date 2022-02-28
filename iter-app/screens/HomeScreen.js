@@ -202,7 +202,6 @@ export default function HomeScreen({ navigation }) {
                             >
                                 <StationModel
                                     {...marker}
-
                                 />
                                 <Callout>
                                     <View style={styles.callout}>

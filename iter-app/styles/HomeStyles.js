@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
         width: 45,
 
         borderRadius: 3,
-        backgroundColor: Colors.background
+        backgroundColor: Colors.background,
     },
 
     map: {
