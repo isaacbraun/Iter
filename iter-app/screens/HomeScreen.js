@@ -9,14 +9,14 @@ import {
     TouchableWithoutFeedback,
     Dimensions,
 } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, Callout } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Feather, FontAwesome } from '@expo/vector-icons'; 
 import { Slider } from 'react-native-elements';
 
 import { Colors, getLatLng, level_1_airports, level_2_airports, level_3_airports } from '../components/Tools';
+import StationModel from '../components/StationModel';
 import { HomeScreenStyles as styles } from '../styles';
-import { ListItem } from 'react-native-elements/dist/list/ListItem';
 
 export default function HomeScreen({ navigation }) {
     // let timer;
@@ -127,7 +127,7 @@ export default function HomeScreen({ navigation }) {
     const onRegionChange = (region) => {
         setRegion(region);
         getViewMetars(region);
-        console.log(region);
+        // console.log(region);
     };
 
     // Get User Location
@@ -183,6 +183,8 @@ export default function HomeScreen({ navigation }) {
                     }}
                     onRegionChangeComplete={(region) => onRegionChange(region)}
                     mapPadding={{ left: 6, right: 6, top: 0, bottom: 40 }}
+                    // maxZoomLevel={10}
+                    rotateEnabled={false}
                 >
                 {viewMarkers ?
                     viewMarkers.map((marker, index) => {
@@ -196,10 +198,19 @@ export default function HomeScreen({ navigation }) {
                                 key={index}
                                 coordinate={getLatLng(Number(marker.latitude[0]), Number(marker.longitude[0]))}
                                 // title={marker.station_id[0] + ": " + name}
-                                title={marker.station_id[0]}
-                                description={"Replace with Metar Info"}
                                 tracksViewChanges={false}
-                            />
+                            >
+                                <StationModel
+                                    {...marker}
+
+                                />
+                                <Callout>
+                                    <View style={styles.callout}>
+                                        <Text style={{marginBottom: 10}}>{marker.station_id[0]}</Text>
+                                        <Text>{marker.raw_text[0]}</Text>
+                                    </View>
+                                </Callout>
+                            </Marker>
                         )
                     })
                     : null
