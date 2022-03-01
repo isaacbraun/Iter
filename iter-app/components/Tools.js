@@ -201,50 +201,54 @@ export const imageList = {
 };
 
 export const barbList = {
-    5 : {
-
-    },
+    5 : null,
     10 : {
-        right: 10,
+        top: -2,
+        // right: 6.5,
+        right: -12.5,
     },
     15 : {
-        bottom: 5,
+        // bottom: 4,
+        top: 4,
     },
     20 : {
-        bottom: 5,
-        right: 10,
+        // bottom: 2,
+        top: 2,
+        // right: 6.5,
+        right: -12.5,
     },
     25 : {
-        bottom: 10,
+        // bottom: 8,
+        top: 8,
     },
     30 : {
-        bottom: 10,
-        right: 10,
+        // bottom: 6,
+        // right: 6.5,
+        top: 6,
+        right: -12.5,
     },
     35 : {
-        bottom: 15,
+        top: 12,
     },
     40 : {
-        bottom: 15,
-        right: 20,
+        top: 10,
+        right: -12.5,
     },
     45 : {
-        bottom: 20,
+        top: 16,
     },
     50 : {
-        bottom: 15,
-        right: 20,
+        top: 14,
+        right: -12.5,
     },
     55 : {
-        bottom: 15,
-        right: 20,
+        top: 20,
     },
     60 : {
-        bottom: 15,
-        right: 20,
+        top: 18,
+        right: -12.5,
     },
     65 : {
-        bottom: 15,
-        right: 20,
+        top: 24,
     },
 };

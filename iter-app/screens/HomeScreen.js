@@ -143,15 +143,15 @@ export default function HomeScreen({ navigation }) {
             setLoading(true);
             let location = await Location.getCurrentPositionAsync({});
             setLocation(location);
-            mapRef.current.animateToRegion(
-                {
-                    latitude: location.coords.latitude,
-                    longitude: location.coords.longitude,
-                    latitudeDelta: 1,
-                    longitudeDelta: 0.5,
-                },
-                2000
-            );
+            // mapRef.current.animateToRegion(
+            //     {
+            //         latitude: location.coords.latitude,
+            //         longitude: location.coords.longitude,
+            //         latitudeDelta: 1,
+            //         longitudeDelta: 0.5,
+            //     },
+            //     2000
+            // );
             setLoading(false);
 		})();
 	}, []);
