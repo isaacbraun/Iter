@@ -65,13 +65,7 @@ export default function HomeScreen({ navigation }) {
     const [location, setLocation] = useState(null);
 
     const airports = require('airport-codes').toJSON();
-    // console.log(airports.findWhere({ icao: "KCLE" }).get('name'));
-    // console.log(airports);
-    // for (let value of airports) {
-    //     if (value.name.substring(value.name.length - 4) == "Intl") {
-    //         console.log(value);
-    //     }
-    // }
+
     const [metars, setMetars] = useState(null);
     const [viewMarkers, setViewMarkers] = useState(null);
     const converter = require('react-native-xml2js');
@@ -127,7 +121,6 @@ export default function HomeScreen({ navigation }) {
     const onRegionChange = (region) => {
         setRegion(region);
         getViewMetars(region);
-        // console.log(region);
     };
 
     // Get User Location
@@ -188,16 +181,10 @@ export default function HomeScreen({ navigation }) {
                 >
                 {viewMarkers ?
                     viewMarkers.map((marker, index) => {
-                        // let airportInfo = null;
-                        // airportInfo = airports.findWhere({ icao: marker.station_id[0] });
-                        // // && airportInfo.get('dst') == "A"
-                        // if (airportInfo) {
-                        // let name = airportInfo.get('name');
                         return (
                             <Marker
                                 key={index}
                                 coordinate={getLatLng(Number(marker.latitude[0]), Number(marker.longitude[0]))}
-                                // title={marker.station_id[0] + ": " + name}
                                 tracksViewChanges={false}
                             >
                                 <StationModel

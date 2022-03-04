@@ -5,6 +5,7 @@ export const Colors = {
     green: "#1EA66D",
     red: "red",
     purple: "purple",
+    barb: "#383838",
 }
 
 export function getLatLng(lat, lng) {
@@ -203,52 +204,87 @@ export const imageList = {
 export const barbList = {
     5 : null,
     10 : {
-        top: -2,
-        // right: 6.5,
+        top: -2.75,
         right: -12.5,
     },
     15 : {
-        // bottom: 4,
         top: 4,
     },
     20 : {
-        // bottom: 2,
-        top: 2,
-        // right: 6.5,
+        top: 1.25,
         right: -12.5,
     },
     25 : {
-        // bottom: 8,
         top: 8,
     },
     30 : {
-        // bottom: 6,
-        // right: 6.5,
-        top: 6,
+        top: 5.25,
         right: -12.5,
     },
     35 : {
         top: 12,
     },
     40 : {
-        top: 10,
+        top: 9.25,
         right: -12.5,
     },
     45 : {
         top: 16,
     },
+};
+
+export const pennantList = {
+    48 : {
+        top: .5,
+        right: -6,
+        height: 7,
+        transform: [
+            { translateX: -6 / 2 },
+            { rotateZ: "-90deg" },
+            { translateX: 6 / 2 },
+        ],
+    },
+    49 : {
+        top: 4,
+        right: -5,
+        height: 3.5,
+        transform: [
+            { translateX: -6 / 2 },
+            { rotateZ: "-90deg" },
+            { translateX: 6 / 2 },
+        ],
+    },
     50 : {
-        top: 14,
-        right: -12.5,
+        top: 2,
+        height: 9,
+        right: -10,
     },
     55 : {
-        top: 20,
+        top: 8,
     },
     60 : {
-        top: 18,
+        top: 5.25,
         right: -12.5,
     },
     65 : {
-        top: 24,
+        top: 12,
     },
-};
+    70 : {
+        top: 9.25,
+        right: -12.5,
+    },
+    75 : {
+        top: 16,
+    },
+    80 : {
+        top: 13.25,
+        right: -12.5,
+    },
+    85 : {
+        top: 20,
+    },
+    90 : {
+        top: 17.25,
+        right: -12.5,
+    },
+}

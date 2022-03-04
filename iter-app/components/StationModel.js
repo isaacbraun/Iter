@@ -4,7 +4,7 @@ import {
     View,
     Image,
 } from 'react-native';
-import { Colors, imageList, barbList } from '../components/Tools';
+import { Colors, imageList, barbList, pennantList } from '../components/Tools';
 import { StationModelStyles as styles } from '../styles';
 
 export default function StationModel(props) {
@@ -83,9 +83,22 @@ export default function StationModel(props) {
     }
     
     let direction = null;
+    let directionString = null;
     let speed = null;
+    let rightPadding = 10;
+    let leftPadding = 10;
     if (props.hasOwnProperty('wind_speed_kt') && props.wind_speed_kt > 0) {
-        direction = String(props.wind_dir_degrees) + "deg";
+        direction = Number(props.wind_dir_degrees);
+        directionString = String(direction) + "deg";
+        
+        // Set padding left/right regarding degree
+        if (direction > 20 && direction < 160) {    
+            rightPadding = 30;
+        }
+        else if (direction > 200 && direction < 340) {
+            leftPadding = 30;
+        }
+
         speed = Math.ceil(props.wind_speed_kt / 5) * 5;
     }
 
@@ -96,7 +109,7 @@ export default function StationModel(props) {
 
     return (
         <View style={styles.container}>
-            <View style={styles.left}>
+            <View style={[styles.left, {paddingRight: leftPadding}]}>
                 <Text style={[styles.temp, styles.text]}>{temp}</Text>
                 <View style={styles.horizontal}>
                     {props.hasOwnProperty('visibility_statute_mi') ?
@@ -126,27 +139,38 @@ export default function StationModel(props) {
                 { props.wind_speed_kt > 0 ?
                     <View style={[
                         styles.windbarbContainer,
-                        // {transform: [
-                        //     { translateY: -22 / 2 },
-                        //     { rotateZ: direction },
-                        //     { translateY: 22 / 2 }
-                        // ]}
+                        {transform: [
+                            { translateY: 28 / 2},
+                            { rotateZ: directionString },
+                            { translateY: -28 / 2 }
+                        ]}
                     ]}>
                         <View style={styles.windbarb}>
-                            { Object.keys(barbList).map(function(key, index) {
-                                if (key <= speed) {
-                                    return <View key={index} style={[styles.windFeather, barbList[key]]} />
-                                }
-                                else if (key <= gust) {
-                                    return <View key={index} style={[styles.windFeather, barbList[key], styles.gust]} />
-                                }
-                            })}
+                            {speed >= 50 ?
+                                Object.keys(pennantList).map(function(key, index) {
+                                    if (key <= speed) {
+                                        return <View key={index} style={[styles.windFeather, pennantList[key]]} />
+                                    }
+                                    else if (key <= gust) {
+                                        return <View key={index} style={[styles.windFeather, pennantList[key], styles.gust]} />
+                                    }
+                                })
+                                :
+                                Object.keys(barbList).map(function(key, index) {
+                                    if (key <= speed) {
+                                        return <View key={index} style={[styles.windFeather, barbList[key]]} />
+                                    }
+                                    else if (key <= gust) {
+                                        return <View key={index} style={[styles.windFeather, barbList[key], styles.gust]} />
+                                    }
+                                })
+                            }
                         </View>
                     </View>
                     : null
                 }
             </View>
-            <View style={styles.right}>
+            <View style={[styles.right, {paddingLeft: rightPadding}]}>
                 <Text style={[styles.alt, styles.text]}>{alt}</Text>
                 { ceiling ?
                     <Text style={[styles.ceiling, styles.text]}>{ceiling}</Text>
