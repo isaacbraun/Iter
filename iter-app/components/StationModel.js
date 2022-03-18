@@ -4,7 +4,7 @@ import {
     View,
     Image,
 } from 'react-native';
-import { Colors, imageList, barbList, pennantList } from '../components/Tools';
+import { Colors, imageList, barbList, pennantList } from '../components/Values';
 import { StationModelStyles as styles } from '../styles';
 
 export default function StationModel(props) {
@@ -21,8 +21,10 @@ export default function StationModel(props) {
     let wxImage = null;
     if (props.hasOwnProperty('wx_string')) {
         const wxString = String(props.wx_string);
+        // console.log(wxString);
         const [wx, precip] = wxString.split(/\s+(.*)/);
         wxImage = imageList[wx];
+        // console.log(wx)
     }
 
     let alt = null;

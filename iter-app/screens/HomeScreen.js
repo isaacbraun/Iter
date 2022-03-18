@@ -7,15 +7,16 @@ import {
     Keyboard,
     Alert,
     TouchableWithoutFeedback,
-    Dimensions,
 } from 'react-native';
-import MapView, { Marker, Callout } from 'react-native-maps';
+import MapView from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Feather, FontAwesome } from '@expo/vector-icons'; 
 import { Slider } from 'react-native-elements';
 
-import { Colors, getLatLng, level_1_airports, level_2_airports, level_3_airports } from '../components/Tools';
-import StationModel from '../components/StationModel';
+import { Colors } from '../components/Values';
+import { getAllMetars } from '../components/Tools';
+import { level_1_airports, level_2_airports, level_3_airports, level_4_airports } from "../components/Values";
+import Marker from '../components/Marker';
 import { HomeScreenStyles as styles } from '../styles';
 
 export default function HomeScreen({ navigation }) {
@@ -46,7 +47,6 @@ export default function HomeScreen({ navigation }) {
     //     setTimelineState(false);
     // };
 
-
     const [searchValue, setSearchValue] = useState(null);
     const [timelineMin, setTimelineMin] = useState(0);
     const [timelineMax, setTimelineMax] = useState(10);
@@ -54,6 +54,8 @@ export default function HomeScreen({ navigation }) {
     const [timelineState, setTimelineState] = useState(false);
 
     const mapRef = useRef(null);
+
+    const [location, setLocation] = useState(null);
     const [loading, setLoading] = useState(false);
     const [region, setRegion] = useState({
         latitude: 47.116,
@@ -62,93 +64,11 @@ export default function HomeScreen({ navigation }) {
         longitudeDelta: 10,
     });
 
-    const [location, setLocation] = useState(null);
-
-    const airports = require('airport-codes').toJSON();
-
     const [metars, setMetars] = useState(null);
-    const [viewMarkers, setViewMarkers] = useState(null);
+
     const converter = require('react-native-xml2js');
 
-    const getAllMetars = () => {
-        let fetchString = "https://www.aviationweather.gov/adds/dataserver_current/current/metars.cache.xml";
-        // let fetchString = "https://www.aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&requestType=retrieve&format=xml&stationString=~us&hoursBeforeNow=1&mostRecent=true"
-
-        return fetch(fetchString)
-        .then(response => response.text())
-        .then(text => converter.parseString(text, function (err, result) {
-            setMetars(result.response.data[0].METAR);
-        }))
-        .catch((error) => {
-            console.error(error);
-        })
-    };
-
-    const getViewMetars = (region) => {
-        let tempArray = [];
-        if (metars) {
-            for (const item of metars) {
-                if (item.hasOwnProperty('longitude') && item.hasOwnProperty('latitude')) {
-                    if (
-                        (item.latitude[0] <= region.latitude + region.latitudeDelta) && (item.latitude[0] >= region.latitude - region.latitudeDelta)
-                        && (item.longitude[0] <= region.longitude + region.longitudeDelta) && (item.longitude[0] >= region.longitude - region.longitudeDelta)
-                    ) {
-                        if (region.longitudeDelta >= 50 && region.latitudeDelta >= 70) {
-                            if (level_1_airports.hasOwnProperty(item.station_id[0])) {
-                                tempArray.push(item);
-                            }
-                        }
-                        else if (region.longitudeDelta >= 20 && region.latitudeDelta >= 30) {
-                            if (level_2_airports.hasOwnProperty(item.station_id[0])) {
-                                tempArray.push(item);
-                            }
-                        }
-                        else if (region.longitudeDelta >= 10 && region.latitudeDelta >= 15) {
-                            if (level_3_airports.hasOwnProperty(item.station_id[0])) {
-                                tempArray.push(item);
-                            }
-                        }
-                        else {
-                            tempArray.push(item);
-                        }
-                    }
-                }
-            }
-            setViewMarkers(tempArray);
-        }
-    }
-
-    const onRegionChange = (region) => {
-        setRegion(region);
-        getViewMetars(region);
-    };
-
-    // Get User Location
-	useEffect(() => {
-        getAllMetars();
-        (async () => {
-            let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== 'granted') {
-                Alert.alert('Location Access Needed for Best Functionality');
-                return;
-            }
-
-            setLoading(true);
-            let location = await Location.getCurrentPositionAsync({});
-            setLocation(location);
-            // mapRef.current.animateToRegion(
-            //     {
-            //         latitude: location.coords.latitude,
-            //         longitude: location.coords.longitude,
-            //         latitudeDelta: 1,
-            //         longitudeDelta: 0.5,
-            //     },
-            //     2000
-            // );
-            setLoading(false);
-		})();
-	}, []);
-
+    // Animate Map to User Location or Centerpoint if Not Granted
     const goToOrigin = () => {
         mapRef.current.animateToRegion(
             {
@@ -160,6 +80,27 @@ export default function HomeScreen({ navigation }) {
             1000
         );
     };
+
+    // Get User Location & Get All Metars
+	useEffect(() => {
+        getAllMetars().then(text => converter.parseString(text, function (err, result) {
+            setMetars(result.response.data[0].METAR);
+        }));
+        
+        (async () => {
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                Alert.alert('Location Access Needed for Best Functionality');
+                return;
+            }
+
+            setLoading(true);
+            let location = await Location.getCurrentPositionAsync({});
+            setLocation(location);
+            goToOrigin();
+            setLoading(false);
+		})();
+	}, []);
 
     return(
         <View style={styles.main}>
@@ -174,30 +115,47 @@ export default function HomeScreen({ navigation }) {
                         latitudeDelta: 30,
                         longitudeDelta: 10,
                     }}
-                    onRegionChangeComplete={(region) => onRegionChange(region)}
+                    onRegionChangeComplete={(region) => setRegion(region)}
                     mapPadding={{ left: 6, right: 6, top: 0, bottom: 40 }}
-                    // maxZoomLevel={10}
+                    maxZoomLevel={10}
                     rotateEnabled={false}
                 >
-                {viewMarkers ?
-                    viewMarkers.map((marker, index) => {
-                        return (
-                            <Marker
-                                key={index}
-                                coordinate={getLatLng(Number(marker.latitude[0]), Number(marker.longitude[0]))}
-                                tracksViewChanges={false}
-                            >
-                                <StationModel
-                                    {...marker}
-                                />
-                                <Callout>
-                                    <View style={styles.callout}>
-                                        <Text style={{marginBottom: 10}}>{marker.station_id[0]}</Text>
-                                        <Text>{marker.raw_text[0]}</Text>
-                                    </View>
-                                </Callout>
-                            </Marker>
-                        )
+                {metars ?
+                    metars.map((marker, index) => {
+                        if (marker.hasOwnProperty('longitude') && marker.hasOwnProperty('latitude')) {
+                            if (region.longitudeDelta >= 50 && region.latitudeDelta >= 100) {
+                                console.log("Level 1");
+                                if (level_1_airports.hasOwnProperty(marker.station_id[0])) {
+                                    return <Marker key={index} index={index} marker={marker} />
+                                }
+                            }
+                            else if (
+                                (marker.latitude[0] <= region.latitude + region.latitudeDelta) && (marker.latitude[0] >= region.latitude - region.latitudeDelta)
+                                && (marker.longitude[0] <= region.longitude + region.longitudeDelta) && (marker.longitude[0] >= region.longitude - region.longitudeDelta)
+                            ) {
+                                if (region.longitudeDelta >= 50 && region.latitudeDelta >= 70) {
+                                    console.log("Level 2");
+                                    if (level_2_airports.hasOwnProperty(marker.station_id[0])) {
+                                        return <Marker key={index} index={index} marker={marker} />
+                                    }
+                                }
+                                else if (region.longitudeDelta >= 20 && region.latitudeDelta >= 30) {
+                                    console.log("Level 3");
+                                    if (level_3_airports.hasOwnProperty(marker.station_id[0])) {
+                                        return <Marker key={index} index={index} marker={marker} />
+                                    }
+                                }
+                                else if (region.longitudeDelta >= 10 && region.latitudeDelta >= 15) {
+                                    console.log("Level 4");
+                                    if (level_4_airports.hasOwnProperty(marker.station_id[0])) {
+                                        return <Marker key={index} index={index} marker={marker} />
+                                    }
+                                }
+                                else {
+                                    return <Marker key={index} index={index} marker={marker} />
+                                }
+                            }
+                        }
                     })
                     : null
                 }
