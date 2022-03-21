@@ -4,14 +4,18 @@ import {
     View
 } from 'react-native';
 import { Marker, Callout } from 'react-native-maps';
-import { getLatLng } from '../components/Tools';
 import StationModel from '../components/StationModel';
 import { HomeScreenStyles as styles } from '../styles';
 
 export default function Maker(props) {
     return (
         <Marker
-            coordinate={getLatLng(Number(props.marker.latitude[0]), Number(props.marker.longitude[0]))}
+            coordinate={{
+                latitude: Number(props.marker.latitude[0]),
+                longitude: Number(props.marker.longitude[0]),
+                latitudeDelta: 0.06,
+                longitudeDelta: 0.04,
+            }}
             tracksViewChanges={false}
         >
             <StationModel
