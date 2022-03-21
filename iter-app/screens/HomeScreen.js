@@ -64,7 +64,6 @@ export default function HomeScreen({ navigation }) {
     });
 
     const [metars, setMetars] = useState(null);
-    const [tafs, setTafs] = useState(null);
 
     // Animate Map to User Location or Centerpoint if Not Granted
     const goToOrigin = () => {
@@ -82,10 +81,8 @@ export default function HomeScreen({ navigation }) {
     // Get Metar and Taf data from Storage
     const getData = async () => {
         try {
-            const metars = await AsyncStorage.getItem('@Metars')
-            const tafs = await AsyncStorage.getItem('@Tafs')
+            const metars = await AsyncStorage.getItem('@Merged')
             metars != null ? setMetars(JSON.parse(metars)) : null;
-            tafs != null ? setTafs(JSON.parse(tafs)) : null;
         } catch(e) {
             console.log("Read Error: ", e);
         }

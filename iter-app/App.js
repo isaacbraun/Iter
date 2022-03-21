@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import react, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -26,6 +26,30 @@ function appendClass(data) {
 	}));
 };
 
+async function mergeData() {
+	try {
+		let merged = [];
+		const metars = await AsyncStorage.getItem('@Metars')
+		const tafs = await AsyncStorage.getItem('@Tafs')
+		const metarsParsed = metars != null ? JSON.parse(metars) : null;
+		const tafsParsed = tafs != null ? JSON.parse(tafs) : null;
+
+		for (const metar of metarsParsed) {
+			let temp = metar;
+			for (const taf of tafsParsed) {
+				if (metar.station_id[0] == taf.station_id[0]) {
+					temp.taf = taf;
+				}
+			}
+			merged.push(temp);
+		}
+		
+		storeObject("@Merged", merged);
+	} catch(e) {
+		console.log("Read Error: ", e);
+	}
+};
+
 export default function App() {
 	useEffect(() => {
         getAllMetars().then(value => converter.parseString(value, function (err, result) {
@@ -33,8 +57,10 @@ export default function App() {
 		}));
 
 		getAllTafs().then(value => converter.parseString(value, function (err, result) {
-			storeObject("@Tafs", appendClass(result.response.data[0].TAF));
+			storeObject("@Tafs", result.response.data[0].TAF);
 		}));
+
+		mergeData();
 	}, []);
 
 	return (
