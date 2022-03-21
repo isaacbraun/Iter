@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { FlightPlanStyles as styles } from '../styles';
 import { Feather, Ionicons } from '@expo/vector-icons';
-import { Colors } from '../components/Tools';
+import { Colors } from '../components/Values';
 
 export default function FlightPlanScreen({ navigation }) {
     const [alternateActive, setAlternateActive] = useState(false);
