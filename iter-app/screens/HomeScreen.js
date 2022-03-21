@@ -19,37 +19,39 @@ import { markerFilters } from '../components/Tools';
 import { HomeScreenStyles as styles } from '../styles';
 
 export default function HomeScreen({ navigation }) {
-    // let timer;
+    let timer;
 
-    // const playTimeline = () => {
-    //     if (!timer) {
-    //         setTimelineState(true);
-    //         let newVal = timelineValue;
-    //         if (newVal < timelineMax) {
-    //             newVal++;
-    //             setTimelineValue(newVal);
-    //         }
-    //         timer = setInterval(() => {
-    //             if (newVal < timelineMax) {
-    //                 newVal++;
-    //                 setTimelineValue(newVal);
-    //             } else {
-    //                 stopTimeline();
-    //             }
-    //         }, 1000);
-    //     }
-    // };
+    const playTimeline = () => {
+        if (!timer) {
+            setTimelineState(true);
+            let newVal = timelineValue;
+            if (newVal < timelineMax) {
+                newVal++;
+                setTimelineValue(newVal);
+            }
+            timer = setInterval(() => {
+                if (newVal < timelineMax) {
+                    newVal++;
+                    setTimelineValue(newVal);
+                } else {
+                    stopTimeline();
+                }
+            }, 1000);
+        }
+    };
     
-    // const stopTimeline = () => {
-    //     clearInterval(timer);
-    //     timer = null;
-    //     setTimelineState(false);
-    // };
-
+    const stopTimeline = () => {
+        clearInterval(timer);
+        timer = null;
+        setTimelineState(false);
+    };
+    const date = new Date()
+    const hours = date.getHours();
+    
     const [searchValue, setSearchValue] = useState(null);
-    const [timelineMin, setTimelineMin] = useState(0);
-    const [timelineMax, setTimelineMax] = useState(10);
-    const [timelineValue, setTimelineValue] = useState(0);
+    const [timelineMin, setTimelineMin] = useState(hours);
+    const [timelineMax, setTimelineMax] = useState(hours + 24);
+    const [timelineValue, setTimelineValue] = useState(hours);
     const [timelineState, setTimelineState] = useState(false);
 
     const mapRef = useRef(null);
