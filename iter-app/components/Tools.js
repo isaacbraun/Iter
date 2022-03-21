@@ -23,6 +23,15 @@ export function getAllTafs() {
     })
 };
 
+function isWithinRegion(marker, region, offset) {
+    if ((marker.latitude[0] <= region.latitude + offset) && (marker.latitude[0] >= region.latitude - offset)
+    && (marker.longitude[0] <= region.longitude + offset) && (marker.longitude[0] >= region.longitude - offset)) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
 export function markerFilters(marker, index, region) {
     if (marker.hasOwnProperty('longitude') && marker.hasOwnProperty('latitude')) {
         if (region.longitudeDelta >= 70) {
@@ -47,32 +56,28 @@ export function markerFilters(marker, index, region) {
         }
         else {
             if (region.longitudeDelta >= 7) {
-                if ((marker.latitude[0] <= region.latitude + 12) && (marker.latitude[0] >= region.latitude - 12)
-                && (marker.longitude[0] <= region.longitude + 12) && (marker.longitude[0] >= region.longitude - 12)) {
+                if (isWithinRegion(marker, region, 12)) {
                     if (marker.type == "large_airport") {
                         return <Marker key={index} index={index} marker={marker} />
                     }
                 }
             }
             if (region.longitudeDelta >= 4) {
-                if ((marker.latitude[0] <= region.latitude + 4) && (marker.latitude[0] >= region.latitude - 4)
-                && (marker.longitude[0] <= region.longitude + 4) && (marker.longitude[0] >= region.longitude - 4)) {
+                if (isWithinRegion(marker, region, 4)) {
                     if (marker.type == "large_airport") {
                         return <Marker key={index} index={index} marker={marker} />
                     }
                 }
             }
             else if (region.longitudeDelta >= 1.5) {
-                if ((marker.latitude[0] <= region.latitude + 2) && (marker.latitude[0] >= region.latitude - 2)
-                && (marker.longitude[0] <= region.longitude + 2) && (marker.longitude[0] >= region.longitude - 2)) {
+                if (isWithinRegion(marker, region, 2)) {
                     if (marker.type == "medium_airport" || marker.type == "large_airport") {
                         return <Marker key={index} index={index} marker={marker} />
                     }
                 }
             }
             else {
-                if ((marker.latitude[0] <= region.latitude + 1) && (marker.latitude[0] >= region.latitude - 1)
-                && (marker.longitude[0] <= region.longitude + 1) && (marker.longitude[0] >= region.longitude - 1)) {
+                if (isWithinRegion(marker, region, 1)) {
                     return <Marker key={index} index={index} marker={marker} />
                 }
             }
