@@ -135,7 +135,7 @@ export default function HomeScreen({ navigation }) {
                         latitudeDelta: 30,
                         longitudeDelta: 10,
                     }}
-                    onRegionChangeComplete={(region) => {console.log(region); setRegion(region)}}
+                    onRegionChangeComplete={(region) => setRegion(region)}
                     mapPadding={{ left: 6, right: 6, top: 0, bottom: 40 }}
                     maxZoomLevel={10}
                     rotateEnabled={false}

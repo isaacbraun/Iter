@@ -42,6 +42,9 @@ export const level_1_airports = [
     // OCE
     "YSSY",
     "NZAA",
+    // CA
+    "CYYC",
+    "CYWG",
 ];
 
 export const level_2_airports = [
@@ -97,6 +100,10 @@ export const level_2_airports = [
     "YMML",
     "YBBN",
     "NZAA",
+    // CA
+    "CYYC",
+    "CYUL",
+    "CYWG",
 ];
 
 export const level_3_airports = [
@@ -137,7 +144,6 @@ export const level_3_airports = [
     "KJFK",
     "KSFO",
     "KMSP",
-    "CYYZ",
     "KSLC",
     "MMUN",
     // SA
@@ -164,6 +170,13 @@ export const level_3_airports = [
     "YMML",
     "YBBN",
     "NZAA",
+    // CA
+    "CYYZ",
+    "CYVR",
+    "CYYC",
+    "CYUL",
+    "CYEG",
+    "CYWG",
 ];
 
 export const level_4_airports = [
@@ -209,11 +222,12 @@ export const level_4_airports = [
     "KSFO",
     "KMSP",
     "KDTW",
-    "CYYZ",
     "KBOS",
     "KSLC",
     "MMUN",
     "KBWI",
+    "KSTL",
+    "KSDF",
     // SA
     "SBGR",
     "SKBO",
@@ -238,6 +252,13 @@ export const level_4_airports = [
     "YMML",
     "YBBN",
     "NZAA",
+    // CA
+    "CYYZ",
+    "CYVR",
+    "CYYC",
+    "CYUL",
+    "CYEG",
+    "CYWG",
 ];
 
 export const imageList = {
