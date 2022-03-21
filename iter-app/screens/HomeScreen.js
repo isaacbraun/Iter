@@ -12,11 +12,10 @@ import MapView from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Feather, FontAwesome } from '@expo/vector-icons'; 
 import { Slider } from 'react-native-elements';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { Colors } from '../components/Values';
-import { getAllMetars } from '../components/Tools';
-import { level_1_airports, level_2_airports, level_3_airports, level_4_airports } from "../components/Values";
-import Marker from '../components/Marker';
+import { markerFilters } from '../components/Tools';
 import { HomeScreenStyles as styles } from '../styles';
 
 export default function HomeScreen({ navigation }) {
@@ -65,8 +64,7 @@ export default function HomeScreen({ navigation }) {
     });
 
     const [metars, setMetars] = useState(null);
-
-    const converter = require('react-native-xml2js');
+    const [tafs, setTafs] = useState(null);
 
     // Animate Map to User Location or Centerpoint if Not Granted
     const goToOrigin = () => {
@@ -81,25 +79,47 @@ export default function HomeScreen({ navigation }) {
         );
     };
 
+    // Get Metar and Taf data from Storage
+    const getData = async () => {
+        try {
+            const metars = await AsyncStorage.getItem('@Metars')
+            const tafs = await AsyncStorage.getItem('@Tafs')
+            metars != null ? setMetars(JSON.parse(metars)) : null;
+            tafs != null ? setTafs(JSON.parse(tafs)) : null;
+        } catch(e) {
+            console.log("Read Error: ", e);
+        }
+    };
+
+    // Request User Location Access and Animate Map to Location
+    const getLocation = async () => {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+            Alert.alert('Location Access Needed for Best Functionality');
+            return;
+        }
+
+        setLoading(true);
+        let location = await Location.getCurrentPositionAsync({});
+        setLocation(location);
+        setLoading(false);
+
+        mapRef.current.animateToRegion(
+            {
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+                latitudeDelta: 1,
+                longitudeDelta: 0.5,
+            },
+            2000
+        );
+        setRegion(location);
+    };
+
     // Get User Location & Get All Metars
 	useEffect(() => {
-        getAllMetars().then(text => converter.parseString(text, function (err, result) {
-            setMetars(result.response.data[0].METAR);
-        }));
-        
-        (async () => {
-            let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== 'granted') {
-                Alert.alert('Location Access Needed for Best Functionality');
-                return;
-            }
-
-            setLoading(true);
-            let location = await Location.getCurrentPositionAsync({});
-            setLocation(location);
-            goToOrigin();
-            setLoading(false);
-		})();
+        getData();
+        // getLocation();
 	}, []);
 
     return(
@@ -115,47 +135,15 @@ export default function HomeScreen({ navigation }) {
                         latitudeDelta: 30,
                         longitudeDelta: 10,
                     }}
-                    onRegionChangeComplete={(region) => setRegion(region)}
+                    onRegionChangeComplete={(region) => {console.log(region); setRegion(region)}}
                     mapPadding={{ left: 6, right: 6, top: 0, bottom: 40 }}
                     maxZoomLevel={10}
                     rotateEnabled={false}
                 >
                 {metars ?
-                    metars.map((marker, index) => {
-                        if (marker.hasOwnProperty('longitude') && marker.hasOwnProperty('latitude')) {
-                            if (region.longitudeDelta >= 50 && region.latitudeDelta >= 100) {
-                                console.log("Level 1");
-                                if (level_1_airports.hasOwnProperty(marker.station_id[0])) {
-                                    return <Marker key={index} index={index} marker={marker} />
-                                }
-                            }
-                            else if (
-                                (marker.latitude[0] <= region.latitude + region.latitudeDelta) && (marker.latitude[0] >= region.latitude - region.latitudeDelta)
-                                && (marker.longitude[0] <= region.longitude + region.longitudeDelta) && (marker.longitude[0] >= region.longitude - region.longitudeDelta)
-                            ) {
-                                if (region.longitudeDelta >= 50 && region.latitudeDelta >= 70) {
-                                    console.log("Level 2");
-                                    if (level_2_airports.hasOwnProperty(marker.station_id[0])) {
-                                        return <Marker key={index} index={index} marker={marker} />
-                                    }
-                                }
-                                else if (region.longitudeDelta >= 20 && region.latitudeDelta >= 30) {
-                                    console.log("Level 3");
-                                    if (level_3_airports.hasOwnProperty(marker.station_id[0])) {
-                                        return <Marker key={index} index={index} marker={marker} />
-                                    }
-                                }
-                                else if (region.longitudeDelta >= 10 && region.latitudeDelta >= 15) {
-                                    console.log("Level 4");
-                                    if (level_4_airports.hasOwnProperty(marker.station_id[0])) {
-                                        return <Marker key={index} index={index} marker={marker} />
-                                    }
-                                }
-                                else {
-                                    return <Marker key={index} index={index} marker={marker} />
-                                }
-                            }
-                        }
+                    metars.map((elem, index) => {
+                        const marker = markerFilters(elem, index, region);
+                        return marker ? marker : null;
                     })
                     : null
                 }
