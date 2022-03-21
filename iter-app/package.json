@@ -17,6 +17,7 @@
     ]
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "~1.15.0",
     "@react-navigation/native": "^6.0.8",
     "@react-navigation/native-stack": "^6.5.0",
     "airport-codes": "^1.0.2",
@@ -34,7 +35,7 @@
     "react-native-screens": "~3.10.1",
     "react-native-web": "0.17.1",
     "react-native-xml2js": "^1.0.3",
-    "@react-native-async-storage/async-storage": "~1.15.0"
+    "usehooks-ts": "^2.4.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

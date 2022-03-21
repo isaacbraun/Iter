@@ -1,3 +1,4 @@
+import React, { useState, useEffect, useRef } from 'react';
 import { level_1_airports, level_2_airports, level_3_airports, level_4_airports } from "../components/Values";
 import Marker from '../components/Marker';
 
@@ -85,4 +86,19 @@ export function markerFilters(marker, index, region) {
     } else {
         return null;
     }
-}
+};
+
+export function hoursDisplay(date, timelineValue) {
+    const dayAbbr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+    let month = dayAbbr[date.getMonth()];
+    let day = date.getDate();
+    let hours = timelineValue;
+
+    if (hours >= 24) {
+        day = day + 1;
+        hours = hours - 24;
+    }
+
+    return `${month}. ${day} ${hours}:00`;
+};

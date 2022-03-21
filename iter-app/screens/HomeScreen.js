@@ -13,46 +13,31 @@ import * as Location from 'expo-location';
 import { Feather, FontAwesome } from '@expo/vector-icons'; 
 import { Slider } from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useInterval } from 'usehooks-ts'
 
 import { Colors } from '../components/Values';
-import { markerFilters } from '../components/Tools';
+import { markerFilters, hoursDisplay } from '../components/Tools';
 import { HomeScreenStyles as styles } from '../styles';
 
-export default function HomeScreen({ navigation }) {
-    let timer;
-
-    const playTimeline = () => {
-        if (!timer) {
-            setTimelineState(true);
-            let newVal = timelineValue;
-            if (newVal < timelineMax) {
-                newVal++;
-                setTimelineValue(newVal);
-            }
-            timer = setInterval(() => {
-                if (newVal < timelineMax) {
-                    newVal++;
-                    setTimelineValue(newVal);
-                } else {
-                    stopTimeline();
-                }
-            }, 1000);
-        }
-    };
-    
-    const stopTimeline = () => {
-        clearInterval(timer);
-        timer = null;
-        setTimelineState(false);
-    };
-    const date = new Date()
-    const hours = date.getHours();
-    
+export default function HomeScreen({ navigation }) {    
     const [searchValue, setSearchValue] = useState(null);
+
+    const date = new Date();
+    const hours = date.getHours();  
     const [timelineMin, setTimelineMin] = useState(hours);
     const [timelineMax, setTimelineMax] = useState(hours + 24);
     const [timelineValue, setTimelineValue] = useState(hours);
     const [timelineState, setTimelineState] = useState(false);
+    const [timelineDelay, setTimelineDelay] = useState(1000);
+
+    useInterval(() => {
+        let newVal = timelineValue + 1;
+        if (newVal < timelineMax) {
+            setTimelineValue(newVal);
+        } else {
+            setTimelineState(false);
+        }
+    }, timelineState ? timelineDelay : null);
 
     const mapRef = useRef(null);
 
@@ -192,7 +177,7 @@ export default function HomeScreen({ navigation }) {
             <View style={styles.timelineContainer}>
                 <Pressable
                     style={[styles.button, styles.play]}
-                    // onPress={!timelineState ? playTimeline : stopTimeline}
+                    onPress={setTimelineState(!timelineState)}
                 >
                     { !timelineState ?
                         <FontAwesome name="play" size={24} color={ Colors.blue } />
@@ -222,7 +207,7 @@ export default function HomeScreen({ navigation }) {
                     />
                 </View>
                 <View style={styles.timeContainer}>
-                    <Text style={styles.time}>{timelineValue}</Text>
+                    <Text style={styles.time}>{hoursDisplay(date, timelineValue)}</Text>
                 </View>
             </View>
         </View>
