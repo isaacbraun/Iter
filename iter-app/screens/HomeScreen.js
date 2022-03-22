@@ -13,32 +13,33 @@ import * as Location from 'expo-location';
 import { Feather, FontAwesome } from '@expo/vector-icons'; 
 import { Slider } from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useInterval } from 'usehooks-ts'
+import { useInterval } from 'usehooks-ts';
 
 import { Colors } from '../components/Values';
-import { markerFilters, hoursDisplay } from '../components/Tools';
+import { goToOrigin, markerFilters, hoursDisplay } from '../components/Tools';
 import { HomeScreenStyles as styles } from '../styles';
 
 export default function HomeScreen({ navigation }) {    
     const [searchValue, setSearchValue] = useState(null);
 
+    // Timeline Variables and Functions
     const date = new Date();
     const hours = date.getHours();  
     const [timelineMin, setTimelineMin] = useState(hours);
     const [timelineMax, setTimelineMax] = useState(hours + 24);
     const [timelineValue, setTimelineValue] = useState(hours);
     const [timelineState, setTimelineState] = useState(false);
-    const [timelineDelay, setTimelineDelay] = useState(1000);
 
     useInterval(() => {
         let newVal = timelineValue + 1;
-        if (newVal < timelineMax) {
+        if (newVal <= timelineMax) {
             setTimelineValue(newVal);
         } else {
             setTimelineState(false);
         }
-    }, timelineState ? timelineDelay : null);
+    }, timelineState ? 800 : null);
 
+    // Map Variables and Functions
     const mapRef = useRef(null);
 
     const [location, setLocation] = useState(null);
@@ -51,19 +52,6 @@ export default function HomeScreen({ navigation }) {
     });
 
     const [metars, setMetars] = useState(null);
-
-    // Animate Map to User Location or Centerpoint if Not Granted
-    const goToOrigin = () => {
-        mapRef.current.animateToRegion(
-            {
-                latitude: location ? location.coords.latitude : 47.116,
-                longitude: location ? location.coords.longitude : -101.299,
-                latitudeDelta: 1,
-                longitudeDelta: 0.5,
-            },
-            1000
-        );
-    };
 
     // Get Metar and Taf data from Storage
     const getData = async () => {
@@ -163,7 +151,7 @@ export default function HomeScreen({ navigation }) {
             <View style={styles.buttonsContainer}>
                 <Pressable
                     style={[styles.button, {marginBottom: 15}]}
-                    onPress={goToOrigin} // ORIGIN
+                    onPress={() => goToOrigin(mapRef, location)} // ORIGIN
                 >
                     <Feather name="navigation" size={24} color={ Colors.blue } />
                 </Pressable>
@@ -177,7 +165,7 @@ export default function HomeScreen({ navigation }) {
             <View style={styles.timelineContainer}>
                 <Pressable
                     style={[styles.button, styles.play]}
-                    onPress={setTimelineState(!timelineState)}
+                    onPress={ () => setTimelineState(!timelineState)}
                 >
                     { !timelineState ?
                         <FontAwesome name="play" size={24} color={ Colors.blue } />
