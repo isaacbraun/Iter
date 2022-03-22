@@ -16,7 +16,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useInterval } from 'usehooks-ts';
 
 import { Colors } from '../components/Values';
-import { goToOrigin, markerFilters, hoursDisplay } from '../components/Tools';
+import { hoursDisplay } from '../components/Tools';
+import { goToOrigin, markerFilters } from '../components/HomeScreenFunctions';
 import { HomeScreenStyles as styles } from '../styles';
 
 export default function HomeScreen({ navigation }) {    
@@ -114,7 +115,7 @@ export default function HomeScreen({ navigation }) {
                 >
                 {metars ?
                     metars.map((elem, index) => {
-                        const marker = markerFilters(elem, index, region, date < timelineValue ? timelineValue : null);
+                        const marker = markerFilters(elem, index, region, date.getHours() <= timelineValue ? timelineValue : null);
                         return marker ? marker : null;
                     })
                     : null

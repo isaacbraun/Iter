@@ -5,14 +5,55 @@ import {
     Image,
 } from 'react-native';
 import { Colors, imageList, barbList, pennantList } from '../components/Values';
+import { dateFormatter } from './Tools';
 import { StationModelStyles as styles } from '../styles';
 
 export default function StationModel(props) {
-    // console.log(props.marker.taf.forecast)
+    const date = dateFormatter(new Date(), props.hour);
+    let taf = null;
+
+    if (props.marker.hasOwnProperty("taf")) {
+        for (const item of props.marker.taf.forecast) {
+            const timeFrom = new Date(item.fcst_time_from[0]);
+            const timeTo = new Date(item.fcst_time_to[0]);
+            if (timeFrom.getDate() <= date.day && timeTo.getDate() >= date.day) {
+                if (timeFrom.getHours() <= date.hour && timeTo.getHours() >= date.hour) {
+                    if (item.hasOwnProperty("time_becoming")) {
+                        if (new Date(item.time_becoming[0]).getHours() > date.hour) {
+                            break;
+                        }
+                    }
+                    taf = item;
+                    // if (item.hasOwnProperty("temperature")) {
+                    //     console.log(item);
+                    // }
+                }
+            }
+        }
+    }
+
+    // change_indicator
+    // time_becoming
+    // wind_dir_degrees
+    // wind_speed_kt
+    // wind_gust_kt
+    // visibility_statute_mi
+    // altim_in_hg
+    // wx_string
+    // sky_condition
+    // temperature
+    //     valid_time
+    //     max_temp_c
+    //     min_temp_c
+
 
     let temp = null;
     if (props.marker.hasOwnProperty('temp_c')) {
+        // if (taf && taf.hasOwnProperty('temperature')) {
+        //     temp = Math.round((taf.temperaturemax_temp_c * 9/5) + 32);
+        // } else {
         temp = Math.round((props.marker.temp_c * 9/5) + 32);
+        // }
     }
 
     let dew = null;
@@ -22,14 +63,24 @@ export default function StationModel(props) {
 
     let wxImage = null;
     if (props.marker.hasOwnProperty('wx_string')) {
-        const wxString = String(props.marker.wx_string);
+        let wxString = null;
+        if (taf && taf.hasOwnProperty('wx_string')) {
+            wxString = String(taf.wx_string[0]);
+        } else {
+           wxString = String(props.marker.wx_string);
+        }
         const [wx, precip] = wxString.split(/\s+(.*)/);
         wxImage = imageList[wx];
     }
 
     let alt = null;
     if (props.marker.hasOwnProperty('altim_in_hg')) {
-        const altString = Number(props.marker.altim_in_hg).toFixed(2).toString();
+        let altString = null;
+        if (taf && taf.hasOwnProperty('altim_in_hg')) {
+            altString = Number(taf.altim_in_hg[0]).toFixed(2).toString();
+        } else {
+            altString = Number(props.marker.altim_in_hg).toFixed(2).toString();
+        }
         alt = altString.slice(-4,-3) + altString.slice(-2);
     }    
 
@@ -37,7 +88,12 @@ export default function StationModel(props) {
     let cover = null;
     let ceiling = null;
     if (props.marker.hasOwnProperty("sky_condition")) {
-        skyCondition = props.marker.sky_condition[0]["$"];
+        if (taf && taf.hasOwnProperty('sky_condition')) {
+            skyCondition = taf.sky_condition[0]["$"];
+        } else {
+            skyCondition = props.marker.sky_condition[0]["$"];
+        }
+
         cover = skyCondition.sky_cover;
 
         if (skyCondition.hasOwnProperty("cloud_base_ft_agl")) {
