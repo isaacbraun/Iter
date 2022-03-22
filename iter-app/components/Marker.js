@@ -7,7 +7,7 @@ import { Marker, Callout } from 'react-native-maps';
 import StationModel from '../components/StationModel';
 import { HomeScreenStyles as styles } from '../styles';
 
-export default function Maker(props) {
+export default function CustomMarker(props) {
     return (
         <Marker
             coordinate={{
@@ -19,7 +19,8 @@ export default function Maker(props) {
             tracksViewChanges={false}
         >
             <StationModel
-                {...props.marker}
+                marker={props.marker}
+                hour={props.hour}
             />
             <Callout>
                 <View style={styles.callout}>

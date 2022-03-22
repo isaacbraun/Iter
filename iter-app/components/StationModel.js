@@ -8,36 +8,36 @@ import { Colors, imageList, barbList, pennantList } from '../components/Values';
 import { StationModelStyles as styles } from '../styles';
 
 export default function StationModel(props) {
+    // console.log(props.marker.taf.forecast)
+
     let temp = null;
-    if (props.hasOwnProperty('temp_c')) {
-        temp = Math.round((props.temp_c * 9/5) + 32);
+    if (props.marker.hasOwnProperty('temp_c')) {
+        temp = Math.round((props.marker.temp_c * 9/5) + 32);
     }
 
     let dew = null;
-    if (props.hasOwnProperty('dewpoint_c')) {
-        dew = Math.round((props.dewpoint_c * 9/5) + 32);
+    if (props.marker.hasOwnProperty('dewpoint_c')) {
+        dew = Math.round((props.marker.dewpoint_c * 9/5) + 32);
     }
 
     let wxImage = null;
-    if (props.hasOwnProperty('wx_string')) {
-        const wxString = String(props.wx_string);
-        // console.log(wxString);
+    if (props.marker.hasOwnProperty('wx_string')) {
+        const wxString = String(props.marker.wx_string);
         const [wx, precip] = wxString.split(/\s+(.*)/);
         wxImage = imageList[wx];
-        // console.log(wx)
     }
 
     let alt = null;
-    if (props.hasOwnProperty('altim_in_hg')) {
-        const altString = Number(props.altim_in_hg).toFixed(2).toString();
+    if (props.marker.hasOwnProperty('altim_in_hg')) {
+        const altString = Number(props.marker.altim_in_hg).toFixed(2).toString();
         alt = altString.slice(-4,-3) + altString.slice(-2);
     }    
 
     let skyCondition = null;
     let cover = null;
     let ceiling = null;
-    if (props.hasOwnProperty("sky_condition")) {
-        skyCondition = props.sky_condition[0]["$"];
+    if (props.marker.hasOwnProperty("sky_condition")) {
+        skyCondition = props.marker.sky_condition[0]["$"];
         cover = skyCondition.sky_cover;
 
         if (skyCondition.hasOwnProperty("cloud_base_ft_agl")) {
@@ -46,8 +46,8 @@ export default function StationModel(props) {
     }
 
     let circleColor = null;
-    if (props.hasOwnProperty("flight_category")) {
-        switch (props.flight_category[0]) {
+    if (props.marker.hasOwnProperty("flight_category")) {
+        switch (props.marker.flight_category[0]) {
             case 'MVFR':
                 circleColor = Colors.blue;
                 break;
@@ -89,8 +89,8 @@ export default function StationModel(props) {
     let speed = null;
     let rightPadding = 10;
     let leftPadding = 10;
-    if (props.hasOwnProperty('wind_speed_kt') && props.wind_speed_kt > 0) {
-        direction = Number(props.wind_dir_degrees);
+    if (props.marker.hasOwnProperty('wind_speed_kt') && props.marker.wind_speed_kt > 0) {
+        direction = Number(props.marker.wind_dir_degrees);
         directionString = String(direction) + "deg";
         
         // Set padding left/right regarding degree
@@ -101,12 +101,12 @@ export default function StationModel(props) {
             leftPadding = 30;
         }
 
-        speed = Math.ceil(props.wind_speed_kt / 5) * 5;
+        speed = Math.ceil(props.marker.wind_speed_kt / 5) * 5;
     }
 
     let gust = null;
-    if (props.hasOwnProperty('wind_gust_kt')) {
-        gust = Math.ceil(props.wind_gust_kt / 5) * 5
+    if (props.marker.hasOwnProperty('wind_gust_kt')) {
+        gust = Math.ceil(props.marker.wind_gust_kt / 5) * 5
     }
 
     return (
@@ -114,10 +114,10 @@ export default function StationModel(props) {
             <View style={[styles.left, {paddingRight: leftPadding}]}>
                 <Text style={[styles.temp, styles.text]}>{temp}</Text>
                 <View style={styles.horizontal}>
-                    {props.hasOwnProperty('visibility_statute_mi') ?
-                        <Text style={[styles.vis, styles.text]}>{Number(props.visibility_statute_mi).toFixed(1)}</Text> : null
+                    {props.marker.hasOwnProperty('visibility_statute_mi') ?
+                        <Text style={[styles.vis, styles.text]}>{Number(props.marker.visibility_statute_mi).toFixed(1)}</Text> : null
                     }
-                    { props.hasOwnProperty('wx_string') ?
+                    { props.marker.hasOwnProperty('wx_string') ?
                         <Image style={styles.wx} source={wxImage}/> : null
                     }
                 </View>
@@ -138,7 +138,7 @@ export default function StationModel(props) {
                         <Text style={styles.missing}>M</Text>
                     }
                 </View>
-                { props.wind_speed_kt > 0 ?
+                { props.marker.wind_speed_kt > 0 ?
                     <View style={[
                         styles.windbarbContainer,
                         {transform: [
@@ -178,7 +178,7 @@ export default function StationModel(props) {
                     <Text style={[styles.ceiling, styles.text]}>{ceiling}</Text>
                     : null
                 }
-                <Text style={[styles.id, styles.text]}>{props.station_id[0]}</Text>
+                <Text style={[styles.id, styles.text]}>{props.marker.station_id[0]}</Text>
             </View>
         </View>
     );
