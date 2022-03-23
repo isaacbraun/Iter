@@ -103,7 +103,7 @@ export default function DetailedViewScreen({ route, navigation }) {
 
                         {/* Taf Decoded */}
                         { data.hasOwnProperty("taf") ?
-                            <View style={styles.forecast}>
+                            <View>
                                 <Text style={styles.header}>TAF Decoded</Text>
                                 <Text style={styles.text}>Issue Time: {dateString(new Date(data.taf.issue_time[0]))}</Text>
                                 <Text style={styles.text}>Bulletin Time: {dateString(new Date(data.taf.bulletin_time[0]))}</Text>
@@ -116,7 +116,7 @@ export default function DetailedViewScreen({ route, navigation }) {
                                 { data.taf.forecast.map((item, index) => {
                                     console.log(item.temperature);
                                     return (
-                                        <View key={index}>
+                                        <View key={index} style={styles.forecast}>
                                             <Text style={styles.text}>Forecast Time From: {dateString(new Date(item.fcst_time_from[0]))}</Text>
                                             <Text style={styles.text}>Forecast Time To: {dateString(new Date(item.fcst_time_to[0]))}</Text>
                                             { item.hasOwnProperty('change_indicator') ?
