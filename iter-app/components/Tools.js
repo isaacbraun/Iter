@@ -1,5 +1,3 @@
-import { Colors } from "./Values";
-
 // Get Metars from AWC
 export function getAllMetars() {
     let fetchString = "https://www.aviationweather.gov/adds/dataserver_current/current/metars.cache.xml";
@@ -45,37 +43,3 @@ export function hoursDisplay(date, timelineValue) {
 
     return `${formatted.month}. ${formatted.day} ${ formatted.hour < 10 ? `0${formatted.hour}` : formatted.hour}:00`;
 };
-
-export function flightCategoryColor(category) {
-    switch (category) {
-        case 'LIFR':
-            return Colors.purple;
-        case 'IFR':
-            return Colors.red;
-        case 'MVFR':
-            return Colors.blue;
-        case 'VFR':
-            return Colors.green;
-        default:
-            return null;
-    }
-}
-
-export function flightCategoryCalc(ceiling, vis) {
-    // LIFR
-    if (ceiling < 500 || vis < 1) {
-        return "LIFR";
-    }
-    // IFR
-    else if ((ceiling >= 500 && ceiling < 1000) || (vis >= 1 && vis < 3)) {
-        return "IFR";
-    }
-    // MVFR
-    else if ((ceiling >= 1000 && ceiling < 3000) || (vis >= 3 && vis < 5)) {
-        return "MVFR";
-    }
-    // VFR
-    else if ((ceiling >= 3000 && vis >= 5)) {
-        return "VFR";
-    }
-}
