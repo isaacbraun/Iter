@@ -7,25 +7,28 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         paddingTop: 40,
     },
-    text: {
-        color: Colors.text,
-        fontSize: 15,
-        marginBottom: 3,
+    inner: {
+        margin: 30,
     },
+    container: {
+        marginBottom: 15,
+    },
+    forecast: {
+        marginLeft: 5,
+        marginBottom: 5,
+    },
+
     header: {
         color: Colors.text,
         fontSize: 16,
         fontWeight: 'bold',
         marginBottom: 3,
     },
-
-    inner: {
-        margin: 30,
-    },
-
-    container: {
-        marginBottom: 15,
-    },
+    text: {
+        color: Colors.text,
+        fontSize: 15,
+        marginBottom: 3,
+    },    
 });
 
 export default styles;

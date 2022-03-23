@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Text,
     View,
@@ -9,6 +9,8 @@ import StationModel from '../components/StationModel';
 import { MarkerStyles as styles } from '../styles';
 
 export default function CustomMarker(props) {
+    const [tafState, setTafState] = useState(false);
+
     return (
         <Marker
             coordinate={{
@@ -26,7 +28,18 @@ export default function CustomMarker(props) {
             <Callout>
                 <View style={styles.callout}>
                     <Text style={styles.station}>{props.marker.station_id[0]}</Text>
-                    <Text>{props.marker.raw_text[0]}</Text>
+                    <Text style={styles.text}>METAR: {props.marker.raw_text[0]}</Text>
+
+                    {/* { props.marker.hasOwnProperty('taf') ?
+                        !tafState ?
+                            <Pressable style={styles.button} onPress={() => setTafState(!tafState)}>
+                                <Text style={styles.buttonText}>Show TAF</Text>
+                            </Pressable>
+                        :
+                        <Text style={styles.text}>TAF: {props.marker.taf.raw_text[0]}</Text>
+                        : null
+                    } */}
+                    
                     <Pressable style={styles.button} onPress={() => props.navigation.navigate('DetailedView', { data: props.marker })}>
                         <Text style={styles.buttonText}>Decoded Details</Text>
                     </Pressable>

@@ -6,7 +6,10 @@ const ScreenWidth = Dimensions.get("window").width;
 const styles = StyleSheet.create({
     station: {
         fontWeight: 'bold',
-        marginBottom: 10,
+        marginBottom: 5,
+    },
+    text: {
+        marginBottom: 5,
     },
     callout: {
         width: ScreenWidth - 100,
