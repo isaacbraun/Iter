@@ -15,6 +15,12 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: 'bold',
     },
+    taf: {
+        color: Colors.green,
+    },
+    windTaf: {
+        backgroundColor: Colors.green,
+    },
     left: {
         display: 'flex',
         flexDirection: 'column',
