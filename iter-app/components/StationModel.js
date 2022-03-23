@@ -4,8 +4,8 @@ import {
     View,
     Image,
 } from 'react-native';
-import { Colors, imageList, barbList, pennantList } from '../components/Values';
-import { dateFormatter } from './Tools';
+import { imageList, barbList, pennantList } from '../components/Values';
+import { dateFormatter, flightCategoryCalc, flightCategoryColor } from './Tools';
 import { StationModelStyles as styles } from '../styles';
 
 export default function StationModel(props) {
@@ -102,18 +102,15 @@ export default function StationModel(props) {
     }
 
     let circleColor = null;
+    let category = null;
     if (props.marker.hasOwnProperty("flight_category")) {
-        switch (props.marker.flight_category[0]) {
-            case 'MVFR':
-                circleColor = Colors.blue;
-                break;
-            case 'IFR':
-                circleColor = Colors.red;
-                break;
-            case 'LIFR':
-                circleColor = Colors.purple;
-                break;
-        }
+        category = props.marker.flight_category[0];
+    }
+    if (taf) {
+        category = flightCategoryCalc(ceiling, vis);
+    }
+    if (category) {
+        circleColor = flightCategoryColor(category);
     }
 
     let fill = null;
