@@ -8,6 +8,7 @@ import {
     Keyboard
 } from 'react-native';
 import { FlightPlanStyles as styles } from '../styles';
+import Navbar from '../components/Navbar';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { Colors } from '../components/Values';
 
@@ -33,23 +34,7 @@ export default function FlightPlanScreen({ navigation }) {
                 <View style={styles.inner}>
 
                     {/* Navbar */}
-                    <View style={styles.navbar}>
-                        <View style={styles.navbarInner}>
-                            <Pressable
-                                style={[styles.button, styles.navbarButton]}
-                                onPress={() => navigation.navigate('Home')}
-                            >
-                                <Ionicons name="ios-arrow-back" size={24} color={Colors.blue} />
-                            </Pressable>
-                            <Text style={styles.navbarText}>Chart Paths</Text>
-                            <Pressable
-                                style={[styles.button, styles.navbarButton]}
-                                onPress={() => navigation.navigate('Settings')}
-                            >
-                                <Feather name="menu" size={24} color={ Colors.text } />
-                            </Pressable>
-                        </View>
-                    </View>
+                    <Navbar title={"Chart Paths"} navigation={navigation} />
 
                     {/* Path Toggle Switch */}
                     <View style={styles.pathSwitch}>

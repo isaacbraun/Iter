@@ -9,21 +9,22 @@ export class Decoder {
     }
 
     taf(hour) {
-        const date = dateFormatter(new Date(), hour);
-        
-        if (this.data.hasOwnProperty("taf")) {
-            for (const item of this.data.taf.forecast) {
-                const timeFrom = new Date(item.fcst_time_from[0]);
-                const timeTo = new Date(item.fcst_time_to[0]);
-                console.log(timeFrom, date, timeTo);
-                if (timeFrom.getUTCDate() <= date.day && timeTo.getUTCDate() >= date.day) {
-                    if (timeFrom.getUTCHours() <= date.hour && timeTo.getUTCHours() >= date.hour) {
-                        if (item.hasOwnProperty("time_becoming")) {
-                            if (new Date(item.time_becoming[0]).getHours() <= date.hour) {
+        if (hour) {
+            const date = dateFormatter(new Date(), hour);
+            
+            if (this.data.hasOwnProperty("taf")) {
+                for (const item of this.data.taf.forecast) {
+                    const timeFrom = new Date(item.fcst_time_from[0]);
+                    const timeTo = new Date(item.fcst_time_to[0]);
+                    if (timeFrom.getUTCDate() <= date.day && timeTo.getUTCDate() >= date.day) {
+                        if (timeFrom.getUTCHours() <= date.hour && timeTo.getUTCHours() >= date.hour) {
+                            if (item.hasOwnProperty("time_becoming")) {
+                                if (new Date(item.time_becoming[0]).getHours() <= date.hour) {
+                                    return item;
+                                }
+                            } else {
                                 return item;
                             }
-                        } else {
-                            return item;
                         }
                     }
                 }
