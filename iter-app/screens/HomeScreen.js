@@ -115,7 +115,7 @@ export default function HomeScreen({ navigation }) {
                 >
                 {metars ?
                     metars.map((elem, index) => {
-                        const marker = markerFilters(elem, index, region, hours < timelineValue ? timelineValue : null);
+                        const marker = markerFilters(elem, index, region, hours < timelineValue ? timelineValue : null, navigation);
                         return marker ? marker : null;
                     })
                     : null

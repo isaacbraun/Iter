@@ -3,7 +3,7 @@ import react, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { HomeScreen, FlightPlanScreen, SettingsScreen} from './screens';
+import { HomeScreen, FlightPlanScreen, SettingsScreen, DetailedViewScreen } from './screens';
 import { getAllMetars, getAllTafs } from './components/Tools';
 import airportData from './assets/airportData.json';
 
@@ -70,6 +70,7 @@ export default function App() {
 				<Stack.Screen name="Home" component={HomeScreen} />
 				<Stack.Screen name="FlightPlan" component={FlightPlanScreen} />
 				<Stack.Screen name="Settings" component={SettingsScreen} />
+				<Stack.Screen name="DetailedView" component={DetailedViewScreen} />
 			</Stack.Navigator>
 		</NavigationContainer>    
 	);

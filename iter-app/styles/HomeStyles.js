@@ -25,9 +25,6 @@ const styles = StyleSheet.create({
         height: Dimensions.get('window').height,
         zIndex: 0,
     },
-    callout: {
-        width: ScreenWidth - 100,
-    },
     
     searchContainer: {
         display: 'flex',

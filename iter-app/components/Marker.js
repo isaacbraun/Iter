@@ -1,11 +1,12 @@
 import React from 'react';
 import {
     Text,
-    View
+    View,
+    Pressable
 } from 'react-native';
 import { Marker, Callout } from 'react-native-maps';
 import StationModel from '../components/StationModel';
-import { HomeScreenStyles as styles } from '../styles';
+import { MarkerStyles as styles } from '../styles';
 
 export default function CustomMarker(props) {
     return (
@@ -24,8 +25,11 @@ export default function CustomMarker(props) {
             />
             <Callout>
                 <View style={styles.callout}>
-                    <Text style={{marginBottom: 10}}>{props.marker.station_id[0]}</Text>
+                    <Text style={styles.station}>{props.marker.station_id[0]}</Text>
                     <Text>{props.marker.raw_text[0]}</Text>
+                    <Pressable style={styles.button} onPress={() => props.navigation.navigate('DetailedView', { data: props.marker })}>
+                        <Text style={styles.buttonText}>View More Details</Text>
+                    </Pressable>
                 </View>
             </Callout>
         </Marker>
