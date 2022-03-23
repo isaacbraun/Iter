@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
     navbarText: {
         color: Colors.text,
         fontSize: 16,
+        fontWeight: 'bold',
     },
     navbarButton: {
         display: 'flex',

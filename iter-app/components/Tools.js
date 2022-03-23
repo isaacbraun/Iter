@@ -1,3 +1,5 @@
+import { dayAbbr } from "./Values";
+
 // Get Metars from AWC
 export function getAllMetars() {
     let fetchString = "https://www.aviationweather.gov/adds/dataserver_current/current/metars.cache.xml";
@@ -22,9 +24,7 @@ export function getAllTafs() {
     })
 };
 
-export function dateFormatter(date, hours) {
-    const dayAbbr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    
+export function dateFormatter(date, hours) {    
     let month = dayAbbr[date.getMonth()];
     let day = date.getDate();
     let hour = hours;

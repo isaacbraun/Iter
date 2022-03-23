@@ -8,6 +8,8 @@ export const Colors = {
     barb: "#383838",
 };
 
+export const dayAbbr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
 export const level_1_airports = [
     // Europe
     "LTFM",

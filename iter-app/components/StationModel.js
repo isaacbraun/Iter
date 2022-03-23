@@ -32,7 +32,6 @@ export default function StationModel(props) {
                         <Text style={[styles.vis, styles.text, visTaf ? styles.taf : null]}>{vis}</Text> : null
                     }
                     { wxImage != null ?
-                        // wxTaf ? styles.tafImage : null]
                         <Image style={styles.wx} source={wxImage}/> : null
                     }
                 </View>
