@@ -10,16 +10,14 @@ export class Decoder {
 
     taf(hour) {
         const date = dateFormatter(new Date(), hour);
-        // RE-EVAL LOGIC
-        if (this.data.hasOwnProperty("taf") && date.hour != hour) {
+        
+        if (this.data.hasOwnProperty("taf")) {
             for (const item of this.data.taf.forecast) {
                 const timeFrom = new Date(item.fcst_time_from[0]);
                 const timeTo = new Date(item.fcst_time_to[0]);
-                // console.log(timeFrom, date, timeTo);
-                if (timeFrom.getDate() <= date.day && timeTo.getDate() >= date.day) {
-                    // console.log("Day match");
-                    if (timeFrom.getHours() <= date.hour && timeTo.getHours() >= date.hour) {
-                        // console.log("Hour Match",timeFrom.getHours(), date.hour, timeTo.getHours())
+                console.log(timeFrom, date, timeTo);
+                if (timeFrom.getUTCDate() <= date.day && timeTo.getUTCDate() >= date.day) {
+                    if (timeFrom.getUTCHours() <= date.hour && timeTo.getUTCHours() >= date.hour) {
                         if (item.hasOwnProperty("time_becoming")) {
                             if (new Date(item.time_becoming[0]).getHours() <= date.hour) {
                                 return item;
@@ -49,6 +47,7 @@ export class Decoder {
     vis() {
         let vis = null;
         let visTaf = false;
+
         if (this.data.hasOwnProperty('visibility_statute_mi')) {
             vis = Number(this.data.visibility_statute_mi).toFixed(1);
         }
@@ -56,6 +55,7 @@ export class Decoder {
             vis = Number(this.taf.visibility_statute_mi[0]).toFixed(1);
             visTaf = true;
         }
+
         return [vis, visTaf];
     }
     
@@ -67,6 +67,7 @@ export class Decoder {
     
     wx() {
         let wxString = null;
+        
         if (this.data.hasOwnProperty('wx_string')) {
             wxString = String(this.data.wx_string);
         }
