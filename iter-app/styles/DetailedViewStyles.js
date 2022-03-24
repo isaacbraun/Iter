@@ -14,15 +14,16 @@ const styles = StyleSheet.create({
         marginBottom: 15,
     },
     forecast: {
-        marginLeft: 5,
-        marginBottom: 5,
+        marginLeft: 10,
+        marginBottom: 10,
     },
 
     header: {
-        color: Colors.text,
         fontSize: 16,
         fontWeight: 'bold',
-        marginBottom: 3,
+    },
+    subHeading: {
+        fontWeight: 'bold',
     },
     text: {
         color: Colors.text,
