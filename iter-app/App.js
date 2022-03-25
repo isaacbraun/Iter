@@ -10,12 +10,12 @@ import airportData from './assets/airportData.json';
 const Stack = createNativeStackNavigator();
 const converter = require('react-native-xml2js');
 
-async function storeObject(key, value) {
+async function storeArray(key, value) {
 	try {
 		const jsonValue = JSON.stringify(value)
 		await AsyncStorage.setItem(key, jsonValue)
 	} catch (e) {
-		console.log("Store Error: ", e);
+		console.log("Write Error: ", e);
 	}
 };
 
@@ -44,20 +44,21 @@ async function mergeData() {
 			merged.push(temp);
 		}
 		
-		storeObject("@Merged", merged);
+		storeArray("@Merged", merged);
 	} catch(e) {
 		console.log("Read Error: ", e);
 	}
 };
 
 export default function App() {
+	let merged = null;
 	useEffect(() => {
         getAllMetars().then(value => converter.parseString(value, function (err, result) {
-			storeObject("@Metars", appendClass(result.response.data[0].METAR));
+			storeArray("@Metars", appendClass(result.response.data[0].METAR));
 		}));
 
 		getAllTafs().then(value => converter.parseString(value, function (err, result) {
-			storeObject("@Tafs", result.response.data[0].TAF);
+			storeArray("@Tafs", result.response.data[0].TAF);
 		}));
 
 		mergeData();
