@@ -52,14 +52,16 @@ async function mergeData() {
 
 export default function App() {
 	let merged = null;
-	useEffect(() => {
-        getAllMetars().then(value => converter.parseString(value, function (err, result) {
-			storeArray("@Metars", appendClass(result.response.data[0].METAR));
-		}));
-
-		getAllTafs().then(value => converter.parseString(value, function (err, result) {
-			storeArray("@Tafs", result.response.data[0].TAF);
-		}));
+	useEffect(async () => {
+		await (async () => {
+			getAllMetars().then(value => converter.parseString(value, function (err, result) {
+				storeArray("@Metars", appendClass(result.response.data[0].METAR));
+			}));
+	
+			getAllTafs().then(value => converter.parseString(value, function (err, result) {
+				storeArray("@Tafs", result.response.data[0].TAF);
+			}));
+		})();
 
 		mergeData();
 	}, []);
