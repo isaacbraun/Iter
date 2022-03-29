@@ -22,7 +22,8 @@ async function storeArray(key, value) {
 function appendClass(data) {
 	return data.map((element) => ({
 		...element,
-		type: airportData[element.station_id] ? airportData[element.station_id].type : null
+		type: airportData[element.station_id] ? airportData[element.station_id].type : null,
+		iata: airportData[element.station_id] ? airportData[element.station_id].iata_code : null
 	}));
 };
 
