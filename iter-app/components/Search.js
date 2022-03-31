@@ -1,19 +1,19 @@
-import React, { useEffect, useState, ChangeEvent } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     View,
     TextInput,
 } from 'react-native';
-import { useAirportsAutocomplete, Suggestion } from '@kevinhle/use-airports-autocomplete';
+import { useAirportsAutocomplete } from '@kevinhle/use-airports-autocomplete';
 import styles from '../styles/SearchStyles';
 import { Colors } from '../components/Values';
 
 export default function Search(props) {
     const {
-      ready,
-      init,
-      value,
-      setValue,
-      suggestions: { data }
+        ready,
+        init,
+        value,
+        setValue,
+        suggestions: { data }
     } = useAirportsAutocomplete();
     const [suggestionsVisible, setSuggestionsVisible] = useState(false);
   
