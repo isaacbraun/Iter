@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import {
     Text,
@@ -28,4 +29,4 @@ export default function Navbar(props) {
             </View>
         </View>
     )
-};
+}

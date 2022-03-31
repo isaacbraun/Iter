@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import {
     Text,
@@ -13,8 +14,8 @@ export default function DetailedViewScreen({ route, navigation }) {
     const { data } = route.params;
     
     const metar = new Decoder(data, false, null);
-    const [metarCover, metarCeiling, skyTaf] = metar.sky();
-    const [metarDirection, metarSpeed, windTaf] = metar.wind();
+    const [metarCover, metarCeiling ] = metar.sky();
+    const [metarDirection, metarSpeed ] = metar.wind();
 
     const dateString = (date) => {
         return `${dayAbbr[date.getMonth()]}. ${date.getUTCDate()} ${ date.getUTCHours() < 10 ? `0${date.getUTCHours()}` : date.getUTCHours()}:${date.getUTCMinutes() < 10 ? `0${date.getUTCMinutes()}` : date.getUTCMinutes()}`;
@@ -49,13 +50,13 @@ export default function DetailedViewScreen({ route, navigation }) {
                         : null }
                         <Text style={styles.text}>Visibility: {metar.vis()[0]} statute mi.</Text>
                         <Text style={styles.text}>Altimeter: {metar.alt()[0]} in. Hg</Text>
-                        { data.hasOwnProperty('sea_level_pressure_mb') ?
+                        { Object.prototype.hasOwnProperty.call(data, 'sea_level_pressure_mb') ?
                             <Text style={styles.text}>Sea-level Pressure: {data.sea_level_pressure_mb[0]} mb</Text>
                         : null }
-                        { data.hasOwnProperty('quality_control_flags') ?
+                        { Object.prototype.hasOwnProperty.call(data, 'quality_control_flags') ?
                             <Text style={styles.text}>Quality Control Flags: {Object.keys(data.quality_control_flags[0]).map(elem => elem)}</Text>
                         : null }
-                        { data.hasOwnProperty('wx_string') ?
+                        { Object.prototype.hasOwnProperty.call(data, 'wx_string') ?
                             <Text style={styles.text}>Weather String: {data.wx_string[0]}</Text>
                         : null }
                         <Text style={styles.text}>Sky Cover: {metarCover}</Text>
@@ -63,50 +64,50 @@ export default function DetailedViewScreen({ route, navigation }) {
                             <Text style={styles.text}>Cloud Base: {metarCeiling} ft. AGL</Text>
                         : null }
                         <Text style={styles.text}>Flight Category: {data.flight_category[0]}</Text>
-                        { data.hasOwnProperty('three_hr_pressure_tendency_mb') ?
+                        { Object.prototype.hasOwnProperty.call(data, 'three_hr_pressure_tendency_mb') ?
                             <Text style={styles.text}>Three Hour Pressure Tendency: {data.three_hr_pressure_tendency_mb[0]} mb</Text>
                         : null }
-                        { data.hasOwnProperty('maxT_c') ?
+                        { Object.prototype.hasOwnProperty.call(data, 'maxT_c') ?
                             <Text style={styles.text}>Max Temperature: {data.maxT_c[0]}&deg;C</Text>
                         : null }
-                        { data.hasOwnProperty('minT_c') ?
+                        { Object.prototype.hasOwnProperty.call(data, 'minT_c') ?
                             <Text style={styles.text}>Min Temperature: {data.minT_c[0]}&deg;C</Text>
                         : null }
-                        { data.hasOwnProperty('maxT24hr_c ') ?
+                        { Object.prototype.hasOwnProperty.call(data, 'maxT24hr_c ') ?
                             <Text style={styles.text}>Max Past Temperature: {data.maxT24hr_c [0]}&deg;C</Text>
                         : null }
-                        { data.hasOwnProperty('minT24hr_c') ?
+                        { Object.prototype.hasOwnProperty.call(data, 'minT24hr_c') ?
                             <Text style={styles.text}>Min Past Temperature: {data.minT24hr_c[0]}&deg;C</Text>
                         : null }
-                        { data.hasOwnProperty('precip_in ') ?
+                        { Object.prototype.hasOwnProperty.call(data, 'precip_in ') ?
                             <Text style={styles.text}>Precipitation: {data.precip_in[0]} in.</Text>
                         : null }
-                        { data.hasOwnProperty('pcp3hr_in') ?
+                        { Object.prototype.hasOwnProperty.call(data, 'pcp3hr_in') ?
                             <Text style={styles.text}>Past 3hr Precipitation: {data.pcp3hr_in[0]} in.</Text>
                         : null }
-                        { data.hasOwnProperty('pcp6hr_in') ?
+                        { Object.prototype.hasOwnProperty.call(data, 'pcp6hr_in') ?
                             <Text style={styles.text}>Past 6hr Precipitation: {data.pcp6hr_in[0]} in.</Text>
                         : null }
-                        { data.hasOwnProperty('pcp24hr_in') ?
+                        { Object.prototype.hasOwnProperty.call(data, 'pcp24hr_in') ?
                             <Text style={styles.text}>Past 24hr Precipitation: {data.pcp24hr_in[0]} in.</Text>
                         : null }
-                        { data.hasOwnProperty('snow_in') ?
+                        { Object.prototype.hasOwnProperty.call(data, 'snow_in') ?
                             <Text style={styles.text}>Snow Depth: {data.snow_in[0]}& in.</Text>
                         : null }
-                        { data.hasOwnProperty('vert_vis_ft') ?
+                        { Object.prototype.hasOwnProperty.call(data, 'vert_vis_ft') ?
                             <Text style={styles.text}>Vertical Visibility: {data.vert_vis_ft[0]} ft.</Text>
                         : null }
                     </View>
 
                     {/* Taf Decoded */}
-                    { data.hasOwnProperty("taf") ?
+                    { Object.prototype.hasOwnProperty.call(data, "taf") ?
                     <View>
                         <Text style={[styles.text, styles.header]}>TAF Decoded</Text>
                         <Text style={styles.text}>Issue Time: {dateString(new Date(data.taf.issue_time[0]))}</Text>
                         <Text style={styles.text}>Bulletin Time: {dateString(new Date(data.taf.bulletin_time[0]))}</Text>
                         <Text style={styles.text}>Valid Time From: {dateString(new Date(data.taf.valid_time_from[0]))}</Text>
                         <Text style={styles.text}>Valid Time To: {dateString(new Date(data.taf.valid_time_to[0]))}</Text>
-                        { data.taf.hasOwnProperty('remarks') ?
+                        {Object.prototype.hasOwnProperty.call(data.taf, 'remarks') ?
                             <Text style={styles.text}>Remarks: {data.taf.remarks[0]}</Text>
                         : null }
                         <Text style={[styles.text, styles.subHeading, {marginTop: 2}]}>Forecasts:</Text>
@@ -116,88 +117,88 @@ export default function DetailedViewScreen({ route, navigation }) {
                                     <Text style={[styles.text, styles.subHeading]}>
                                         {`${dateString(new Date(item.fcst_time_from[0]))} - ${dateString(new Date(item.fcst_time_to[0]))}`}
                                     </Text>
-                                    { item.hasOwnProperty('change_indicator') ?
+                                    { Object.prototype.hasOwnProperty.call(item, 'change_indicator') ?
                                         <Text style={styles.text}>Change Indicator: {item.change_indicator[0]}</Text>
                                     : null }
-                                    { item.hasOwnProperty('time_becoming') ?
+                                    { Object.prototype.hasOwnProperty.call(item, 'time_becoming') ?
                                         <Text style={styles.text}>Time Becoming: {dateString(new Date(item.time_becoming[0]))}</Text>
                                     : null }
-                                    { item.hasOwnProperty('probability') ?
+                                    { Object.prototype.hasOwnProperty.call(item, 'probability') ?
                                         <Text style={styles.text}>Probability: {item.probability[0]}%</Text>
                                     : null }
-                                    { item.hasOwnProperty('wind_dir_degrees') ?
+                                    { Object.prototype.hasOwnProperty.call(item, 'wind_dir_degrees') ?
                                         <Text style={styles.text}>Wind Direction: {item.wind_dir_degrees[0]}&deg;</Text>
                                     : null }
-                                    { item.hasOwnProperty('wind_speed_kt') ?
+                                    { Object.prototype.hasOwnProperty.call(item, 'wind_speed_kt') ?
                                         <Text style={styles.text}>Wind Speed: {item.wind_speed_kt[0]} kts</Text>
                                     : null }
-                                    { item.hasOwnProperty('wind_gust_kt') ?
+                                    { Object.prototype.hasOwnProperty.call(item, 'wind_gust_kt') ?
                                         <Text style={styles.text}>Wind Gust: {item.wind_gust_kt[0]} kts</Text>
                                     : null }
-                                    { item.hasOwnProperty('wind_shear_hgt_ft_agl') ?
+                                    { Object.prototype.hasOwnProperty.call(item, 'wind_shear_hgt_ft_agl') ?
                                         <Text style={styles.text}>Wind Shear Height: {item.wind_shear_hgt_ft_agl[0]} ft. AGL</Text>
                                     : null }
-                                    { item.hasOwnProperty('wind_shear_dir_degrees') ?
+                                    { Object.prototype.hasOwnProperty.call(item, 'wind_shear_dir_degrees') ?
                                         <Text style={styles.text}>Wind Shear Direction: {item.wind_shear_dir_degrees[0]}&deg;</Text>
                                     : null }
-                                    { item.hasOwnProperty('wind_shear_speed_kt') ?
+                                    { Object.prototype.hasOwnProperty.call(item, 'wind_shear_speed_kt') ?
                                         <Text style={styles.text}>Wind Shear Speed: {item.wind_shear_speed_kt[0]} kts</Text>
                                     : null }
-                                    { item.hasOwnProperty('visibility_statute_mi') ?
+                                    { Object.prototype.hasOwnProperty.call(item, 'visibility_statute_mi') ?
                                         <Text style={styles.text}>Visibility: {item.visibility_statute_mi[0]} statue mi.</Text>
                                     : null }
-                                    { item.hasOwnProperty('altim_in_hg') ?
+                                    { Object.prototype.hasOwnProperty.call(item, 'altim_in_hg') ?
                                         <Text style={styles.text}>Altimeter: {item.altim_in_hg[0]} in. Hg</Text>
                                     : null }
-                                    { item.hasOwnProperty('vert_vis_ft') ?
+                                    { Object.prototype.hasOwnProperty.call(item, 'vert_vis_ft') ?
                                         <Text style={styles.text}>Vertical Visibility: {item.vert_vis_ft[0]} ft.</Text>
                                     : null }
-                                    { item.hasOwnProperty('wx_string') ?
+                                    { Object.prototype.hasOwnProperty.call(item, 'wx_string') ?
                                         <Text style={styles.text}>Weather String: {item.wx_string[0]}</Text>
                                     : null }
-                                    { item.hasOwnProperty('not_decoded') ?
+                                    { Object.prototype.hasOwnProperty.call(item, 'not_decoded') ?
                                         <Text style={styles.text}>Not Decoded: {item.not_decoded[0]}</Text>
                                     : null }
-                                    { item.hasOwnProperty('sky_conditon') ?
+                                    { Object.prototype.hasOwnProperty.call(item, 'sky_conditon') ?
                                         <Text style={styles.text}>Sky Cover: {item.sky_condition[0]["$"].sky_cover[0]}</Text>
                                     : null }
-                                    { item.hasOwnProperty('sky_conditon') ?
-                                        item.sky_condition[0]["$"].hasOwnProperty('cloud_base_ft_agl') ?
+                                    { Object.prototype.hasOwnProperty.call(item, 'sky_conditon') ?
+                                        Object.prototype.hasOwnProperty.call(item.sky_condition[0]["$"], 'cloud_base_ft_agl') ?
                                             <Text style={styles.text}>Cloud Base: {item.sky_condition[0]["$"].cloud_base_ft_agl[0]} ft. AGL</Text>
                                         : null
                                     : null }
-                                    { item.hasOwnProperty('sky_conditon') ?
-                                        item.sky_condition[0]["$"].hasOwnProperty('cloud_type') ?
+                                    { Object.prototype.hasOwnProperty.call(item, 'sky_conditon') ?
+                                        Object.prototype.hasOwnProperty.call(item.sky_condition[0]["$"], 'cloud_type') ?
                                             <Text style={styles.text}>Cloud Type: {item.sky_condition[0]["$"].cloud_type[0]}</Text>
                                         : null
                                     : null }
-                                    { item.hasOwnProperty('turbulence_condition') ?
+                                    { Object.prototype.hasOwnProperty.call(item, 'turbulence_condition') ?
                                         <Text style={styles.text}>Turbulence Intensity: {item.turbulence_condition[0]["$"].turbulence_intensity[0]}</Text>
                                     : null }
-                                    { item.hasOwnProperty('turbulence_condition') ?
-                                        item.turbulence_condition[0]["$"].hasOwnProperty('turbulence_min_alt_ft_agl') ?
+                                    { Object.prototype.hasOwnProperty.call(item.sky_condition[0]["$"], item, 'turbulence_condition') ?
+                                        Object.prototype.hasOwnProperty.call(item.turbulence_condition[0]["$"], 'turbulence_min_alt_ft_agl') ?
                                             <Text style={styles.text}>Turbulence Min Altitude: {item.turbulence_condition[0]["$"].turbulence_min_alt_ft_agl[0]} ft. AGL</Text>
                                         : null
                                     : null }
-                                    { item.hasOwnProperty('turbulence_condition') ?
-                                        item.turbulence_condition[0]["$"].hasOwnProperty('turbulence_max_alt_ft_agl') ?
+                                    { Object.prototype.hasOwnProperty.call(item, 'turbulence_condition') ?
+                                        Object.prototype.hasOwnProperty.call(item.turbulence_condition[0]["$"], 'turbulence_max_alt_ft_agl') ?
                                             <Text style={styles.text}>Turbulence Max Altitude: {item.turbulence_condition[0]["$"].turbulence_max_alt_ft_agl[0]} ft. AGL</Text>
                                         : null
                                     : null }
-                                    { item.hasOwnProperty('icing_condition') ?
+                                    { Object.prototype.hasOwnProperty.call(item, 'icing_condition') ?
                                         <Text style={styles.text}>Icing Intensity: {item.icing_condition[0]["$"].icing_intensity[0]}</Text>
                                     : null }
-                                    { item.hasOwnProperty('icing_condition') ?
-                                        item.icing_condition[0]["$"].hasOwnProperty('icing_min_alt_ft_agl') ?
+                                    { Object.prototype.hasOwnProperty.call(item, 'icing_condition') ?
+                                        Object.prototype.hasOwnProperty.call(item.icing_condition[0]["$"], 'icing_min_alt_ft_agl') ?
                                             <Text style={styles.text}>Icing Min Altitude: {item.icing_condition[0]["$"].icing_min_alt_ft_agl[0]} ft. AGL</Text>
                                         : null
                                     : null }
-                                    { item.hasOwnProperty('icing_condition') ?
-                                        item.icing_condition[0]["$"].hasOwnProperty('icing_max_alt_ft_agl') ?
+                                    { Object.prototype.hasOwnProperty.call(item, 'icing_condition') ?
+                                        Object.prototype.hasOwnProperty.call(item.icing_condition[0]["$"], 'icing_max_alt_ft_agl') ?
                                             <Text style={styles.text}>Icing Max Altitude: {item.icing_condition[0]["$"].icing_max_alt_ft_agl[0]} ft. AGL</Text>
                                         : null
                                     : null }
-                                    { item.hasOwnProperty('temperature') ?
+                                    { Object.prototype.hasOwnProperty.call(item, 'temperature') ?
                                         <View>
                                             <Text style={styles.text}>Temperature Valid Time: {dateString(new Date(item.temperature[0]))}</Text>
                                             <Text style={styles.text}>Surface Temperature: {item.temperature[1]}&deg;C</Text>
@@ -216,4 +217,4 @@ export default function DetailedViewScreen({ route, navigation }) {
             </ScrollView>
         </View>
     )
-};
+}

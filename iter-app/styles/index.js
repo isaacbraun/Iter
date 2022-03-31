@@ -5,3 +5,4 @@ export { default as StationModelStyles } from "./StationModelStyles";
 export { default as DetailedViewStyles } from "./DetailedViewStyles";
 export { default as MarkerStyles } from "./MarkerStyles";
 export { default as NavbarStyles } from "./NavbarStyles";
+export { default as SearchStyles } from "./SearchStyles";

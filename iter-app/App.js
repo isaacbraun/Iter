@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import react, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -8,16 +8,18 @@ import { getAllMetars, getAllTafs } from './components/Tools';
 import airportData from './assets/airportData.json';
 
 const Stack = createNativeStackNavigator();
+// eslint-disable-next-line no-undef
 const converter = require('react-native-xml2js');
 
 async function storeArray(key, value) {
 	try {
 		const jsonValue = JSON.stringify(value)
 		await AsyncStorage.setItem(key, jsonValue)
+		console.log("AHH");
 	} catch (e) {
 		console.log("Write Error: ", e);
 	}
-};
+}
 
 function appendClass(data) {
 	return data.map((element) => ({
@@ -25,7 +27,7 @@ function appendClass(data) {
 		type: airportData[element.station_id] ? airportData[element.station_id].type : null,
 		iata: airportData[element.station_id] ? airportData[element.station_id].iata_code : null
 	}));
-};
+}
 
 async function mergeData() {
 	try {
@@ -49,14 +51,13 @@ async function mergeData() {
 	} catch(e) {
 		console.log("Read Error: ", e);
 	}
-};
+}
 
 export default function App() {
 	const [tempMetars, setTempMetars] = useState(null);
 	const [tempTafs, setTempTafs] = useState(null);
 
-	useEffect(async () => {
-		console.log("AHH");
+	useEffect(() => {
 		const getData = async () => {
 			getAllMetars().then(value => converter.parseString(value, function (err, result) {
 				setTempMetars(result.response.data[0].METAR);
@@ -67,11 +68,11 @@ export default function App() {
 			}));
 		};
 
-		await getData();
+		getData();
 		storeArray("@Metars", appendClass(tempMetars));
 		storeArray("@Tafs", tempTafs);
 		mergeData();
-	}, []);
+	}, [tempMetars, tempTafs]);
 
 	return (
 		<NavigationContainer>

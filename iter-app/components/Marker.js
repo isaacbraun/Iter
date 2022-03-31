@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+/* eslint-disable react/prop-types */
+import React from 'react';
 import {
     Text,
     View,
@@ -9,8 +10,6 @@ import StationModel from '../components/StationModel';
 import { MarkerStyles as styles } from '../styles';
 
 export default function CustomMarker(props) {
-    const [tafState, setTafState] = useState(false);
-
     return (
         <Marker
             coordinate={{
@@ -36,4 +35,4 @@ export default function CustomMarker(props) {
             </Callout>
         </Marker>
     )
-};
+}

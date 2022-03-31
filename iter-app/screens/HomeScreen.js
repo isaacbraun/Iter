@@ -1,9 +1,9 @@
+/* eslint-disable react/prop-types */
 import React, { useState, useEffect, useRef } from 'react';
 import {
     Text,
     View,
     Pressable,
-    TextInput,
     Keyboard,
     Alert,
     TouchableWithoutFeedback,
@@ -17,17 +17,16 @@ import { useInterval } from 'usehooks-ts';
 
 import { Colors } from '../components/Values';
 import { hoursDisplay } from '../components/Tools';
+import Search from '../components/Search';
 import { goToOrigin, markerFilters } from '../components/HomeScreenFunctions';
 import { HomeScreenStyles as styles } from '../styles';
 
-export default function HomeScreen({ navigation }) {    
-    const [searchValue, setSearchValue] = useState(null);
-
+export default function HomeScreen({ navigation }) {
     // Timeline Variables and Functions
     const date = new Date();
     const hours = date.getHours();  
-    const [timelineMin, setTimelineMin] = useState(hours);
-    const [timelineMax, setTimelineMax] = useState(hours + 24);
+    const timelineMin = hours;
+    const timelineMax = hours + 24;
     const [timelineValue, setTimelineValue] = useState(hours);
     const [timelineState, setTimelineState] = useState(false);
 
@@ -65,6 +64,7 @@ export default function HomeScreen({ navigation }) {
     };
 
     // Request User Location Access and Animate Map to Location
+    // eslint-disable-next-line no-unused-vars
     const getLocation = async () => {
         let { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
@@ -94,7 +94,7 @@ export default function HomeScreen({ navigation }) {
         getData();
         console.log(metars);
         // getLocation();
-	}, []);
+	}, [metars]);
 
     return(
         <View style={styles.main}>
@@ -126,13 +126,14 @@ export default function HomeScreen({ navigation }) {
 
             {/* Search Bar + Menu Button */}
             <View style={styles.searchContainer}>
-                <TextInput
+                {/* <TextInput
                     style={styles.search}
                     placeholder="Search Airport or City"
                     placeholderTextColor={Colors.text}
                     value={searchValue}
                     onChangeText={setSearchValue}
-                />
+                /> */}
+                <Search />
                 <Pressable
                     style={styles.button}
                     onPress={() => navigation.navigate('Settings')}

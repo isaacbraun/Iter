@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 export const Colors = {
     background: "#fff",
     text: "#6F7371",
@@ -267,7 +268,7 @@ export const imageList = {
     "-DZ" : require('../assets/weather/-DZ.png'),
     "-DZRA" : require('../assets/weather/-DZRA.png'),
     "-FZDZ" : require('../assets/weather/-FZDZ.png'),
-    "-FZDZ" : require('../assets/weather/-FZDZ.png'),
+    // "-FZDZ" : require('../assets/weather/-FZDZ.png'),
     "-GR" : require('../assets/weather/-GR.png'),
     "-RA" : require('../assets/weather/-RA.png'),
     "-RASN" : require('../assets/weather/-RASN.png'),

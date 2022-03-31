@@ -12,13 +12,13 @@ export class Decoder {
         if (hour) {
             const date = dateFormatter(new Date(), hour);
             
-            if (this.data.hasOwnProperty("taf")) {
+            if (Object.prototype.hasOwnProperty.call(this.data, "taf")) {
                 for (const item of this.data.taf.forecast) {
                     const timeFrom = new Date(item.fcst_time_from[0]);
                     const timeTo = new Date(item.fcst_time_to[0]);
                     if (timeFrom.getUTCDate() <= date.day && timeTo.getUTCDate() >= date.day) {
                         if (timeFrom.getUTCHours() <= date.hour && timeTo.getUTCHours() >= date.hour) {
-                            if (item.hasOwnProperty("time_becoming")) {
+                            if (Object.prototype.hasOwnProperty.call(item, "time_becoming")) {
                                 if (new Date(item.time_becoming[0]).getHours() <= date.hour) {
                                     return item;
                                 }
@@ -35,11 +35,11 @@ export class Decoder {
     temp() {
         let temp = null;
         
-        if (this.data.hasOwnProperty('temp_c')) {
+        if (Object.prototype.hasOwnProperty.call(this.data, 'temp_c')) {
             temp = Math.round((this.data.temp_c * 9/5) + 32);
         }
-        if (this.taf && this.taf.hasOwnProperty('temperature')) {
-            temp = Math.round((taf.temperature[1] * 9/5) + 32);
+        if (this.taf && Object.prototype.hasOwnProperty.call(this.taf, 'temperature')) {
+            temp = Math.round((this.taf.temperature[1] * 9/5) + 32);
         }
 
         return temp;
@@ -49,10 +49,10 @@ export class Decoder {
         let vis = null;
         let visTaf = false;
 
-        if (this.data.hasOwnProperty('visibility_statute_mi')) {
+        if (Object.prototype.hasOwnProperty.call(this.data, 'visibility_statute_mi')) {
             vis = Number(this.data.visibility_statute_mi).toFixed(1);
         }
-        if (this.taf && this.taf.hasOwnProperty('visibility_statute_mi')) {
+        if (this.taf && Object.prototype.hasOwnProperty.call(this.taf, 'visibility_statute_mi')) {
             vis = Number(this.taf.visibility_statute_mi[0]).toFixed(1);
             visTaf = true;
         }
@@ -61,7 +61,7 @@ export class Decoder {
     }
     
     dew() {
-        if (this.data.hasOwnProperty('dewpoint_c')) {
+        if (Object.prototype.hasOwnProperty.call(this.data, 'dewpoint_c')) {
             return Math.round((this.data.dewpoint_c * 9/5) + 32);
         }
     }
@@ -69,13 +69,14 @@ export class Decoder {
     wx() {
         let wxString = null;
         
-        if (this.data.hasOwnProperty('wx_string')) {
+        if (Object.prototype.hasOwnProperty.call(this.data, 'wx_string')) {
             wxString = String(this.data.wx_string);
         }
-        if (this.taf && this.taf.hasOwnProperty('wx_string')) {
+        if (this.taf && Object.prototype.hasOwnProperty.call(this.taf, 'wx_string')) {
             wxString = String(this.taf.wx_string[0]);
         }   
         if (wxString) {
+            // eslint-disable-next-line no-unused-vars
             const [wx, precip] = wxString.split(/\s+(.*)/);
             return imageList[wx];
         }
@@ -90,10 +91,10 @@ export class Decoder {
             return altString.slice(-4,-3) + altString.slice(-2);
         };
 
-        if (this.data.hasOwnProperty('altim_in_hg')) {
+        if (Object.prototype.hasOwnProperty.call(this.data, 'altim_in_hg')) {
             alt = altHelper(this.data.altim_in_hg);
         }
-        if (this.taf && this.taf.hasOwnProperty('altim_in_hg')) {
+        if (this.taf && Object.prototype.hasOwnProperty.call(this.taf, 'altim_in_hg')) {
             alt = altHelper(this.taf.altim_in_hg[0]);
             altTaf = true;
         }
@@ -107,17 +108,17 @@ export class Decoder {
         let ceiling = null;
         let skyTaf = false;
 
-        if (this.data.hasOwnProperty("sky_condition")) {
+        if (Object.prototype.hasOwnProperty.call(this.data, "sky_condition")) {
             skyCondition = this.data.sky_condition[0]["$"];
         }
-        if (this.taf && this.taf.hasOwnProperty('sky_condition')) {
+        if (this.taf && Object.prototype.hasOwnProperty.call(this.taf, 'sky_condition')) {
             skyCondition = this.taf.sky_condition[0]["$"];
             skyTaf = true;
         }
         if (skyCondition) {
             cover = skyCondition.sky_cover;
 
-            if (skyCondition.hasOwnProperty("cloud_base_ft_agl")) {
+            if (Object.prototype.hasOwnProperty.call(skyCondition, "cloud_base_ft_agl")) {
                 ceiling = skyCondition.cloud_base_ft_agl;
             }
         }
@@ -162,7 +163,7 @@ export class Decoder {
     category(ceiling, vis) {
         let category = null;
 
-        if (this.data.hasOwnProperty("flight_category")) {
+        if (Object.prototype.hasOwnProperty.call(this.data, "flight_category")) {
             category = this.data.flight_category[0];
         }
         if (this.taf) {
@@ -197,12 +198,12 @@ export class Decoder {
         let speed = null;
         let windTaf = false;
 
-        if (this.data.hasOwnProperty('wind_speed_kt') && this.data.wind_speed_kt > 0) {
+        if (Object.prototype.hasOwnProperty.call(this.data, 'wind_speed_kt') && this.data.wind_speed_kt > 0) {
             direction = Number(this.data.wind_dir_degrees);
             speed = Math.ceil(this.data.wind_speed_kt / 5) * 5;
         }
 
-        if (this.taf && this.taf.hasOwnProperty('wind_speed_kt') && this.taf.wind_speed_kt[0] > 0) {
+        if (this.taf && Object.prototype.hasOwnProperty.call(this.taf, 'wind_speed_kt') && this.taf.wind_speed_kt[0] > 0) {
             direction = Number(this.taf.wind_dir_degrees[0]);
             speed = Math.ceil(this.taf.wind_speed_kt[0] / 5) * 5;
             windTaf = true;
@@ -233,13 +234,13 @@ export class Decoder {
     gust() {
         let gust = null;
 
-        if (this.data.hasOwnProperty('wind_gust_kt')) {
+        if (Object.prototype.hasOwnProperty.call(this.data, 'wind_gust_kt')) {
             gust = Math.ceil(this.data.wind_gust_kt / 5) * 5
         }
-        if (this.taf && this.taf.hasOwnProperty('wind_gust_kt')) {
+        if (this.taf && Object.prototype.hasOwnProperty.call(this.taf, 'wind_gust_kt')) {
             gust = Math.ceil(this.taf.wind_gust_kt[0] / 5) * 5
         }
 
         return gust;
     }
-};
+}

@@ -10,7 +10,7 @@ export function getAllMetars() {
         console.error(error);
         return null;
     })
-};
+}
 
 // Get Tafs from AWC
 export function getAllTafs() {
@@ -22,7 +22,7 @@ export function getAllTafs() {
         console.error(error);
         return null;
     })
-};
+}
 
 export function dateFormatter(date, hours) {    
     let month = dayAbbr[date.getMonth()];
@@ -42,4 +42,4 @@ export function hoursDisplay(date, timelineValue) {
     const formatted = dateFormatter(date, timelineValue);
 
     return `${formatted.month}. ${formatted.day} ${ formatted.hour < 10 ? `0${formatted.hour}` : formatted.hour}:00`;
-};
+}

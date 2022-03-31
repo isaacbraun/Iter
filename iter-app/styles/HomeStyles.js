@@ -39,21 +39,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         zIndex: 1,
     },
-    search: {
-        height: 45,
-        flexGrow: 1,
-        marginRight: 15,
-        padding: 10,
-
-        fontSize: 16,
-
-        borderRadius: 3,
-        backgroundColor: Colors.background,
-    },
-    searchText: {
-        color: Colors.text,
-        marginLeft: 15,
-    },
 
     loading: {
         position: 'absolute',

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import {
     Text,
@@ -9,7 +10,7 @@ import {
 } from 'react-native';
 import { FlightPlanStyles as styles } from '../styles';
 import Navbar from '../components/Navbar';
-import { Feather, Ionicons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import { Colors } from '../components/Values';
 
 export default function FlightPlanScreen({ navigation }) {

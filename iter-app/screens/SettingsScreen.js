@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+import React from 'react';
 import { Text, View, Pressable } from 'react-native';
 import { SettingsStyles as styles } from '../styles';
 

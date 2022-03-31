@@ -10,11 +10,11 @@ function isWithinRegion(marker, region, offset) {
     } else {
         return false;
     }
-};
+}
 
 // Control Filtering of Markers Displayed on Map
 export function markerFilters(marker, index, region, hour, navigation) {
-    if (marker.hasOwnProperty('longitude') && marker.hasOwnProperty('latitude')) {
+    if (Object.prototype.hasOwnProperty.call(marker, 'longitude') && Object.prototype.hasOwnProperty.call(marker, 'latitude')) {
         if (region.longitudeDelta >= 70) {
             if (level_1_airports.includes(marker.station_id[0])) {
                 return <Marker key={index} index={index} marker={marker} hour={hour} navigation={navigation} />
@@ -66,7 +66,7 @@ export function markerFilters(marker, index, region, hour, navigation) {
     } else {
         return null;
     }
-};
+}
 
 // Animate Map to User Location or Centerpoint if Not Granted
 export function goToOrigin(mapRef, location) {
@@ -79,4 +79,4 @@ export function goToOrigin(mapRef, location) {
         },
         1000
     );
-};
+}
