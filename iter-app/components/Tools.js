@@ -2,9 +2,7 @@ import { dayAbbr } from "./Values";
 
 // Get Metars from AWC
 export function getAllMetars() {
-    let fetchString = "https://www.aviationweather.gov/adds/dataserver_current/current/metars.cache.xml";
-
-    return fetch(fetchString)
+    return fetch("https://www.aviationweather.gov/adds/dataserver_current/current/metars.cache.xml")
     .then((response) => { return response.text() })
     .catch((error) => {
         console.error(error);
@@ -14,9 +12,7 @@ export function getAllMetars() {
 
 // Get Tafs from AWC
 export function getAllTafs() {
-    let fetchString = "https://www.aviationweather.gov/adds/dataserver_current/current/tafs.cache.xml";
-
-    return fetch(fetchString)
+    return fetch("https://www.aviationweather.gov/adds/dataserver_current/current/tafs.cache.xml")
     .then((response) => { return response.text() })
     .catch((error) => {
         console.error(error);

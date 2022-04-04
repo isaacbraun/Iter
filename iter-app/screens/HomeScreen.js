@@ -92,7 +92,7 @@ export default function HomeScreen({ navigation }) {
     // Get User Location & Get All Metars
 	useEffect(() => {
         getData();
-        console.log(metars);
+        // console.log(metars);
         // getLocation();
 	}, [metars]);
 
