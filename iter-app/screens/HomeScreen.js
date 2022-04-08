@@ -59,7 +59,7 @@ export default function HomeScreen({ navigation }) {
             const metars = await AsyncStorage.getItem('@Merged')
             metars != null ? setMetars(JSON.parse(metars)) : null;
         } catch(e) {
-            console.log("Read Error: ", e);
+            console.log("HomeScreen Read Error: ", e);
         }
     };
 
@@ -92,7 +92,6 @@ export default function HomeScreen({ navigation }) {
     // Get User Location & Get All Metars
 	useEffect(() => {
         getData();
-        // console.log(metars);
         // getLocation();
 	}, [metars]);
 
@@ -126,13 +125,6 @@ export default function HomeScreen({ navigation }) {
 
             {/* Search Bar + Menu Button */}
             <View style={styles.searchContainer}>
-                {/* <TextInput
-                    style={styles.search}
-                    placeholder="Search Airport or City"
-                    placeholderTextColor={Colors.text}
-                    value={searchValue}
-                    onChangeText={setSearchValue}
-                /> */}
                 <Search />
                 <Pressable
                     style={styles.button}

@@ -18,7 +18,7 @@ async function storeArray(key, value) {
 		const jsonValue = JSON.stringify(value)
 		await AsyncStorage.setItem(key, jsonValue)
 	} catch (e) {
-		console.log("Write Error: ", e);
+		console.log("Store Write Error: ", e);
 	}
 }
 
@@ -41,8 +41,10 @@ async function mergeData() {
 		for (const metar of metarsParsed) {
 			let temp = metar;
 			for (const taf of tafsParsed) {
-				if (metar.station_id[0] == taf.station_id[0]) {
-					temp.taf = taf;
+				if (Object.prototype.hasOwnProperty.call(metar, "station_id") && Object.prototype.hasOwnProperty.call(taf, "station_id")) {
+					if (metar.station_id[0] == taf.station_id[0]) {
+						temp.taf = taf;
+					}
 				}
 			}
 			merged.push(temp);
@@ -50,7 +52,7 @@ async function mergeData() {
 		
 		storeArray("@Merged", merged);
 	} catch(e) {
-		console.log("Read Error: ", e);
+		console.log("Merge Read Error: ", e);
 	}
 }
 
@@ -84,10 +86,10 @@ export default function App() {
 			storeArray("@Metars", appendClass(tempMetars));
 			storeArray("@Tafs", tempTafs);
 			mergeData();
+			getSearchData();
 		};
 
 		getData();
-		getSearchData();
 		setLoading(false);
 	}, [tempMetars, tempTafs]);
 
