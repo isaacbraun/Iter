@@ -6,6 +6,10 @@ const styles = StyleSheet.create({
         marginRight: 15,
         flexGrow: 1,
     },
+    searchContainer: {
+        // height: 45,
+        flexGrow: 1,
+    },
     search: {
         height: 45,
         flexGrow: 1,

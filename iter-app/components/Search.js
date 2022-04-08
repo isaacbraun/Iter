@@ -10,95 +10,118 @@ import styles from '../styles/SearchStyles';
 // import { Colors } from '../components/Values';
 
 export default function Search(props) {
-    const [allAirports, setAllAirports] = useState(null);
-    const [queriedAirports, setQueriedAirports] = useState(null);
-    const [query, setQuery] = useState('');
+    // For Main Data
+    const [airports, setAirports] = useState([]);
+    // For Filtered Data
+    const [filteredAirports, setFilteredAirports] = useState([]);
+    // For Selected Data
+    const [selectedValue, setSelectedValue] = useState({});
     
-    const isLoading = allAirports == null;
+    const isLoading = airports == null;
     const placeholder = isLoading
         ? 'Loading data...'
-        : 'Enter Star Wars film title';
+        : 'Search Airports';
     
     const getData = async () => {
         try {
             const airportData = await AsyncStorage.getItem('@Search');
-            airportData != null ? setAllAirports(JSON.parse(airportData)) : null;
+            airportData != null ? setAirports(JSON.parse(airportData)) : null;
         } catch(e) {
             console.log("Search Read Error: ", e);
         }
     };
 
     const matches = (item, query) => {
-        const inputLength = query.length;
+        // Making a case insensitive regular expression
+        const regex = new RegExp(`${query.trim()}`, 'i');
 
         return (
-            item.iata.toLowerCase().slice(0, inputLength) === query ||
-            item.icao.toLowerCase().slice(0, inputLength) === query ||
-            item.name.toLowerCase().slice(0, inputLength) === query
+            item.iata.search(regex) >= 0 ||
+            item.icao.search(regex) >= 0 ||
+            item.name.search(regex) >= 0
         );
     };
 
-    const queryAirports = (query, data) => {
-        if (isLoading || query === '') {
-            return [];
+    const findFilm = (query) => {
+        // Method called every time when we change the value of the input
+        if (query) {
+            // Setting the filtered film array according the query
+            setFilteredAirports(
+                airports.filter((film) => matches(film, query))
+            );
+        } else {
+            // If the query is null then return blank
+            setFilteredAirports([]);
         }
-    
-        // const regex = new RegExp(`${query.trim()}`, 'i');
-        return data.filter((airport) => matches(airport, query));
-    }
+    };
 
     useEffect(() => {
         const fetchAirports = async () => {
             await getData();
-            console.error("Outside: ", allAirports);
             
             // setQueriedAirports();
         }
 
-        fetchAirports();
+        // fetchAirports();
+        setAirports([
+            {
+                "icao" : "00AA",
+                "name" : "Aero B Ranch Airport",
+                "iata" : "0AA"
+            },
+            {
+                "icao" : "00AK",
+                "name" : "Lowell Field",
+                "iata" : "0AK"
+            },
+            {
+                "icao" : "00AL",
+                "name" : "Epps Airpark",
+                "iata" : "0AL"
+            },
+            {
+                "icao" : "00AS",
+                "name" : "Fulton Airport",
+                "iata" : "0AS"
+            },
+            {
+                "icao" : "00AZ",
+                "name" : "Cordes Airport",
+                "iata" : "0AZ"
+            }
+        ])
     }, []);
 
     return (
         <View style={styles.container}>
             <Autocomplete
                 editable={!isLoading}
+                autoCapitalize="none"
                 autoCorrect={false}
-                data={
-                    queriedAirports?.length === 1 && matches(queriedAirports[0], query)
-                        ? [] // Close suggestion list in case movie title matches query
-                        : queriedAirports
+                containerStyle={styles.searchContainer}
+                // Data to show in suggestion
+                data={filteredAirports}
+                // Default value if you want to set something in input
+                defaultValue={
+                    JSON.stringify(selectedValue) === '{}' ?
+                    '' :
+                    selectedValue.name
                 }
-                value={query}
-                onChangeText={handleChange()}
+                // Onchange of the text changing the state of the query
+                // Which will trigger the findFilm method
+                // To show the suggestions
+                onChangeText={(text) => findFilm(text)}
                 placeholder={placeholder}
                 flatListProps={{
-                    keyboardShouldPersistTaps: 'always',
-                    keyExtractor: (airport) => airport.icao,
+                    keyExtractor: (_, idx) => idx,
                     renderItem: ({ item }) => (
-                        <TouchableOpacity onPress={() => setQuery(item)}>
-                            <Text style={styles.itemText}>{item.icao} {item.name}</Text>
+                        <TouchableOpacity key={item.icao} onPress={() => setSelectedValue(item)}>
+                            <Text style={styles.itemText}>{item.icao}: {item.name}</Text>
                         </TouchableOpacity>
-                    ),
+                    )
                 }}
             />
         </View>
-        // <View style={styles.container}>
-        //     <TextInput
-        //         style={styles.search}
-        //         placeholder="Search Airport or City"
-        //         placeholderTextColor={Colors.text}
-        //         value={value}
-            //     onChangeText={ () => handleInput() }
-            // />
-            // { suggestionsVisible ?
-            //     <View style={styles.suggestions}>
-            //         {data.map(({ name, IATA }) => (
-            //             <View key={IATA} value={`${IATA} ${name}`} />
-            //         ))}
-            //     </View>
-            //     : null
-            // }
-        // </View>
     )
 }
 
