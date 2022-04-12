@@ -11,7 +11,7 @@ import styles from '../styles/SearchStyles';
 
 export default function Search(props) {
     // For Main Data
-    const [airports, setAirports] = useState([]);
+    const [airports, setAirports] = useState(null);
     // For Filtered Data
     const [filteredAirports, setFilteredAirports] = useState([]);
     // For Selected Data
@@ -24,7 +24,7 @@ export default function Search(props) {
     
     const getData = async () => {
         try {
-            const airportData = await AsyncStorage.getItem('@Search');
+            const airportData = await AsyncStorage.getItem('@Merged');
             airportData != null ? setAirports(JSON.parse(airportData)) : null;
         } catch(e) {
             console.log("Search Read Error: ", e);
@@ -36,19 +36,24 @@ export default function Search(props) {
         const regex = new RegExp(`${query.trim()}`, 'i');
 
         return (
-            item.iata.search(regex) >= 0 ||
-            item.icao.search(regex) >= 0 ||
-            item.name.search(regex) >= 0
+            item.station_id[0].search(regex) >= 0 ||
+            item.iata != null || item.iata != "null" ? item.iata.search(regex) >= 0 : false ||
+            item.name != null || item.name != "null"? item.name.search(regex) >= 0 : false
         );
     };
 
     const findFilm = (query) => {
         // Method called every time when we change the value of the input
-        if (query) {
-            // Setting the filtered film array according the query
-            setFilteredAirports(
-                airports.filter((film) => matches(film, query))
-            );
+        if (query && airports != null) {
+
+            let filtered = [];
+            for (let i = 0; i < airports.length; i++) {
+                if (matches(airports[i], query)) {
+                    filtered.push(airports[i]);
+                }
+            }
+            setFilteredAirports(filtered);
+
         } else {
             // If the query is null then return blank
             setFilteredAirports([]);
@@ -58,38 +63,9 @@ export default function Search(props) {
     useEffect(() => {
         const fetchAirports = async () => {
             await getData();
-            
-            // setQueriedAirports();
         }
 
-        // fetchAirports();
-        setAirports([
-            {
-                "icao" : "00AA",
-                "name" : "Aero B Ranch Airport",
-                "iata" : "0AA"
-            },
-            {
-                "icao" : "00AK",
-                "name" : "Lowell Field",
-                "iata" : "0AK"
-            },
-            {
-                "icao" : "00AL",
-                "name" : "Epps Airpark",
-                "iata" : "0AL"
-            },
-            {
-                "icao" : "00AS",
-                "name" : "Fulton Airport",
-                "iata" : "0AS"
-            },
-            {
-                "icao" : "00AZ",
-                "name" : "Cordes Airport",
-                "iata" : "0AZ"
-            }
-        ])
+        fetchAirports();
     }, []);
 
     return (
@@ -105,18 +81,18 @@ export default function Search(props) {
                 defaultValue={
                     JSON.stringify(selectedValue) === '{}' ?
                     '' :
-                    selectedValue.name
+                    `${selectedValue.station_id[0]}: ${selectedValue.name}`
                 }
                 // Onchange of the text changing the state of the query
                 // Which will trigger the findFilm method
                 // To show the suggestions
-                onChangeText={(text) => findFilm(text)}
+                onChangeText={(text) => text.length > 1 ? findFilm(text) : setFilteredAirports([])}
                 placeholder={placeholder}
                 flatListProps={{
                     keyExtractor: (_, idx) => idx,
                     renderItem: ({ item }) => (
-                        <TouchableOpacity key={item.icao} onPress={() => setSelectedValue(item)}>
-                            <Text style={styles.itemText}>{item.icao}: {item.name}</Text>
+                        <TouchableOpacity key={item.station_id[0]} onPress={() => setSelectedValue(item)}>
+                            <Text style={styles.itemText}>{item.station_id[0]}: {item.name}</Text>
                         </TouchableOpacity>
                     )
                 }}

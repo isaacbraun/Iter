@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { HomeScreen, FlightPlanScreen, SettingsScreen, DetailedViewScreen } from './screens';
+import { HomeScreen, FlightPlanScreen, SettingsScreen, DetailedViewScreen, SplashScreen } from './screens';
 
 import { getAllMetars, getAllTafs } from './components/Tools';
 import airportData from './assets/airportData.json';
@@ -22,32 +22,34 @@ async function storeArray(key, value) {
 	}
 }
 
-function appendClass(data) {
-	return data.map((element) => ({
-		...element,
-		type: airportData[element.station_id] ? airportData[element.station_id].type : null,
-		iata: airportData[element.station_id] ? airportData[element.station_id].iata_code : null
-	}));
-}
-
-async function mergeData() {
+async function mergeData(metars, tafs) {
 	try {
 		let merged = [];
-		const metars = await AsyncStorage.getItem('@Metars')
-		const tafs = await AsyncStorage.getItem('@Tafs')
-		const metarsParsed = metars != null ? JSON.parse(metars) : null;
-		const tafsParsed = tafs != null ? JSON.parse(tafs) : null;
 
-		for (const metar of metarsParsed) {
-			let temp = metar;
-			for (const taf of tafsParsed) {
-				if (Object.prototype.hasOwnProperty.call(metar, "station_id") && Object.prototype.hasOwnProperty.call(taf, "station_id")) {
-					if (metar.station_id[0] == taf.station_id[0]) {
-						temp.taf = taf;
+		if (metars) {
+			for (const metar of metars) {
+				let temp = metar;
+
+				temp.type = airportData[temp.station_id] ? airportData[temp.station_id].type : null,
+				temp.name = airportData[temp.station_id] ? airportData[temp.station_id].name : null,
+				temp.iata = airportData[temp.station_id] ? airportData[temp.station_id].iata_code : null
+
+				if (tafs) {
+					for (const taf of tafs) {
+						if (Object.prototype.hasOwnProperty.call(temp, "station_id") && Object.prototype.hasOwnProperty.call(taf, "station_id")) {
+							if (temp.station_id[0] == taf.station_id[0]) {
+								temp.taf = taf;
+							}
+						}
 					}
+				} else {
+					console.error("Tafs is Null");
 				}
+
+				merged.push(temp);
 			}
-			merged.push(temp);
+		} else {
+			console.error("Metars is Null");
 		}
 		
 		storeArray("@Merged", merged);
@@ -56,49 +58,41 @@ async function mergeData() {
 	}
 }
 
-function getSearchData() {
-	let searchArray = [];
-	for (const [key, value] of Object.entries(airportData)) {
-		searchArray.push({
-			iata: value.iata_code,
-			icao: key,
-			name: value.name,
-		})
-	}
-	storeArray("@Search", searchArray);
-}
-
 export default function App() {
-	const [tempMetars, setTempMetars] = useState(null);
-	const [tempTafs, setTempTafs] = useState(null);	
+	const [metars, setMetars] = useState(null);
+	const [tafs, setTafs] = useState(null);
+	const [retrieved, setRetrieved] = useState(false);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		const getData = async () => {
 			await getAllMetars().then(value => converter.parseString(value, function (err, result) {
-				setTempMetars(result.response.data[0].METAR);
+				setMetars(result.response.data[0].METAR);
 			}));
 	
 			await getAllTafs().then(value => converter.parseString(value, function (err, result) {
-				setTempTafs(result.response.data[0].TAF);
+				setTafs(result.response.data[0].TAF);
 			}));
-	
-			storeArray("@Metars", appendClass(tempMetars));
-			storeArray("@Tafs", tempTafs);
-			mergeData();
-			getSearchData();
+			setRetrieved(true);
 		};
 
 		getData();
-		setLoading(false);
-	}, [tempMetars, tempTafs]);
+	}, []);
+
+	useEffect(() => {
+		if (retrieved) {
+			mergeData(metars, tafs);
+			setLoading(false);
+		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [retrieved])
 
 	return (
 		<NavigationContainer>
 			<StatusBar style="auto" />
 
 			{ loading ?
-				<SettingsScreen />
+				<SplashScreen />
 				:
 				<Stack.Navigator initialRouteName={"Home"} screenOptions={{headerShown: false}}>
 					<Stack.Screen name="Home" component={HomeScreen} />
