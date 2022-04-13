@@ -23,10 +23,8 @@ const styles = StyleSheet.create({
     },
     searchInner: {
         fontSize: 16,
+        minWidth: 150,
         maxWidth: 225,
-    },
-    searchClose: {
-
     },
     suggestions: {
         borderBottomLeftRadius: 3,

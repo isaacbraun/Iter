@@ -11,6 +11,35 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from '../styles/SearchStyles';
 import { Colors } from './Values';
 
+function matches(airport, query) {
+    let icao, iata, name, municipality;
+    icao = iata = name = municipality = false;
+    
+    // Making a case insensitive regular expression
+    const regex = new RegExp(`${query.trim()}`, 'i');
+
+    if (airport.station_id[0].search(regex) >= 0) {
+        icao = true;
+    }
+    else if (airport.iata != null) {
+        if (airport.iata.search(regex) >= 0) {
+            iata = true;
+        }
+    }
+    if (airport.name != null) {
+        if (airport.name.search(regex) >= 0) {
+            name = true;
+        }
+    }
+    else if (airport.municipality != null) {
+        if (airport.municipality.search(regex) >= 0) {
+            municipality = true;
+        }
+    }
+
+    return (icao || iata || name || municipality);
+}
+
 export default function Search(props) {
     const [airports, setAirports] = useState(null);
     const [filteredAirports, setFilteredAirports] = useState([]);
@@ -28,35 +57,6 @@ export default function Search(props) {
         } catch(e) {
             console.log("Search Read Error: ", e);
         }
-    };
-
-    const matches = (airport, query) => {
-        let icao, iata, name, municipality;
-        icao = iata = name = municipality = false;
-        
-        // Making a case insensitive regular expression
-        const regex = new RegExp(`${query.trim()}`, 'i');
-
-        if (airport.station_id[0].search(regex) >= 0) {
-            icao = true;
-        }
-        else if (airport.iata != null) {
-            if (airport.iata.search(regex) >= 0) {
-                iata = true;
-            }
-        }
-        if (airport.name != null) {
-            if (airport.name.search(regex) >= 0) {
-                name = true;
-            }
-        }
-        else if (airport.municipality != null) {
-            if (airport.municipality.search(regex) >= 0) {
-                municipality = true;
-            }
-        }
-
-        return (icao || iata || name || municipality);
     };
 
     const findAirport = (query) => {
@@ -132,7 +132,7 @@ export default function Search(props) {
                     // selection={cursor}
                 />
                 { inputValue ?
-                    <Pressable style={styles.searchClose} onPress={() => {setInputValue(''); setFilteredAirports([]);}}>
+                    <Pressable onPress={() => {setInputValue(''); setFilteredAirports([]);}}>
                         <EvilIcons name="close" size={22} color={Colors.text} />
                     </Pressable> : null
                 }
