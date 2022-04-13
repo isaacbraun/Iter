@@ -2,25 +2,22 @@ import React, { useEffect, useState } from 'react';
 import {
     View,
     Text,
-    TouchableOpacity
+    TextInput,
+    Pressable,
+    Keyboard
 } from 'react-native';
-import Autocomplete from 'react-native-autocomplete-input';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from '../styles/SearchStyles';
-// import { Colors } from '../components/Values';
 
 export default function Search(props) {
-    // For Main Data
     const [airports, setAirports] = useState(null);
-    // For Filtered Data
     const [filteredAirports, setFilteredAirports] = useState([]);
-    // For Selected Data
-    const [selectedValue, setSelectedValue] = useState({});
-    
+    const [inputValue, setInputValue] = useState('');
+    const [searching, setSearching] = useState(true);
     const isLoading = airports == null;
-    const placeholder = isLoading
-        ? 'Loading data...'
-        : 'Search Airports';
+    const placeholder = isLoading ? 'Loading data...' : 'Search Airports';
+    let timeout = null;    
+    // const [cursor, setCursor] = useState({start: 0, end: 0});
     
     const getData = async () => {
         try {
@@ -31,21 +28,38 @@ export default function Search(props) {
         }
     };
 
-    const matches = (item, query) => {
+    const matches = (airport, query) => {
+        let icao, iata, name, municipality;
+        icao = iata = name = municipality = false;
+        
         // Making a case insensitive regular expression
         const regex = new RegExp(`${query.trim()}`, 'i');
 
-        return (
-            item.station_id[0].search(regex) >= 0 ||
-            item.iata != null || item.iata != "null" ? item.iata.search(regex) >= 0 : false ||
-            item.name != null || item.name != "null"? item.name.search(regex) >= 0 : false
-        );
+        if (airport.station_id[0].search(regex) >= 0) {
+            icao = true;
+        }
+        else if (airport.iata != null) {
+            if (airport.iata.search(regex) >= 0) {
+                iata = true;
+            }
+        }
+        if (airport.name != null) {
+            if (airport.name.search(regex) >= 0) {
+                name = true;
+            }
+        }
+        else if (airport.municipality != null) {
+            if (airport.municipality.search(regex) >= 0) {
+                municipality = true;
+            }
+        }
+
+        return (icao || iata || name || municipality);
     };
 
-    const findFilm = (query) => {
+    const findAirport = (query) => {
         // Method called every time when we change the value of the input
-        if (query && airports != null) {
-
+        if (query.length > 1) {
             let filtered = [];
             for (let i = 0; i < airports.length; i++) {
                 if (matches(airports[i], query)) {
@@ -53,11 +67,31 @@ export default function Search(props) {
                 }
             }
             setFilteredAirports(filtered);
-
+            
         } else {
-            // If the query is null then return blank
+            // If the query lenght is less than or equal to 1 then return blank
             setFilteredAirports([]);
         }
+    };
+
+    const selectItem = (item) => {
+        setSearching(false);
+        setFilteredAirports([]);
+        setInputValue(`${item.station_id[0]}: ${item.name}`)
+        Keyboard.dismiss();
+
+        // setCursor({start: 0, end: 0})
+
+        props.mapRef.current.animateToRegion(
+            {
+                latitude: item.latitude[0],
+                longitude: item.longitude[0],
+                latitudeDelta: 1,
+                longitudeDelta: 0.5,
+            },
+            2000
+        );
+        
     };
 
     useEffect(() => {
@@ -70,34 +104,45 @@ export default function Search(props) {
 
     return (
         <View style={styles.container}>
-            <Autocomplete
+            <TextInput
+                style={[
+                    styles.search,
+                    filteredAirports != [] ?
+                    {
+                        borderBottomLeftRadius: 0,
+                        borderBottomRightRadius: 0
+                    } : null
+                ]}
+                value={inputValue}
                 editable={!isLoading}
                 autoCapitalize="none"
                 autoCorrect={false}
-                containerStyle={styles.searchContainer}
-                // Data to show in suggestion
-                data={filteredAirports}
-                // Default value if you want to set something in input
-                defaultValue={
-                    JSON.stringify(selectedValue) === '{}' ?
-                    '' :
-                    `${selectedValue.station_id[0]}: ${selectedValue.name}`
+                onFocus={() => {setSearching(true);}}
+                onChangeText={(text) => {
+                    setInputValue(text);
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => {searching ? findAirport(text) : null}, 600); }
                 }
-                // Onchange of the text changing the state of the query
-                // Which will trigger the findFilm method
-                // To show the suggestions
-                onChangeText={(text) => text.length > 1 ? findFilm(text) : setFilteredAirports([])}
                 placeholder={placeholder}
-                flatListProps={{
-                    keyExtractor: (_, idx) => idx,
-                    renderItem: ({ item }) => (
-                        <TouchableOpacity key={item.station_id[0]} onPress={() => setSelectedValue(item)}>
-                            <Text style={styles.itemText}>{item.station_id[0]}: {item.name}</Text>
-                        </TouchableOpacity>
-                    )
-                }}
+                // selection={cursor}
             />
+            <View style={[styles.suggestions, filteredAirports != [] ? {borderTopWidth: 1} : null]}>    
+                {
+                    filteredAirports.map((item, index) => {
+                        if (index < 8) {
+                            return (
+                                <Pressable
+                                    key={index}
+                                    onPress={() => selectItem(item)}
+                                    style={styles.item}
+                                >
+                                    <Text style={styles.itemText}>{item.station_id[0]}: {item.name}</Text>
+                                </Pressable>
+                            )
+                        }
+                    })
+                }
+            </View>
         </View>
     )
 }
-

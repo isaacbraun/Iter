@@ -32,6 +32,7 @@ async function mergeData(metars, tafs) {
 
 				temp.type = airportData[temp.station_id] ? airportData[temp.station_id].type : null,
 				temp.name = airportData[temp.station_id] ? airportData[temp.station_id].name : null,
+				temp.municipality = airportData[temp.station_id] ? airportData[temp.station_id].municipality : null,
 				temp.iata = airportData[temp.station_id] ? airportData[temp.station_id].iata_code : null
 
 				if (tafs) {

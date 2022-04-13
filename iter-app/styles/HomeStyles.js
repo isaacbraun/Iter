@@ -29,10 +29,10 @@ const styles = StyleSheet.create({
     searchContainer: {
         display: 'flex',
         flexDirection: 'row',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'space-between',
 
-        height: 45,
+        // height: 45,
         width: ScreenWidth,
         top: 44,
         position: 'absolute',

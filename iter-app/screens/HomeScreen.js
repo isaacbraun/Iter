@@ -125,7 +125,7 @@ export default function HomeScreen({ navigation }) {
 
             {/* Search Bar + Menu Button */}
             <View style={styles.searchContainer}>
-                <Search />
+                <Search mapRef={mapRef}/>
                 <Pressable
                     style={styles.button}
                     onPress={() => navigation.navigate('Settings')}
