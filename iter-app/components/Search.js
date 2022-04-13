@@ -68,8 +68,27 @@ export default function Search(props) {
                     filtered.push(airports[i]);
                 }
             }
+
+            filtered.sort(function(in_a, in_b) {
+                const types = {
+                    "large_airport": 3,
+                    "medium_airport": 2,
+                    "small_airport": 1
+                };
+                const a = in_a.type;
+                const b = in_b.type;
+
+                if (a == null && b != null) return 1;
+                if (a != null && b == null) return -1;
+                if (a == null && b == null) return 0;
+
+                if(types[a] < types[b]) return 1;
+                if(types[a] > types[b]) return -1;
+
+                return 0;
+            });
+
             setFilteredAirports(filtered);
-            
         } else {
             // If the query length is less than or equal to 1 then return blank
             setFilteredAirports([]);
