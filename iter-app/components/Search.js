@@ -11,7 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from '../styles/SearchStyles';
 import { Colors } from './Values';
 
-function matches(airport, query) {
+export function matches(airport, query) {
     let icao, iata, name, municipality;
     icao = iata = name = municipality = false;
     
@@ -71,7 +71,7 @@ export default function Search(props) {
             setFilteredAirports(filtered);
             
         } else {
-            // If the query lenght is less than or equal to 1 then return blank
+            // If the query length is less than or equal to 1 then return blank
             setFilteredAirports([]);
         }
     };
