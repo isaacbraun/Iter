@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { EvilIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import styles from '../styles/SearchStyles';
+import { SearchStyles as styles} from '../styles';
 import { Colors } from './Values';
 
 export function matches(airport, query) {
@@ -44,7 +44,7 @@ export default function Search(props) {
     const [airports, setAirports] = useState(null);
     const [filteredAirports, setFilteredAirports] = useState([]);
     const [inputValue, setInputValue] = useState(props.value ? props.value : '');
-    const [searching, setSearching] = useState(true);
+    // const [searching, setSearching] = useState(true);
     const isLoading = airports == null;
     const placeholder = isLoading ? 'Loading data...' : 'Search Airports';
     let timeout = null;    
@@ -96,7 +96,6 @@ export default function Search(props) {
     };
 
     const selectItem = (item) => {
-        setSearching(false);
         setFilteredAirports([]);
         setInputValue(`${item.station_id[0]}: ${item.name}`)
         Keyboard.dismiss();
@@ -130,13 +129,11 @@ export default function Search(props) {
                     editable={!isLoading}
                     autoCapitalize="none"
                     autoCorrect={false}
-                    onFocus={() => {setSearching(true);}}
+                    // onFocus={() => {setSearching(true);}}
                     onChangeText={(text) => {
                         setInputValue(text);
                         clearTimeout(timeout);
-                        timeout = setTimeout(() => {
-                            searching ? findAirport(text) : null
-                        }, 600); 
+                        timeout = setTimeout(() => {findAirport(text)}, 600); 
                     }}
                     placeholder={props.placeholder ? placeholder : null}
                     // selection={cursor}

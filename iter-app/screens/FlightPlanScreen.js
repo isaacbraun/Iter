@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Text,
     View,
@@ -8,31 +8,87 @@ import {
     Keyboard,
     TextInput
 } from 'react-native';
-import Search from '../components/Search';
-import { FlightPlanStyles as styles } from '../styles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Navbar from '../components/Navbar';
-import { Feather } from '@expo/vector-icons';
+import PlanningInput from '../components/PlanningInput';
+import { FlightPlanStyles as styles } from '../styles';
 import { Colors } from '../components/Values';
 
 export default function FlightPlanScreen({ navigation }) {
-    const [alternateActive, setAlternateActive] = useState(false);
-    const [mainActive, setMainActive] = useState(true);
+    const [activePath, setActivePath] = useState(true);
 
-    const selectAlternate = () => {
-        setMainActive(false);
-        setAlternateActive(true);
-    };
-    const selectMain = () => {
-        setAlternateActive(false);
-        setMainActive(true);
+    const [mainPath, setMainPath] = useState([{speed: '', alti: ''}, {}, {}]);
+    const [altPath, setAltPath] = useState([{speed: '', alti: ''}, {}, {}]);
+    const [speed, setSpeed] = useState('');
+    const [alti, setAlti] = useState('');
+
+    const getData = async () => {
+        try {
+            const mainPath = await AsyncStorage.getItem('@MainPath');
+            const altPath = await AsyncStorage.getItem('@AltPath');
+            mainPath != null ? setMainPath(JSON.parse(mainPath)) : null;
+            altPath != null ? setAltPath(JSON.parse(altPath)) : null;
+        } catch(e) {
+            console.log("Search Read Error: ", e);
+        }
     };
 
-    const [startValue, setStartValue] = useState('');
+    const storeArray = async (key, value) => {
+        try {
+            const jsonValue = JSON.stringify(value)
+            await AsyncStorage.setItem(key, jsonValue)
+        } catch (e) {
+            console.log("Store Write Error: ", e);
+        }
+    }
+    
+    const insert = (arr, index, newItem) => [
+        // part of the array before the specified index
+        ...arr.slice(0, index),
+        // inserted item
+        newItem,
+        // part of the array after the specified index
+        ...arr.slice(index)
+    ]
+
+    const handleSelect = (item, index) => {
+        console.log(index, item);
+    };
+
+    const handleAdd = (index) => {
+        activePath ?
+            setMainPath(insert(mainPath, index, {}))
+            : 
+            setAltPath(insert(altPath, index, {}))
+        console.log("Added:", index)
+    };
+
+    const handleRemove = (index) => {
+        activePath ?
+            setMainPath([
+                ...mainPath.slice(0, index),
+                ...mainPath.slice(index + 1)
+            ])
+            : 
+            setAltPath([
+                ...altPath.slice(0, index),
+                ...altPath.slice(index + 1)
+            ])
+        console.log("Removed:", index);
+    };
+
+    useEffect(() => {
+        const fetchPaths = async () => {
+            await getData();
+        }
+
+        fetchPaths();
+    }, []);
 
     return(
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.main}>
-                {/* Main Innter Path Container */}
+                {/* Main Inner Path Container */}
                 <View style={styles.inner}>
 
                     {/* Navbar */}
@@ -44,21 +100,21 @@ export default function FlightPlanScreen({ navigation }) {
                             style={[
                                 styles.pathButton,
                                 {borderTopLeftRadius: 3, borderBottomLeftRadius: 3, borderRightWidth: 0},
-                                alternateActive ? styles.pathActive : null
+                                !activePath ? styles.pathActive : null
                             ]}
-                            onPress={selectAlternate}
+                            onPress={() => setActivePath(!activePath)}
                         >
-                            <Text style={[styles.pathButtonText, alternateActive ? styles.pathActiveText : null]}>Alternate Path</Text>
+                            <Text style={[styles.pathButtonText, !activePath ? styles.pathActiveText : null]}>Alternate Path</Text>
                         </Pressable>
                         <Pressable
                             style={[
                                 styles.pathButton,
                                 {borderTopRightRadius: 3, borderBottomRightRadius: 3, borderLeftWidth: 0},
-                                mainActive ? styles.pathActive : null
+                                activePath ? styles.pathActive : null
                             ]}
-                            onPress={selectMain}
+                            onPress={() => setActivePath(!activePath)}
                         >
-                            <Text style={[styles.pathButtonText, mainActive ? styles.pathActiveText : null]}>Main Path</Text>
+                            <Text style={[styles.pathButtonText, activePath ? styles.pathActiveText : null]}>Main Path</Text>
                         </Pressable>
                     </View>
 
@@ -69,8 +125,8 @@ export default function FlightPlanScreen({ navigation }) {
                             <View style={styles.inputBoxContainer}>
                                 <TextInput
                                     style={[styles.inputBox, styles.speedAltiInput]}
-                                    value={null}
-                                    onChangeText={() => null}
+                                    value={speed}
+                                    onChangeText={() => setSpeed(speed)}
                                     keyboardType={'number-pad'}
                                     returnKeyType={ 'done' }
                                 />
@@ -82,8 +138,8 @@ export default function FlightPlanScreen({ navigation }) {
                             <View style={styles.inputBoxContainer}>
                                 <TextInput
                                     style={[styles.inputBox, styles.speedAltiInput]}
-                                    value={null}
-                                    onChangeText={() => null}
+                                    value={alti}
+                                    onChangeText={() => setAlti(alti)}
                                     keyboardType={'number-pad'}
                                     returnKeyType={ 'done' }
                                 />
@@ -93,82 +149,42 @@ export default function FlightPlanScreen({ navigation }) {
 
                     {/* Path Inputs */}
                     <View style={styles.inputsContainer}>
-
-                        {/* Start Input */}
-                        <View style={styles.input}>
-                            <View style={styles.flow}>
-                                <View style={[styles.flowLine, styles.flowLineHidden]} />
-                                <View style={[styles.flowDot, styles.startDot]} />
-                                <View style={styles.flowLine} />
-                            </View>
-                            <View style={styles.inputInner}>
-                                <Text style={styles.inputText}>Start</Text>
-                                <View style={styles.inputBoxContainer}>
-                                    <Search
-                                        style={styles.inputBox}
-                                        value={startValue}
-                                        placeholder={false}
-                                        function={(item) => {setStartValue(item)}}
-                                        amount={6}
-                                    />
-                                    <Pressable style={styles.pathAction} onPress={null} />
-                                </View>
-                            </View>
-                        </View>
-
-                        {/* Middle Input */}
-                        <View style={styles.input}>
-                            <View style={styles.flow}>
-                                <View style={styles.flowLine} />
-                                <View style={styles.flowDot} />
-                                <View style={styles.flowLine} />
-                            </View>
-                            <View style={styles.inputInner}>
-                                <Text style={styles.inputText}>Midpoint</Text>
-                                <View style={styles.inputBoxContainer}>
-                                    <Search
-                                        style={styles.inputBox}
-                                        // value={startValue}
-                                        placeholder={false}
-                                        // function={(item) => {setStartValue(item)}}
-                                        amount={6}
-                                    />
-                                    <Pressable
-                                        style={styles.pathAction}
-                                        onPress={null}
-                                    >
-                                        <Feather name="minus" size={32} color={ Colors.text } />
-                                    </Pressable>
-                                </View>
-                            </View>
-                        </View>
-                        
-                        {/* Destination Input */}
-                        <View style={styles.input}>
-                            <View style={styles.flow}>
-                                <View style={styles.flowLine} />    
-                                <View style={[styles.flowDot, styles.destDot]} />
-                                <View style={[styles.flowLine, styles.flowLineHidden]} />
-                            </View>
-                            <View style={styles.inputInner}>
-                                <Text style={styles.inputText}>Destination</Text>
-                                <View style={styles.inputBoxContainer}>
-                                    <Search
-                                        style={styles.inputBox}
-                                        // value={startValue}
-                                        placeholder={false}
-                                        // function={(item) => {setStartValue(item)}}
-                                        amount={6}
-                                    />
-                                    <Pressable
-                                        style={styles.pathAction}
-                                        onPress={null}
-                                    >
-                                        <Feather name="plus" size={32} color={ Colors.blue } />
-                                    </Pressable>
-                                </View>
-                            </View>
-                        </View>
+                    {
+                        activePath ?
+                             mainPath.map((item, index) => {
+                                if (index != 0) {
+                                    return(
+                                        <PlanningInput
+                                            key={index}
+                                            item={item}
+                                            index={index}
+                                            start={index == 1}
+                                            dest={index == mainPath.length - 1}
+                                            select={handleSelect}
+                                            add={handleAdd}
+                                            remove={handleRemove}
+                                        />
+                                    )
+                                }
+                            })
+                            : 
+                            altPath.map((item, index) => {
+                                if (index != 0) {
+                                    return(
+                                        <PlanningInput
+                                            key={index}
+                                            item={item}
+                                            index={index}
+                                            start={index == 1}
+                                            dest={index == altPath.length - 1}
+                                            select={handleSelect}
+                                            add={handleAdd}
+                                            remove={handleRemove}
+                                        />
+                                    )
+                                }
+                            })
+                    }
                     </View>
                 </View>
 
@@ -176,19 +192,19 @@ export default function FlightPlanScreen({ navigation }) {
                 <View style={styles.bottom}>
                     <Pressable
                         style={styles.button}
-                        onPress={selectAlternate}
+                        // onPress={selectAlternate}
                     >
                         <Text style={styles.buttonText}>More</Text>
                     </Pressable>
                     <Pressable
                         style={[styles.button, {borderColor: Colors.blue}]}
-                        onPress={selectAlternate}
+                        // onPress={selectAlternate}
                     >
                         <Text style={styles.buttonText}>Evaluate</Text>
                     </Pressable>
                     <Pressable
                         style={[styles.button, {borderColor: Colors.blue, backgroundColor: Colors.blue}]}
-                        onPress={selectAlternate}
+                        // onPress={selectAlternate}
                     >
                         <Text style={[styles.buttonText, {color: Colors.background}]}>View</Text>
                     </Pressable>
