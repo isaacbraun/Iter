@@ -97,6 +97,21 @@ const styles = StyleSheet.create({
         color: Colors.background,
     },
 
+    speedAlti: {
+        width: '85%',
+        marginTop: 25,
+
+        display: 'flex',
+        flexDirection: 'row',
+    },
+    speedAltiInner: {
+        flex: 1,
+    },
+    speedAltiInput: {
+        height: 45,
+        padding: 10,
+    },
+
     inputsContainer: {
         marginTop: 30,
         paddingHorizontal: 15,
@@ -154,14 +169,10 @@ const styles = StyleSheet.create({
     inputBoxContainer: {
         display: 'flex',
         flexDirection: 'row',
-        alignItems: 'center',
+        alignItems: 'flex-start',
     },
     inputBox: {
-        height: 45,
         flexGrow: 1,
-        padding: 10,
-
-        fontSize: 16,
 
         borderRadius: 3,
         borderWidth: 1,

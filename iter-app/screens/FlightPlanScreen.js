@@ -4,10 +4,11 @@ import {
     Text,
     View,
     Pressable,
-    TextInput,
     TouchableWithoutFeedback,
-    Keyboard
+    Keyboard,
+    TextInput
 } from 'react-native';
+import Search from '../components/Search';
 import { FlightPlanStyles as styles } from '../styles';
 import Navbar from '../components/Navbar';
 import { Feather } from '@expo/vector-icons';
@@ -61,6 +62,35 @@ export default function FlightPlanScreen({ navigation }) {
                         </Pressable>
                     </View>
 
+                    {/* Path Aircraft Info */}
+                    <View style={styles.speedAlti}>
+                        <View style={styles.speedAltiInner}>
+                            <Text style={styles.inputText}>Cruise Speed (kts)</Text>
+                            <View style={styles.inputBoxContainer}>
+                                <TextInput
+                                    style={[styles.inputBox, styles.speedAltiInput]}
+                                    value={null}
+                                    onChangeText={() => null}
+                                    keyboardType={'number-pad'}
+                                    returnKeyType={ 'done' }
+                                />
+                            </View>
+                        </View>
+                        <View style={{width: 15}} />
+                        <View style={styles.speedAltiInner}>
+                            <Text style={styles.inputText}>Cruise Altitude (ft)</Text>
+                            <View style={styles.inputBoxContainer}>
+                                <TextInput
+                                    style={[styles.inputBox, styles.speedAltiInput]}
+                                    value={null}
+                                    onChangeText={() => null}
+                                    keyboardType={'number-pad'}
+                                    returnKeyType={ 'done' }
+                                />
+                            </View>
+                        </View>
+                    </View>
+
                     {/* Path Inputs */}
                     <View style={styles.inputsContainer}>
 
@@ -74,11 +104,12 @@ export default function FlightPlanScreen({ navigation }) {
                             <View style={styles.inputInner}>
                                 <Text style={styles.inputText}>Start</Text>
                                 <View style={styles.inputBoxContainer}>
-                                    <TextInput
+                                    <Search
                                         style={styles.inputBox}
                                         value={startValue}
-                                        color={Colors.text}
-                                        onChangeText={setStartValue}
+                                        placeholder={false}
+                                        function={(item) => {setStartValue(item)}}
+                                        amount={6}
                                     />
                                     <Pressable style={styles.pathAction} onPress={null} />
                                 </View>
@@ -95,11 +126,12 @@ export default function FlightPlanScreen({ navigation }) {
                             <View style={styles.inputInner}>
                                 <Text style={styles.inputText}>Midpoint</Text>
                                 <View style={styles.inputBoxContainer}>
-                                    <TextInput
+                                    <Search
                                         style={styles.inputBox}
-                                        value={startValue}
-                                        color={Colors.text}
-                                        onChangeText={setStartValue}
+                                        // value={startValue}
+                                        placeholder={false}
+                                        // function={(item) => {setStartValue(item)}}
+                                        amount={6}
                                     />
                                     <Pressable
                                         style={styles.pathAction}
@@ -121,11 +153,12 @@ export default function FlightPlanScreen({ navigation }) {
                             <View style={styles.inputInner}>
                                 <Text style={styles.inputText}>Destination</Text>
                                 <View style={styles.inputBoxContainer}>
-                                    <TextInput
+                                    <Search
                                         style={styles.inputBox}
-                                        value={startValue}
-                                        color={Colors.text}
-                                        onChangeText={setStartValue}
+                                        // value={startValue}
+                                        placeholder={false}
+                                        // function={(item) => {setStartValue(item)}}
+                                        amount={6}
                                     />
                                     <Pressable
                                         style={styles.pathAction}
