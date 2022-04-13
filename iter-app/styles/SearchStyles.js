@@ -11,13 +11,22 @@ const styles = StyleSheet.create({
         height: 45,
         flexGrow: 1,
         padding: 10,
-
-        fontSize: 16,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
 
         borderRadius: 3,
         backgroundColor: Colors.background,
         borderBottomColor: Colors.text,
         borderBottomWidth: 0,
+    },
+    searchInner: {
+        fontSize: 16,
+        maxWidth: 225,
+    },
+    searchClose: {
+
     },
     suggestions: {
         borderBottomLeftRadius: 3,
@@ -28,7 +37,7 @@ const styles = StyleSheet.create({
     item: {
         paddingVertical: 8,
         paddingHorizontal: 10,
-        maxWidth: 300,
+        maxWidth: 250,
     },
     itemText: {
 

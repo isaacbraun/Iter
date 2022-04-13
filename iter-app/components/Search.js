@@ -6,8 +6,10 @@ import {
     Pressable,
     Keyboard
 } from 'react-native';
+import { EvilIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from '../styles/SearchStyles';
+import { Colors } from './Values';
 
 export default function Search(props) {
     const [airports, setAirports] = useState(null);
@@ -86,10 +88,10 @@ export default function Search(props) {
             {
                 latitude: item.latitude[0],
                 longitude: item.longitude[0],
-                latitudeDelta: 1,
-                longitudeDelta: 0.5,
+                latitudeDelta: 1.5,
+                longitudeDelta: .75,
             },
-            2000
+            2500
         );
         
     };
@@ -104,44 +106,56 @@ export default function Search(props) {
 
     return (
         <View style={styles.container}>
-            <TextInput
+            <View style={styles.search}>
+                <TextInput
+                    style={[
+                        styles.searchInner,
+                        filteredAirports.length > 0 ?
+                        {
+                            borderBottomLeftRadius: 0,
+                            borderBottomRightRadius: 0
+                        } : null
+                    ]}
+                    value={inputValue}
+                    editable={!isLoading}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    onFocus={() => {setSearching(true);}}
+                    onChangeText={(text) => {
+                        setInputValue(text);
+                        clearTimeout(timeout);
+                        timeout = setTimeout(() => {
+                            searching ? findAirport(text) : null
+                        }, 600); 
+                    }}
+                    placeholder={placeholder}
+                    // selection={cursor}
+                />
+                { inputValue ?
+                    <Pressable style={styles.searchClose} onPress={() => {setInputValue(''); setFilteredAirports([]);}}>
+                        <EvilIcons name="close" size={22} color={Colors.text} />
+                    </Pressable> : null
+                }
+            </View>
+            <View
                 style={[
-                    styles.search,
-                    filteredAirports != [] ?
-                    {
-                        borderBottomLeftRadius: 0,
-                        borderBottomRightRadius: 0
-                    } : null
+                    styles.suggestions,
+                    filteredAirports.length > 0 ? {borderTopWidth: 1} : null
                 ]}
-                value={inputValue}
-                editable={!isLoading}
-                autoCapitalize="none"
-                autoCorrect={false}
-                onFocus={() => {setSearching(true);}}
-                onChangeText={(text) => {
-                    setInputValue(text);
-                    clearTimeout(timeout);
-                    timeout = setTimeout(() => {searching ? findAirport(text) : null}, 600); }
-                }
-                placeholder={placeholder}
-                // selection={cursor}
-            />
-            <View style={[styles.suggestions, filteredAirports != [] ? {borderTopWidth: 1} : null]}>    
-                {
-                    filteredAirports.map((item, index) => {
-                        if (index < 8) {
-                            return (
-                                <Pressable
-                                    key={index}
-                                    onPress={() => selectItem(item)}
-                                    style={styles.item}
-                                >
-                                    <Text style={styles.itemText}>{item.station_id[0]}: {item.name}</Text>
-                                </Pressable>
-                            )
-                        }
-                    })
-                }
+            >
+                { filteredAirports.map((item, index) => {
+                    if (index < 8) {
+                        return (
+                            <Pressable
+                                key={index}
+                                onPress={() => selectItem(item)}
+                                style={styles.item}
+                            >
+                                <Text style={styles.itemText}>{item.station_id[0]}: {item.name}</Text>
+                            </Pressable>
+                        )
+                    }
+                })}
             </View>
         </View>
     )
