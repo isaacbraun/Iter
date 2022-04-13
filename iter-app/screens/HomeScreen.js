@@ -125,7 +125,21 @@ export default function HomeScreen({ navigation }) {
 
             {/* Search Bar + Menu Button */}
             <View style={styles.searchContainer}>
-                <Search mapRef={mapRef}/>
+                <Search
+                    function={(item) => {
+                        mapRef.current.animateToRegion(
+                            {
+                                latitude: item.latitude[0],
+                                longitude: item.longitude[0],
+                                latitudeDelta: 1.5,
+                                longitudeDelta: .75,
+                            },
+                            2500
+                        );
+                    }}
+                    placeholder={true}
+                    style={{marginRight: 15}}
+                />
                 <Pressable
                     style={styles.button}
                     onPress={() => navigation.navigate('Settings')}

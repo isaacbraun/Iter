@@ -43,7 +43,7 @@ export function matches(airport, query) {
 export default function Search(props) {
     const [airports, setAirports] = useState(null);
     const [filteredAirports, setFilteredAirports] = useState([]);
-    const [inputValue, setInputValue] = useState('');
+    const [inputValue, setInputValue] = useState(props.value ? props.value : '');
     const [searching, setSearching] = useState(true);
     const isLoading = airports == null;
     const placeholder = isLoading ? 'Loading data...' : 'Search Airports';
@@ -103,16 +103,7 @@ export default function Search(props) {
 
         // setCursor({start: 0, end: 0})
 
-        props.mapRef.current.animateToRegion(
-            {
-                latitude: item.latitude[0],
-                longitude: item.longitude[0],
-                latitudeDelta: 1.5,
-                longitudeDelta: .75,
-            },
-            2500
-        );
-        
+        props.function(item);
     };
 
     useEffect(() => {
@@ -124,7 +115,7 @@ export default function Search(props) {
     }, []);
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, props.style]}>
             <View style={styles.search}>
                 <TextInput
                     style={[
@@ -147,11 +138,11 @@ export default function Search(props) {
                             searching ? findAirport(text) : null
                         }, 600); 
                     }}
-                    placeholder={placeholder}
+                    placeholder={props.placeholder ? placeholder : null}
                     // selection={cursor}
                 />
                 { inputValue ?
-                    <Pressable onPress={() => {setInputValue(''); setFilteredAirports([]);}}>
+                    <Pressable style={styles.close} onPress={() => {setInputValue(''); setFilteredAirports([]);}}>
                         <EvilIcons name="close" size={22} color={Colors.text} />
                     </Pressable> : null
                 }
@@ -163,7 +154,8 @@ export default function Search(props) {
                 ]}
             >
                 { filteredAirports.map((item, index) => {
-                    if (index < 8) {
+                    const amount = props.amount ? props.amount : 8;
+                    if (index < amount) {
                         return (
                             <Pressable
                                 key={index}

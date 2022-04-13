@@ -3,14 +3,12 @@ import { Colors } from '../components/Values';
 
 const styles = StyleSheet.create({
     container: {
-        marginRight: 15,
-        flexGrow: 1,
-        zIndex: 5,
+        flex: 1,
     },
     search: {
         height: 45,
-        flexGrow: 1,
-        padding: 10,
+        paddingVertical: 10,
+        paddingLeft: 10,
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
@@ -22,23 +20,28 @@ const styles = StyleSheet.create({
         borderBottomWidth: 0,
     },
     searchInner: {
-        fontSize: 16,
-        minWidth: 150,
-        maxWidth: 225,
+        fontSize: 14,
+        flex: 1,
     },
+    close: {
+        width: 45,
+        height: 45,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+
     suggestions: {
         borderBottomLeftRadius: 3,
         borderBottomRightRadius: 3,
-
+        zIndex: 3,
         backgroundColor: Colors.background,
     },
     item: {
         paddingVertical: 8,
         paddingHorizontal: 10,
-        maxWidth: 250,
-    },
-    itemText: {
-
+        // maxWidth: 225,
+        // flexGrow: 1,
     },
 });
 
