@@ -146,7 +146,6 @@ export default function FlightPlanScreen({ navigation }) {
     const didMount = useRef(false);
     useEffect(() => {
         if (didMount.current) {
-            console.log(mainPath);
             storeArray(activePath ? '@MainPath' : '@AltPath', activePath ? mainPath : altPath);
         } else {
             didMount.current = true;
