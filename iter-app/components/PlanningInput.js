@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Text,
     View,
@@ -11,6 +11,8 @@ import { PlanningInputStyles as styles } from '../styles';
 import { Colors } from '../components/Values';
 
 export default function PlanningInput(props) {
+    const [value, setValue] = useState(props.value ? props.value : '');
+
     let inputText = "Midpoint";
     if (props.start) {
         inputText = "Start";
@@ -47,16 +49,20 @@ export default function PlanningInput(props) {
                 <View style={styles.inputBoxContainer}>
                     <Search
                         style={styles.inputBox}
-                        // value={props.item != {} ? `${props.item.station_id[0]}: ${props.item.name}` : ''}
+                        value={value}
                         placeholder={false}
                         function={(item) => { props.select(item, props.index) }}
                         amount={6}
+                        clear={() => props.clear(props.index)}
                     />
                     <Pressable
                         style={styles.pathAction}
                         onPress={
                             !props.start ?
-                                props.dest ? () => props.add(props.index) : () => props.remove(props.index)
+                                () => {
+                                    setValue('');
+                                    props.dest ? props.add(props.index) : props.remove(props.index)
+                                }
                             : null
                         }
                     >

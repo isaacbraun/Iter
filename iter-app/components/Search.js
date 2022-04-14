@@ -105,6 +105,12 @@ export default function Search(props) {
         props.function(item);
     };
 
+    const handleClear = () => {
+        setInputValue('');
+        setFilteredAirports([]);
+        props.clear ? props.clear() : null;
+    }
+
     useEffect(() => {
         const fetchAirports = async () => {
             await getData();
@@ -139,7 +145,7 @@ export default function Search(props) {
                     // selection={cursor}
                 />
                 { inputValue ?
-                    <Pressable style={styles.close} onPress={() => {setInputValue(''); setFilteredAirports([]);}}>
+                    <Pressable style={styles.close} onPress={() => handleClear()}>
                         <EvilIcons name="close" size={22} color={Colors.text} />
                     </Pressable> : null
                 }

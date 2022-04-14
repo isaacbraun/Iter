@@ -14,6 +14,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
 
+        
+
         borderRadius: 3,
         backgroundColor: Colors.background,
         borderBottomColor: Colors.text,
@@ -22,6 +24,8 @@ const styles = StyleSheet.create({
     searchInner: {
         fontSize: 14,
         flex: 1,
+        position: 'relative',
+        zIndex: -1,
     },
     close: {
         width: 45,
@@ -32,16 +36,17 @@ const styles = StyleSheet.create({
     },
 
     suggestions: {
+        position: 'relative',
+        zIndex: 3,
+        
         borderBottomLeftRadius: 3,
         borderBottomRightRadius: 3,
-        zIndex: 3,
         backgroundColor: Colors.background,
+        
     },
     item: {
         paddingVertical: 8,
         paddingHorizontal: 10,
-        // maxWidth: 225,
-        // flexGrow: 1,
     },
 });
 

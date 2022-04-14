@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'center',
         justifyContent: 'flex-start',
+        flex: 1,
     },
 
     navbar: {
@@ -117,6 +118,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         width: '100%',
 
+        flexGrow: 1,
         display: 'flex',
         flexDirection: 'column',
     },
@@ -131,12 +133,16 @@ const styles = StyleSheet.create({
     },
     inputBox: {
         flexGrow: 1,
-
+        position: 'relative',
+        zIndex: -1,
         borderRadius: 3,
         borderWidth: 1,
         borderColor: Colors.text,
         backgroundColor: Colors.background,
-    },    
+    },
+    inputsSpacer: {
+        height: 200,
+    },
 
     bottom: {
         width: '100%',
