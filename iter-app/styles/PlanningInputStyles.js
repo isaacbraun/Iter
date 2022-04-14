@@ -55,8 +55,6 @@ const styles = StyleSheet.create({
     },
     inputBox: {
         flexGrow: 1,
-        position: 'relative',
-        zIndex: -1,
         borderRadius: 3,
         borderWidth: 1,
         borderColor: Colors.text,

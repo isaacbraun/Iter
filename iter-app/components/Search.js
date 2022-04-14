@@ -165,7 +165,7 @@ export default function Search(props) {
                                 onPress={() => selectItem(item)}
                                 style={styles.item}
                             >
-                                <Text style={styles.itemText}>{item.station_id[0]}: {item.name}</Text>
+                                <Text>{item.station_id[0]}: {item.name}</Text>
                             </Pressable>
                         )
                     }

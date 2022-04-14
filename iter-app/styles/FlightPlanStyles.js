@@ -117,7 +117,6 @@ const styles = StyleSheet.create({
         marginTop: 30,
         paddingHorizontal: 15,
         width: '100%',
-
         flexGrow: 1,
         display: 'flex',
         flexDirection: 'column',
@@ -133,8 +132,6 @@ const styles = StyleSheet.create({
     },
     inputBox: {
         flexGrow: 1,
-        position: 'relative',
-        zIndex: -1,
         borderRadius: 3,
         borderWidth: 1,
         borderColor: Colors.text,

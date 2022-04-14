@@ -22,7 +22,7 @@ export default function PlanningInput(props) {
     }
 
     return(
-        <View style={styles.input}>
+        <View style={[styles.input, {zIndex: props.len - props.index}]}>
             <View style={styles.flow}>
                 <View
                     style={[

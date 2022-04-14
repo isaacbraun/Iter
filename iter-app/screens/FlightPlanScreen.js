@@ -219,6 +219,7 @@ export default function FlightPlanScreen({ navigation }) {
                                     return(
                                         <PlanningInput
                                             key={Math.random(index)}
+                                            len={mainPath.length}
                                             item={item}
                                             value={item != null ? `${item.station_id[0]}: ${item.name}` : ''}
                                             index={index}
