@@ -24,7 +24,7 @@ export default function FlightPlanScreen({ navigation }) {
         else if (pressed == 'alt' && activePath) {
             setActivePath(false);
         }
-    }
+    };
 
     const scrollRef = useRef();
     // scrollRef.current.scrollToEnd({ animated: true });
@@ -41,13 +41,13 @@ export default function FlightPlanScreen({ navigation }) {
         let tempArray = activePath ? mainPath : altPath;
         tempArray[0].speed = speed;
         activePath ? setMainPath(tempArray) : setAltPath(tempArray);
-        store();
+        setStore(!store);
     };
     const handleAlti = (alti) => {
         let tempArray = activePath ? mainPath : altPath;
         tempArray[0].alti = alti;
         activePath ? setMainPath(tempArray) : setAltPath(tempArray);
-        store();
+        setStore(!store);
     };
 
     const getPaths = async () => {
@@ -71,9 +71,7 @@ export default function FlightPlanScreen({ navigation }) {
         }
     };
 
-    const store = () => {
-        storeArray(activePath ? '@MainPath' : '@AltPath', activePath ? mainPath : altPath);
-    };
+    const [store, setStore] = useState(true);
 
     const storeArray = async (key, value) => {
         try {
@@ -92,17 +90,17 @@ export default function FlightPlanScreen({ navigation }) {
         return tempArray;
     };
 
-    const handleSelect = (item, index) => {
+    const select = (item, index) => {
         activePath ? setMainPath(replace(mainPath, index, item)) : setAltPath(replace(altPath, index, item));
-        store();
+        setStore(!store);
     };
 
-    const handleAdd = (index) => {
+    const add = (index) => {
         activePath ? setMainPath(insert(mainPath, index, null)) : setAltPath(insert(altPath, index, null));
-        store();
+        setStore(!store);
     };
 
-    const handleRemove = (index) => {
+    const remove = (index) => {
         activePath ?
             setMainPath([
                 ...mainPath.slice(0, index),
@@ -113,14 +111,29 @@ export default function FlightPlanScreen({ navigation }) {
                 ...altPath.slice(0, index),
                 ...altPath.slice(index + 1)
             ])
-        store();
+        setStore(!store);
     };
 
-    const handleClear = (index) => {
+    const clear = (index) => {
         activePath ? setMainPath(replace(mainPath, index, null)) : setAltPath(replace(altPath, index, null));
-        store();
+        setStore(!store);
     }
 
+    const reset = () => {
+        if (activePath) {
+            setMainPath([{speed: '', alti: ''}, null, null]);
+            setMainSpeed('');
+            setMainAlti('');
+            setStore(!store);
+        } else {
+            setAltPath([{speed: '', alti: ''}, null, null]);
+            setAltSpeed('');
+            setAltAlti('');
+            setStore(!store);
+        }
+    };
+
+    // Get Paths from Storage on Mount
     useEffect(() => {
         const fetchPaths = async () => {
             await getPaths();
@@ -128,6 +141,18 @@ export default function FlightPlanScreen({ navigation }) {
 
         fetchPaths();
     }, []);
+
+    // Store Path After Any Modification
+    const didMount = useRef(false);
+    useEffect(() => {
+        if (didMount.current) {
+            console.log(mainPath);
+            storeArray(activePath ? '@MainPath' : '@AltPath', activePath ? mainPath : altPath);
+        } else {
+            didMount.current = true;
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [store]);
 
     return(
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -219,16 +244,16 @@ export default function FlightPlanScreen({ navigation }) {
                                     return(
                                         <PlanningInput
                                             key={Math.random(index)}
+                                            index={index}
                                             len={mainPath.length}
                                             item={item}
                                             value={item != null ? `${item.station_id[0]}: ${item.name}` : ''}
-                                            index={index}
                                             start={index == 1}
                                             dest={index == mainPath.length - 1}
-                                            select={handleSelect}
-                                            add={handleAdd}
-                                            remove={handleRemove}
-                                            clear={handleClear}
+                                            select={select}
+                                            add={add}
+                                            remove={remove}
+                                            clear={clear}
                                         />
                                     )
                                 }
@@ -240,14 +265,15 @@ export default function FlightPlanScreen({ navigation }) {
                                         <PlanningInput
                                             key={Math.random(index)}
                                             item={item}
-                                            index={index}
                                             value={item != null ? `${item.station_id[0]}: ${item.name}` : ''}
+                                            index={index}
+                                            len={altPath.length}
                                             start={index == 1}
                                             dest={index == altPath.length - 1}
-                                            select={handleSelect}
-                                            add={handleAdd}
-                                            remove={handleRemove}
-                                            clear={handleClear}
+                                            select={select}
+                                            add={add}
+                                            remove={remove}
+                                            clear={clear}
                                         />
                                     )
                                 }
@@ -261,7 +287,7 @@ export default function FlightPlanScreen({ navigation }) {
                 <View style={styles.bottom}>
                     <Pressable
                         style={[styles.button, {borderColor: Colors.red}]}
-                        // onPress={selectAlternate}
+                        onPress={() => reset()}
                     >
                         <Text style={[styles.buttonText, {color: Colors.red}]}>Reset</Text>
                     </Pressable>
