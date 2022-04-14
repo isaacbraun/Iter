@@ -5,7 +5,6 @@ const styles = StyleSheet.create({
     input: {
         height: 82,
         width: '100%',
-
         display: 'flex',
         flexDirection: 'row',
     },

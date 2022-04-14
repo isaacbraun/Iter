@@ -22,7 +22,6 @@ const styles = StyleSheet.create({
     searchInner: {
         fontSize: 14,
         flex: 1,
-        
     },
     close: {
         width: 45,
@@ -35,8 +34,8 @@ const styles = StyleSheet.create({
     suggestions: {
         borderBottomLeftRadius: 3,
         borderBottomRightRadius: 3,
-        backgroundColor: Colors.red,
-        zIndex: 5
+        backgroundColor: Colors.background,
+        zIndex: 5,
     },
     item: {
         paddingVertical: 8,
