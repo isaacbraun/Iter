@@ -32,7 +32,9 @@ export default function DetailedViewScreen({ route, navigation }) {
                     <View style={styles.container}>
                         <Text style={[styles.text, styles.header]}>ICAO: {data.station_id[0]}</Text>
                         <Text style={[styles.text, styles.header]}>IATA: {data.iata}</Text>
-                        <Text style={styles.text}>{data.latitude[0]}, {data.longitude[0]}</Text>
+                        {data.name ? <Text style={[styles.text, styles.header]}>Name: {data.name}</Text> : null }
+                        {data.municipality ? <Text style={styles.text}>Municipality: {data.municipality}</Text> : null }
+                        <Text style={styles.text}>Coords: {data.latitude[0]}, {data.longitude[0]}</Text>
                         <Text style={styles.text}>Elevation: {data.elevation_m[0] } m</Text>
                     </View>
 
