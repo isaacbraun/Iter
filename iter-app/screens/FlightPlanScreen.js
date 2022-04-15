@@ -6,7 +6,8 @@ import {
     Pressable,
     TouchableWithoutFeedback,
     Keyboard,
-    TextInput
+    TextInput,
+    Alert
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -36,6 +37,7 @@ export default function FlightPlanScreen({ navigation }) {
     const [mainAlti, setMainAlti] = useState('');
     const [altSpeed, setAltSpeed] = useState('');
     const [altAlti, setAltAlti] = useState('');
+    const [store, setStore] = useState(true);
 
     const handleSpeed = (speed) => {
         let tempArray = activePath ? mainPath : altPath;
@@ -58,21 +60,19 @@ export default function FlightPlanScreen({ navigation }) {
             const mainParsed = JSON.parse(mainPath);
             const altParsed = JSON.parse(altPath);
 
-            mainParsed != null ? setMainPath(mainParsed) : null;
-            altParsed != null ? setAltPath(altParsed) : null;
+            mainParsed !== null ? setMainPath(mainParsed) : null;
+            altParsed !== null ? setAltPath(altParsed) : null;
             
-            setMainSpeed(mainParsed[0].speed)
-            setMainAlti(mainParsed[0].alti)
+            setMainSpeed(mainParsed !== null ? mainParsed[0].speed : '')
+            setMainAlti(mainParsed != null ? mainParsed[0].alti : '')
 
-            setAltSpeed(altParsed[0].speed);
-            setAltAlti(altParsed[0].alti);
+            setAltSpeed(altParsed !== null ? altParsed[0].speed : '');
+            setAltAlti(altParsed !== null ? altParsed[0].alti : '');
         } catch(e) {
             console.log("Search Read Error: ", e);
         }
     };
-
-    const [store, setStore] = useState(true);
-
+    
     const storeArray = async (key, value) => {
         try {
             const jsonValue = JSON.stringify(value)
@@ -133,6 +133,36 @@ export default function FlightPlanScreen({ navigation }) {
         }
     };
 
+    const view = () => {
+        if (mainPath.includes(null)) {
+            Alert.alert("All Main Path Inputs Must Have Values");
+            return;
+        }
+
+        if (altPath.length == 3) {
+            if ((altPath[1] != null && altPath[2] == null) || (altPath[1] == null && altPath[2] != null)) {
+                Alert.alert("All Alternate Path Inputs Must Have Values");
+                return;
+            }
+            else if (altPath[1] == null && altPath[2] == null) {
+                navigation.navigate("Home", { view: true, paths: 1 });
+                return;
+            }
+        }
+        else if (altPath.length != 3) {
+            if (altPath.includes(null)) {
+                Alert.alert("All Alternate Path Inputs Must Have Values");
+                return;
+            }
+        }
+
+        navigation.navigate("Home", { view: true, paths: 2 });
+    };
+
+    const evaluate = () => {
+        Alert.alert("Evaluate Pressed");
+    };
+
     // Get Paths from Storage on Mount
     useEffect(() => {
         const fetchPaths = async () => {
@@ -143,12 +173,12 @@ export default function FlightPlanScreen({ navigation }) {
     }, []);
 
     // Store Path After Any Modification
-    const didMount = useRef(false);
+    const userInput = useRef(false);
     useEffect(() => {
-        if (didMount.current) {
+        if (userInput.current) {
             storeArray(activePath ? '@MainPath' : '@AltPath', activePath ? mainPath : altPath);
         } else {
-            didMount.current = true;
+            userInput.current = true;
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [store]);
@@ -168,7 +198,7 @@ export default function FlightPlanScreen({ navigation }) {
                             style={[
                                 styles.pathButton,
                                 {borderTopLeftRadius: 3, borderBottomLeftRadius: 3, borderRightWidth: 0},
-                                !activePath ? styles.pathActive : null
+                                !activePath ? styles.altActive : null
                             ]}
                             onPress={() => pathSwitch('alt') }
                         >
@@ -178,7 +208,7 @@ export default function FlightPlanScreen({ navigation }) {
                             style={[
                                 styles.pathButton,
                                 {borderTopRightRadius: 3, borderBottomRightRadius: 3, borderLeftWidth: 0},
-                                activePath ? styles.pathActive : null
+                                activePath ? styles.mainActive : null
                             ]}
                             onPress={() => pathSwitch('main') }
                         >
@@ -292,13 +322,13 @@ export default function FlightPlanScreen({ navigation }) {
                     </Pressable>
                     <Pressable
                         style={[styles.button, {borderColor: Colors.blue}]}
-                        // onPress={selectAlternate}
+                        onPress={() => evaluate()}
                     >
                         <Text style={[styles.buttonText, {color: Colors.blue}]}>Evaluate</Text>
                     </Pressable>
                     <Pressable
                         style={[styles.button, {borderColor: Colors.blue, backgroundColor: Colors.blue}]}
-                        // onPress={selectAlternate}
+                        onPress={() => view()}
                     >
                         <Text style={[styles.buttonText, {color: Colors.background}]}>View</Text>
                     </Pressable>

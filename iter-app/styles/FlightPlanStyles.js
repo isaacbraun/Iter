@@ -87,7 +87,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    pathActive: {
+    mainActive: {
+        borderColor: Colors.blue,
+        backgroundColor: Colors.blue,
+    },
+    altActive: {
         borderColor: Colors.green,
         backgroundColor: Colors.green,
     },
