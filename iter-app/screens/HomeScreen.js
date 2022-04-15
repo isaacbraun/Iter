@@ -8,20 +8,22 @@ import {
     Alert,
     TouchableWithoutFeedback,
 } from 'react-native';
-import MapView from 'react-native-maps';
+import MapView, { Polyline } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Feather, FontAwesome } from '@expo/vector-icons'; 
 import { Slider } from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useInterval } from 'usehooks-ts';
+import { useFocusEffect } from '@react-navigation/native';
 
 import { Colors } from '../components/Values';
 import { hoursDisplay } from '../components/Tools';
 import Search from '../components/Search';
-import { goToOrigin, markerFilters } from '../components/HomeScreenFunctions';
+import { goToOrigin, markerFilters, getRouteArray } from '../components/HomeScreenFunctions';
 import { HomeScreenStyles as styles } from '../styles';
 
-export default function HomeScreen({ navigation }) {
+
+export default function HomeScreen({ route, navigation }) {
     // Timeline Variables and Functions
     const date = new Date();
     const hours = date.getHours();  
@@ -52,16 +54,31 @@ export default function HomeScreen({ navigation }) {
     });
 
     const [metars, setMetars] = useState(null);
+    const [mainPath, setMainPath] = useState(null);
+    const [altPath, setAltPath] = useState(null);
+    const [displayMainPath, setDisplayMainPath] = useState(false);
+    const [displayAltPath, setDisplayAltPath] = useState(false);
 
     // Get Metar and Taf data from Storage
     const getData = async () => {
         try {
-            const metars = await AsyncStorage.getItem('@Merged')
+            const metars = await AsyncStorage.getItem('@Merged');
             metars != null ? setMetars(JSON.parse(metars)) : null;
         } catch(e) {
             console.log("HomeScreen Read Error: ", e);
         }
     };
+
+    const getPaths = async () => {
+        try {
+            const mainPath = await AsyncStorage.getItem('@MainPath');
+            const altPath = await AsyncStorage.getItem('@AltPath');
+            mainPath !== null ? setMainPath(JSON.parse(mainPath)) : null;
+            altPath !== null ? setAltPath(JSON.parse(altPath)) : null;
+        } catch(e) {
+            console.log("HomeScreen Path Read Error: ", e);
+        }
+    }
 
     // Request User Location Access and Animate Map to Location
     // eslint-disable-next-line no-unused-vars
@@ -95,6 +112,47 @@ export default function HomeScreen({ navigation }) {
         getLocation();
 	}, []);
 
+    // Get Paths on Navigation to Home
+    useFocusEffect(
+        React.useCallback(() => {
+            if (route.params && route.params.view === true) {
+                const awaitPaths = async () => {
+                    await getPaths();
+
+                    setDisplayMainPath(true);
+                    if (route.params.paths == 2) {
+                        setDisplayAltPath(true);
+                    }
+
+                }
+                awaitPaths();
+            }
+        }, [route.params])
+    );
+
+    const userInput = useRef(false);
+    useEffect(() => {
+        if (userInput.current) {
+            const startLat = parseFloat(mainPath[1].latitude[0]);
+            const startLng = parseFloat(mainPath[1].longitude[0])
+            const destLat = parseFloat(mainPath[mainPath.length - 1].latitude[0]);
+            const destLng = parseFloat(mainPath[mainPath.length - 1].longitude[0])
+            mapRef.current.animateToRegion(
+                {
+                    latitude: (startLat + destLat) / 2,
+                    longitude: (startLng + destLng) / 2,
+                    latitudeDelta: (startLat - destLat) + 2,
+                    longitudeDelta: (startLng - destLng) + 2,
+                },
+                2000
+            );
+        } else {
+            userInput.current = true;
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [mainPath]);
+    
+
     return(
         <View style={styles.main}>
             {/* Map View */}
@@ -113,13 +171,30 @@ export default function HomeScreen({ navigation }) {
                     maxZoomLevel={10}
                     rotateEnabled={false}
                 >
-                {metars ?
-                    metars.map((elem, index) => {
-                        const marker = markerFilters(elem, index, region, hours < timelineValue ? timelineValue : null, navigation);
-                        return marker ? marker : null;
-                    })
-                    : null
-                }
+                    {/* METAR Station Models */}
+                    {metars ?
+                        metars.map((elem, index) => {
+                            const marker = markerFilters(elem, index, region, hours < timelineValue ? timelineValue : null, navigation);
+                            return marker ? marker : null;
+                        })
+                        : null
+                    }
+                    {/* Main Path */}
+                    {displayMainPath ?
+                        <Polyline
+                            coordinates={getRouteArray(mainPath)}
+                            strokeColor={Colors.blue}
+                            strokeWidth={5}
+                        /> : null
+                    }
+                    {/* Alternate Path */}
+                    {displayAltPath ?
+                        <Polyline
+                            coordinates={getRouteArray(altPath)}
+                            strokeColor={Colors.green}
+                            strokeWidth={5}
+                        /> : null
+                    }
                 </MapView>
             </TouchableWithoutFeedback>
 
@@ -148,6 +223,7 @@ export default function HomeScreen({ navigation }) {
                 </Pressable>
             </View>
 
+            {/* Location Loading Indicator */}
             { loading ?
                 <View style={styles.loading}>
                     <View style={styles.loadingInner}>
@@ -156,7 +232,7 @@ export default function HomeScreen({ navigation }) {
                 </View> : null
             }
 
-            {/* Bottom Timeline + Buttons */}
+            {/* Sidebar Buttons */}
             <View style={styles.buttonsContainer}>
                 <Pressable
                     style={[styles.button, {marginBottom: 15}]}
@@ -164,6 +240,18 @@ export default function HomeScreen({ navigation }) {
                 >
                     <Feather name="navigation" size={24} color={ Colors.blue } />
                 </Pressable>
+                {displayMainPath || displayAltPath ?
+                    <Pressable
+                        style={[styles.button, {marginBottom: 15, backgroundColor: Colors.red}]}
+                        onPress={() => {
+                            setDisplayMainPath(false);
+                            setDisplayAltPath(false);
+                            navigation.setParams({ view: false, paths: null })
+                        }}
+                    >
+                        <Feather name="x" size={24} color={ Colors.background } />
+                    </Pressable> : null
+                }
                 <Pressable
                     style={[styles.button, {backgroundColor: Colors.blue}]}
                     onPress={() => navigation.navigate('FlightPlan')} // Add Path / Re-Evaluate
@@ -171,6 +259,7 @@ export default function HomeScreen({ navigation }) {
                     <Feather name="plus" size={28} color={ Colors.background } />
                 </Pressable>
             </View>
+            {/* Timeline Bar */}
             <View style={styles.timelineContainer}>
                 <Pressable
                     style={[styles.button, styles.play]}
