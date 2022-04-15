@@ -44,20 +44,9 @@ export default function Search(props) {
     const [airports, setAirports] = useState(null);
     const [filteredAirports, setFilteredAirports] = useState([]);
     const [inputValue, setInputValue] = useState(props.value ? props.value : '');
-    // const [searching, setSearching] = useState(true);
     const isLoading = airports == null;
-    const placeholder = isLoading ? 'Loading data...' : 'Search Airports';
+    const placeholder = isLoading ? 'Loading data...' : 'Search Airports By Code/Name';
     let timeout = null;    
-    // const [cursor, setCursor] = useState({start: 0, end: 0});
-    
-    const getData = async () => {
-        try {
-            const airportData = await AsyncStorage.getItem('@Merged');
-            airportData != null ? setAirports(JSON.parse(airportData)) : null;
-        } catch(e) {
-            console.log("Search Read Error: ", e);
-        }
-    };
 
     const findAirport = (query) => {
         // Method called every time when we change the value of the input
@@ -113,7 +102,12 @@ export default function Search(props) {
 
     useEffect(() => {
         const fetchAirports = async () => {
-            await getData();
+            try {
+                const airportData = await AsyncStorage.getItem('@Merged');
+                airportData != null ? setAirports(JSON.parse(airportData)) : null;
+            } catch(e) {
+                console.log("Search Read Error: ", e);
+            }
         }
 
         fetchAirports();
@@ -135,14 +129,12 @@ export default function Search(props) {
                     editable={!isLoading}
                     autoCapitalize="none"
                     autoCorrect={false}
-                    // onFocus={() => {setSearching(true);}}
                     onChangeText={(text) => {
                         setInputValue(text);
                         clearTimeout(timeout);
                         timeout = setTimeout(() => {findAirport(text)}, 600); 
                     }}
                     placeholder={props.placeholder ? placeholder : null}
-                    // selection={cursor}
                 />
                 { inputValue ?
                     <Pressable style={styles.close} onPress={() => handleClear()}>
