@@ -21,7 +21,7 @@ export function matches(airport, query) {
     if (airport.station_id[0].search(regex) >= 0) {
         icao = true;
     }
-    else if (airport.iata != null) {
+    if (airport.iata != null) {
         if (airport.iata.search(regex) >= 0) {
             iata = true;
         }
@@ -31,7 +31,7 @@ export function matches(airport, query) {
             name = true;
         }
     }
-    else if (airport.municipality != null) {
+    if (airport.municipality != null) {
         if (airport.municipality.search(regex) >= 0) {
             municipality = true;
         }

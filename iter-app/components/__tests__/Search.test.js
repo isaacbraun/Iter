@@ -63,6 +63,9 @@ describe("Matches Function", () => {
     test("Partial Lowercase Municipality", () => {
         expect(matches(airport, "land")).toBeTruthy();
     });
+    // test("Partial Lowercase Municipality 2", () => {
+    //     expect(matches(airport, "chatt")).toBeTruthy();
+    // });
     test("Partial Uppercase Municipality", () => {
         expect(matches(airport, "LAND")).toBeTruthy();
     });

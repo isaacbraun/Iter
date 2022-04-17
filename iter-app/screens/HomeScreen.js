@@ -22,6 +22,9 @@ import Search from '../components/Search';
 import { goToOrigin, markerFilters, getRouteArray } from '../components/HomeScreenFunctions';
 import { HomeScreenStyles as styles } from '../styles';
 
+// Reduce Size / Hide Metars
+// Hide Icon / Not
+
 
 export default function HomeScreen({ route, navigation }) {
     // Timeline Variables and Functions
