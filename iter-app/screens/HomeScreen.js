@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import MapView, { Polyline } from 'react-native-maps';
 import * as Location from 'expo-location';
-import { Feather, FontAwesome } from '@expo/vector-icons'; 
+import { Feather, FontAwesome, MaterialIcons } from '@expo/vector-icons'; 
 import { Slider } from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useInterval } from 'usehooks-ts';
@@ -23,11 +23,6 @@ import { Search } from '../components';
 import { HomeScreenStyles as styles } from '../styles';
 
 // Reduce Size / Hide Metars
-// Hide Icon / Not
-{/* <MaterialCommunityIcons name="do-not-disturb" size={24} color="black" />
-<MaterialIcons name="not-interested" size={24} color="black" />
-<FontAwesome name="circle-o-notch" size={24} color="black" /> */}
-
 
 export default function HomeScreen({ route, navigation }) {
     // Timeline Variables and Functions
@@ -60,6 +55,7 @@ export default function HomeScreen({ route, navigation }) {
         longitudeDelta: 10,
     });
 
+    const [metarType, setMetarType] = useState(true);
     const [metars, setMetars] = useState(null);
     const [mainPath, setMainPath] = useState(null);
     const [altPath, setAltPath] = useState(null);
@@ -182,7 +178,7 @@ export default function HomeScreen({ route, navigation }) {
                     {/* METAR Station Models */}
                     {metars ?
                         metars.map((elem, index) => {
-                            const marker = markerFilters(elem, index, region, hours < timelineValue ? timelineValue : null, navigation);
+                            const marker = markerFilters(elem, index, region, hours < timelineValue ? timelineValue : null, navigation, metarType);
                             return marker ? marker : null;
                         })
                         : null
@@ -248,7 +244,17 @@ export default function HomeScreen({ route, navigation }) {
                 >
                     <Feather name="navigation" size={24} color={ Colors.blue } />
                 </Pressable>
-                {displayMainPath || displayAltPath ?
+                <Pressable
+                    style={[styles.button, {marginBottom: 15}]}
+                    onPress={() => setMetarType(!metarType)} // ORIGIN
+                >
+                    {metarType ?
+                        <Feather name="circle" size={24} color={ Colors.blue } />
+                        :
+                        <Feather name="square" size={24} color={ Colors.blue } />
+                    }
+                </Pressable>
+                {displayMainPath ?
                     <Pressable
                         style={[styles.button, {marginBottom: 15, backgroundColor: Colors.red}]}
                         onPress={() => {
@@ -257,7 +263,8 @@ export default function HomeScreen({ route, navigation }) {
                             navigation.setParams({ view: false, paths: null })
                         }}
                     >
-                        <Feather name="x" size={24} color={ Colors.background } />
+                        {/* <Feather name="x" size={24} color={ Colors.background } /> */}
+                        <MaterialIcons name="not-interested" size={24} color={ Colors.background } />
                     </Pressable> : null
                 }
                 <Pressable

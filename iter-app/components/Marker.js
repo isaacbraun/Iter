@@ -23,6 +23,7 @@ export default function CustomMarker(props) {
             <StationModel
                 marker={props.marker}
                 hour={props.hour}
+                type={props.type}
             />
             <Callout>
                 <View style={styles.callout}>

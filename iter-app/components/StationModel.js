@@ -25,6 +25,7 @@ export default function StationModel(props) {
     const gust = decoded.gust();
 
     return (
+        props.type ?
         <View style={styles.container}>
             <View style={[styles.left, {paddingRight: leftPadding}]}>
                 <Text style={[styles.temp, styles.text]}>{temp}</Text>
@@ -95,6 +96,21 @@ export default function StationModel(props) {
                 }
                 <Text style={[styles.id, styles.text]}>{props.marker.station_id[0]}</Text>
             </View>
+        </View>
+        :
+        <View style={[styles.circle, {borderColor: circleColor}]}>
+            { fill != "M" ?
+                    <View style={[fill, {backgroundColor: circleColor, zIndex: 2}]}>
+                        { fill == styles.bkn ?
+                            <View style={styles.bknOver} /> : null
+                        }
+                        { fill == styles.ovx ?
+                            <View style={[styles.ovxSecond, {backgroundColor: circleColor}]} /> : null
+                        }
+                    </View>
+                :
+                <Text style={styles.missing}>M</Text>
+            }
         </View>
     );
 }

@@ -13,53 +13,53 @@ function isWithinRegion(marker, region, offset) {
 }
 
 // Control Filtering of Markers Displayed on Map
-export function markerFilters(marker, index, region, hour, navigation) {
+export function markerFilters(marker, index, region, hour, navigation, type) {
     if (Object.prototype.hasOwnProperty.call(marker, 'longitude') && Object.prototype.hasOwnProperty.call(marker, 'latitude')) {
         if (region.longitudeDelta >= 70) {
             if (level_1_airports.includes(marker.station_id[0])) {
-                return <Marker key={index} index={index} marker={marker} hour={hour} navigation={navigation} />
+                return <Marker key={index} index={index} marker={marker} hour={hour} navigation={navigation} type={type} />
             }
         }
         else if (region.longitudeDelta >= 30) {
             if (level_2_airports.includes(marker.station_id[0])) {
-                return <Marker key={index} index={index} marker={marker} hour={hour} navigation={navigation} />
+                return <Marker key={index} index={index} marker={marker} hour={hour} navigation={navigation} type={type} />
             }
         }
         else if (region.longitudeDelta >= 20) {
             if (level_3_airports.includes(marker.station_id[0])) {
-                return <Marker key={index} index={index} marker={marker} hour={hour} navigation={navigation} />
+                return <Marker key={index} index={index} marker={marker} hour={hour} navigation={navigation} type={type} />
             }
         }
         else if (region.longitudeDelta >= 10) {
             if (level_4_airports.includes(marker.station_id[0])) {
-                return <Marker key={index} index={index} marker={marker} hour={hour} navigation={navigation} />
+                return <Marker key={index} index={index} marker={marker} hour={hour} navigation={navigation} type={type} />
             }
         }
         else {
             if (region.longitudeDelta >= 7) {
                 if (isWithinRegion(marker, region, 12)) {
                     if (marker.type == "large_airport") {
-                        return <Marker key={index} index={index} marker={marker} hour={hour} navigation={navigation} />
+                        return <Marker key={index} index={index} marker={marker} hour={hour} navigation={navigation} type={type} />
                     }
                 }
             }
             if (region.longitudeDelta >= 4) {
                 if (isWithinRegion(marker, region, 4)) {
                     if (marker.type == "large_airport") {
-                        return <Marker key={index} index={index} marker={marker} hour={hour} navigation={navigation} />
+                        return <Marker key={index} index={index} marker={marker} hour={hour} navigation={navigation} type={type} />
                     }
                 }
             }
             else if (region.longitudeDelta >= 1.5) {
                 if (isWithinRegion(marker, region, 2)) {
                     if (marker.type == "medium_airport" || marker.type == "large_airport") {
-                        return <Marker key={index} index={index} marker={marker} hour={hour} navigation={navigation} />
+                        return <Marker key={index} index={index} marker={marker} hour={hour} navigation={navigation} type={type} />
                     }
                 }
             }
             else {
                 if (isWithinRegion(marker, region, 1)) {
-                    return <Marker key={index} index={index} marker={marker} hour={hour} navigation={navigation} />
+                    return <Marker key={index} index={index} marker={marker} hour={hour} navigation={navigation} type={type} />
                 }
             }
         }
