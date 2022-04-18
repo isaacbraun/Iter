@@ -76,10 +76,10 @@ describe("Matches Function", () => {
         expect(matches(cleveland, "HOPKINS")).toBeTruthy();
     });
     test("Complete Lowercase Name", () => {
-        expect(matches(cleveland, "Cleveland Hopkins International cleveland")).toBeTruthy();
+        expect(matches(cleveland, "Cleveland Hopkins International Airport")).toBeTruthy();
     });
     test("Complete Uppercase Name", () => {
-        expect(matches(cleveland, "CLEVELAND HOPKINS INTERNATIONAL cleveland")).toBeTruthy();
+        expect(matches(cleveland, "CLEVELAND HOPKINS INTERNATIONAL AIRPORT")).toBeTruthy();
     });
     test("Incorrect Name", () => {
         expect(matches(cleveland, "Los angeles")).toBeFalsy();
