@@ -27,6 +27,10 @@ const styles = StyleSheet.create({
     buttonText: {
         color: Colors.text,
     },
+    disabled: {
+        borderColor: '#383838',
+        backgroundColor: Colors.text,
+    },
 
     inner: {
         width: '100%',

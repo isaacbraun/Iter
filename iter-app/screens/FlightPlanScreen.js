@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Navbar, PlanningInputs } from '../components';
 import { FlightPlanStyles as styles } from '../styles';
 import { Colors } from '../tools/Values';
+import { pathsMatch, compare } from '../tools/Compare';
 
 export default function FlightPlanScreen({ navigation }) {
     const [activePath, setActivePath] = useState(true);
@@ -154,10 +155,6 @@ export default function FlightPlanScreen({ navigation }) {
         navigation.navigate("Home", { view: true, paths: 2 });
     };
 
-    const evaluate = () => {
-        Alert.alert("Evaluate Pressed");
-    };    
-
     // Get Paths from Storage on Mount
     useEffect(() => {
         const fetchPaths = async () => {
@@ -275,10 +272,20 @@ export default function FlightPlanScreen({ navigation }) {
                         <Text style={[styles.buttonText, {color: Colors.red}]}>Reset</Text>
                     </Pressable>
                     <Pressable
-                        style={[styles.button, {borderColor: Colors.blue}]}
-                        onPress={() => evaluate()}
+                        style={[
+                            styles.button,
+                            {borderColor: Colors.blue},
+                            !pathsMatch(mainPath, altPath) ? styles.disabled : null
+                        ]}
+                        onPress={() => pathsMatch(mainPath, altPath) ? compare() : Alert.alert("Path Origins and Destinations Must Match")}
                     >
-                        <Text style={[styles.buttonText, {color: Colors.blue}]}>Evaluate</Text>
+                        <Text
+                            style={[
+                                styles.buttonText,
+                                {color: Colors.blue},
+                                !pathsMatch(mainPath, altPath) ? {color: '#383838'} : null
+                            ]}
+                        >Compare</Text>
                     </Pressable>
                     <Pressable
                         style={[styles.button, {borderColor: Colors.blue, backgroundColor: Colors.blue}]}

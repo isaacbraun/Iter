@@ -14,9 +14,9 @@ import { PlanningInputsStyles as styles } from '../styles';
 function Input(props) {
     const [value, setValue] = useState(props.value ? props.value : '');
 
-    let inputText = "Midpoint";
+    let inputText = "Waypoint";
     if (props.start) {
-        inputText = "Start";
+        inputText = "Origin";
     }
     else if (props.dest) {
         inputText = "Destination";
