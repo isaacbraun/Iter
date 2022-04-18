@@ -16,14 +16,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useInterval } from 'usehooks-ts';
 import { useFocusEffect } from '@react-navigation/native';
 
-import { Colors } from '../components/Values';
-import { hoursDisplay } from '../components/Tools';
-import Search from '../components/Search';
-import { goToOrigin, markerFilters, getRouteArray } from '../components/HomeScreenFunctions';
+import { Colors } from '../tools/Values';
+import { hoursDisplay } from '../tools/Tools';
+import { goToOrigin, markerFilters, getRouteArray } from '../tools/HomeScreenFunctions';
+import { Search } from '../components';
 import { HomeScreenStyles as styles } from '../styles';
 
 // Reduce Size / Hide Metars
 // Hide Icon / Not
+{/* <MaterialCommunityIcons name="do-not-disturb" size={24} color="black" />
+<MaterialIcons name="not-interested" size={24} color="black" />
+<FontAwesome name="circle-o-notch" size={24} color="black" /> */}
 
 
 export default function HomeScreen({ route, navigation }) {
@@ -35,6 +38,7 @@ export default function HomeScreen({ route, navigation }) {
     const [timelineValue, setTimelineValue] = useState(hours);
     const [timelineState, setTimelineState] = useState(false);
 
+    // Timeline Play/Pause Function
     useInterval(() => {
         let newVal = timelineValue + 1;
         if (newVal <= timelineMax) {
@@ -72,6 +76,7 @@ export default function HomeScreen({ route, navigation }) {
         }
     };
 
+    // Get Flight Paths from Storage
     const getPaths = async () => {
         try {
             const mainPath = await AsyncStorage.getItem('@MainPath');
@@ -84,7 +89,6 @@ export default function HomeScreen({ route, navigation }) {
     }
 
     // Request User Location Access and Animate Map to Location
-    // eslint-disable-next-line no-unused-vars
     const getLocation = async () => {
         let { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
@@ -133,6 +137,7 @@ export default function HomeScreen({ route, navigation }) {
         }, [route.params])
     );
 
+    // Function Run When "View" Clicked in FlightPlanScreen
     const userInput = useRef(false);
     useEffect(() => {
         if (userInput.current) {

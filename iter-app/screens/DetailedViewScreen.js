@@ -6,9 +6,9 @@ import {
     ScrollView,
 } from 'react-native';
 import { DetailedViewStyles as styles } from '../styles';
-import { Decoder } from '../components/Decoder';
-import Navbar from '../components/Navbar';
-import { dayAbbr } from "../components/Values";
+import { Decoder } from '../tools/Decoder';
+import { dayAbbr } from "../tools/Values";
+import { Navbar } from '../components';
 
 export default function DetailedViewScreen({ route, navigation }) {
     const { data } = route.params;

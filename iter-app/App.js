@@ -5,13 +5,12 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { HomeScreen, FlightPlanScreen, SettingsScreen, DetailedViewScreen, SplashScreen } from './screens';
-
-import { getAllMetars, getAllTafs } from './components/Tools';
+import { getAllMetars, getAllTafs } from './tools/Tools';
 import airportData from './assets/airportData.json';
 
-const Stack = createNativeStackNavigator();
 // eslint-disable-next-line no-undef
 const converter = require('react-native-xml2js');
+const Stack = createNativeStackNavigator();
 
 async function storeArray(key, value) {
 	try {

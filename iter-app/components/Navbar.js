@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import { NavbarStyles as styles } from '../styles';
 import { Feather, Ionicons } from '@expo/vector-icons';
-import { Colors } from '../components/Values';
+import { Colors } from '../tools/Values';
 
 export default function Navbar(props) {
     return (

@@ -5,10 +5,10 @@ import {
     View,
     Pressable,
 } from 'react-native';
-import Search from '../components/Search';
+import { Colors } from '../tools/Values';
+import Search from './Search';
 import { Feather } from '@expo/vector-icons';
 import { PlanningInputStyles as styles } from '../styles';
-import { Colors } from '../components/Values';
 
 export default function PlanningInput(props) {
     const [value, setValue] = useState(props.value ? props.value : '');

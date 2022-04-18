@@ -1,5 +1,5 @@
 import React from 'react';
-import { level_1_airports, level_2_airports, level_3_airports, level_4_airports } from "../components/Values";
+import { level_1_airports, level_2_airports, level_3_airports, level_4_airports } from "./Values";
 import Marker from '../components/Marker';
 
 // Checks if Marker is Within View Region

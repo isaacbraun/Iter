@@ -6,7 +6,7 @@ import {
     Pressable
 } from 'react-native';
 import { Marker, Callout } from 'react-native-maps';
-import StationModel from '../components/StationModel';
+import StationModel from './StationModel';
 import { MarkerStyles as styles } from '../styles';
 
 export default function CustomMarker(props) {

@@ -5,8 +5,8 @@ import {
     View,
     Image,
 } from 'react-native';
-import { barbList, pennantList } from '../components/Values';
-import { Decoder } from '../components/Decoder';
+import { barbList, pennantList } from '../tools/Values';
+import { Decoder } from '../tools/Decoder';
 import { StationModelStyles as styles } from '../styles';
 
 export default function StationModel(props) {

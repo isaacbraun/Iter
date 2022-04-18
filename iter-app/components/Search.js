@@ -9,7 +9,7 @@ import {
 import { EvilIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SearchStyles as styles} from '../styles';
-import { Colors } from './Values';
+import { Colors } from '../tools/Values';
 
 export function matches(airport, query) {
     let icao, iata, name, municipality;

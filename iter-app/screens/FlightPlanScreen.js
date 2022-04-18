@@ -10,11 +10,10 @@ import {
     Alert
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import Navbar from '../components/Navbar';
-import PlanningInput from '../components/PlanningInput';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { Navbar, PlanningInput } from '../components';
 import { FlightPlanStyles as styles } from '../styles';
-import { Colors } from '../components/Values';
+import { Colors } from '../tools/Values';
 
 export default function FlightPlanScreen({ navigation }) {
     const [activePath, setActivePath] = useState(true);
