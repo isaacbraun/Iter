@@ -10,8 +10,7 @@ import {
     Alert
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { Navbar, PlanningInput } from '../components';
+import { Navbar, PlanningInputs } from '../components';
 import { FlightPlanStyles as styles } from '../styles';
 import { Colors } from '../tools/Values';
 
@@ -25,9 +24,6 @@ export default function FlightPlanScreen({ navigation }) {
             setActivePath(false);
         }
     };
-
-    const scrollRef = useRef();
-    // scrollRef.current.scrollToEnd({ animated: true });
 
     const [mainPath, setMainPath] = useState([{speed: '', alti: ''}, null, null]);
     const [altPath, setAltPath] = useState([{speed: '', alti: ''}, null, null]);
@@ -160,7 +156,7 @@ export default function FlightPlanScreen({ navigation }) {
 
     const evaluate = () => {
         Alert.alert("Evaluate Pressed");
-    };
+    };    
 
     // Get Paths from Storage on Mount
     useEffect(() => {
@@ -261,54 +257,13 @@ export default function FlightPlanScreen({ navigation }) {
                     </View>
 
                     {/* Path Inputs */}
-                    <KeyboardAwareScrollView
-                        style={styles.inputsContainer}
-                        keyboardDismissMode={false}
-                        ref={scrollRef}
-                    >
-                        { activePath ?
-                            mainPath.map((item, index) => {
-                                if (index != 0) {
-                                    return(
-                                        <PlanningInput
-                                            key={Math.random(index)}
-                                            index={index}
-                                            len={mainPath.length}
-                                            item={item}
-                                            value={item != null ? `${item.station_id[0]}: ${item.name}` : ''}
-                                            start={index == 1}
-                                            dest={index == mainPath.length - 1}
-                                            select={select}
-                                            add={add}
-                                            remove={remove}
-                                            clear={clear}
-                                        />
-                                    )
-                                }
-                            })
-                            : 
-                            altPath.map((item, index) => {
-                                if (index != 0) {
-                                    return(
-                                        <PlanningInput
-                                            key={Math.random(index)}
-                                            item={item}
-                                            value={item != null ? `${item.station_id[0]}: ${item.name}` : ''}
-                                            index={index}
-                                            len={altPath.length}
-                                            start={index == 1}
-                                            dest={index == altPath.length - 1}
-                                            select={select}
-                                            add={add}
-                                            remove={remove}
-                                            clear={clear}
-                                        />
-                                    )
-                                }
-                            })
-                        }
-                        {/* <View style={styles.inputsSpacer} /> */}
-                    </KeyboardAwareScrollView>
+                    <PlanningInputs
+                        pathArray={activePath ? mainPath : altPath}
+                        select={select}
+                        add={add}
+                        remove={remove}
+                        clear={clear}
+                    />
                 </View>
 
                 {/* Bottom Action Buttons */}

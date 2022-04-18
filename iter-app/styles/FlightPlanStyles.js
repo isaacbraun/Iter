@@ -117,14 +117,6 @@ const styles = StyleSheet.create({
         padding: 10,
     },
 
-    inputsContainer: {
-        marginTop: 30,
-        paddingHorizontal: 15,
-        width: '100%',
-        flexGrow: 1,
-        display: 'flex',
-        flexDirection: 'column',
-    },
     inputText: {
         marginBottom: 5,
         color: Colors.text,

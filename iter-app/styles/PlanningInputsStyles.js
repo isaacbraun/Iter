@@ -2,6 +2,14 @@ import { StyleSheet } from "react-native";
 import { Colors } from '../tools/Values';
 
 const styles = StyleSheet.create({
+    inputsContainer: {
+        marginTop: 30,
+        paddingHorizontal: 15,
+        width: '100%',
+        flexGrow: 1,
+        display: 'flex',
+        flexDirection: 'column',
+    },
     input: {
         height: 82,
         width: '100%',

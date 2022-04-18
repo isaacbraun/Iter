@@ -5,12 +5,13 @@ import {
     View,
     Pressable,
 } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Colors } from '../tools/Values';
 import Search from './Search';
 import { Feather } from '@expo/vector-icons';
-import { PlanningInputStyles as styles } from '../styles';
+import { PlanningInputsStyles as styles } from '../styles';
 
-export default function PlanningInput(props) {
+function Input(props) {
     const [value, setValue] = useState(props.value ? props.value : '');
 
     let inputText = "Midpoint";
@@ -73,5 +74,34 @@ export default function PlanningInput(props) {
                 </View>
             </View>
         </View>
+    )
+}
+
+export default function PlanningInputs(props) {
+    return(
+        <KeyboardAwareScrollView
+            style={styles.inputsContainer}
+            keyboardDismissMode={false}
+        >
+            { props.pathArray.map((item, index) => {
+                if (index != 0) {
+                    return(
+                        <Input
+                            key={Math.random(index)}
+                            index={index}
+                            len={props.pathArray.length}
+                            item={item}
+                            value={item != null ? `${item.station_id[0]}: ${item.name}` : ''}
+                            start={index == 1}
+                            dest={index == props.pathArray.length - 1}
+                            select={props.select}
+                            add={props.add}
+                            remove={props.remove}
+                            clear={props.clear}
+                        />
+                    )
+                }
+            })}
+        </KeyboardAwareScrollView>
     )
 }
