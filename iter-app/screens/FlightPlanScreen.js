@@ -275,15 +275,15 @@ export default function FlightPlanScreen({ navigation }) {
                         style={[
                             styles.button,
                             {borderColor: Colors.blue},
-                            !pathsMatch(mainPath, altPath) ? styles.disabled : null
+                            !pathsMatch(mainPath, altPath, false) ? styles.disabled : null
                         ]}
-                        onPress={() => pathsMatch(mainPath, altPath) ? compare() : Alert.alert("Path Origins and Destinations Must Match")}
+                        onPress={() => pathsMatch(mainPath, altPath, true) ? compare() : null}
                     >
                         <Text
                             style={[
                                 styles.buttonText,
                                 {color: Colors.blue},
-                                !pathsMatch(mainPath, altPath) ? {color: Colors.text} : null
+                                !pathsMatch(mainPath, altPath, false) ? {color: Colors.text} : null
                             ]}
                         >Compare</Text>
                     </Pressable>
