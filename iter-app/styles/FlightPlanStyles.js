@@ -28,8 +28,8 @@ const styles = StyleSheet.create({
         color: Colors.text,
     },
     disabled: {
-        borderColor: '#383838',
-        backgroundColor: Colors.text,
+        backgroundColor: "#959696",
+        borderColor: Colors.text,
     },
 
     inner: {

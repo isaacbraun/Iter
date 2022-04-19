@@ -161,15 +161,15 @@ export default function DetailedViewScreen({ route, navigation }) {
                                     { Object.prototype.hasOwnProperty.call(item, 'not_decoded') ?
                                         <Text style={styles.text}>Not Decoded: {item.not_decoded[0]}</Text>
                                     : null }
-                                    { Object.prototype.hasOwnProperty.call(item, 'sky_conditon') ?
+                                    { Object.prototype.hasOwnProperty.call(item, 'sky_condition') ?
                                         <Text style={styles.text}>Sky Cover: {item.sky_condition[0]["$"].sky_cover[0]}</Text>
                                     : null }
-                                    { Object.prototype.hasOwnProperty.call(item, 'sky_conditon') ?
+                                    { Object.prototype.hasOwnProperty.call(item, 'sky_condition') ?
                                         Object.prototype.hasOwnProperty.call(item.sky_condition[0]["$"], 'cloud_base_ft_agl') ?
                                             <Text style={styles.text}>Cloud Base: {item.sky_condition[0]["$"].cloud_base_ft_agl[0]} ft. AGL</Text>
                                         : null
                                     : null }
-                                    { Object.prototype.hasOwnProperty.call(item, 'sky_conditon') ?
+                                    { Object.prototype.hasOwnProperty.call(item, 'sky_condition') ?
                                         Object.prototype.hasOwnProperty.call(item.sky_condition[0]["$"], 'cloud_type') ?
                                             <Text style={styles.text}>Cloud Type: {item.sky_condition[0]["$"].cloud_type[0]}</Text>
                                         : null

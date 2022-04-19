@@ -283,7 +283,7 @@ export default function FlightPlanScreen({ navigation }) {
                             style={[
                                 styles.buttonText,
                                 {color: Colors.blue},
-                                !pathsMatch(mainPath, altPath) ? {color: '#383838'} : null
+                                !pathsMatch(mainPath, altPath) ? {color: Colors.text} : null
                             ]}
                         >Compare</Text>
                     </Pressable>

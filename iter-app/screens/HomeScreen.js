@@ -18,6 +18,7 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import { Colors } from '../tools/Values';
 import { hoursDisplay } from '../tools/Tools';
+import { pathsExact } from '../tools/Compare';
 import { goToOrigin, markerFilters, getRouteArray } from '../tools/HomeScreenFunctions';
 import { Search } from '../components';
 import { HomeScreenStyles as styles } from '../styles';
@@ -136,7 +137,7 @@ export default function HomeScreen({ route, navigation }) {
     // Function Run When "View" Clicked in FlightPlanScreen
     const userInput = useRef(false);
     useEffect(() => {
-        if (userInput.current) {
+        if (userInput.current && mainPath) {
             const startLat = parseFloat(mainPath[1].latitude[0]);
             const startLng = parseFloat(mainPath[1].longitude[0])
             const destLat = parseFloat(mainPath[mainPath.length - 1].latitude[0]);
@@ -196,7 +197,8 @@ export default function HomeScreen({ route, navigation }) {
                         <Polyline
                             coordinates={getRouteArray(altPath)}
                             strokeColor={Colors.green}
-                            strokeWidth={5}
+                            strokeWidth={4}
+                            lineDashPattern={pathsExact(mainPath, altPath) ? [2, 7] : null}
                         /> : null
                     }
                 </MapView>
