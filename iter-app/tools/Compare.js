@@ -1,6 +1,8 @@
 // import React from 'react';
 import { Alert } from 'react-native';
 
+// Check if Two Paths Have Same Origin/Destination
+// Also Does Input Validation and Alerts Reason if alert==true
 export function pathsMatch(main, alt, alert) {
     if (main[0].speed == '') {
         if (alert) Alert.alert("Main Path Cruise Speed Required");
@@ -45,6 +47,7 @@ export function pathsMatch(main, alt, alert) {
     }
 }
 
+// Checks if Two Paths are Exactly the Same
 export function pathsExact(main, alt) {
     for (let i = 1; i < main.length; i++) {
         if (main[i].station_id[0] != alt[i].station_id[0]) {
@@ -81,6 +84,18 @@ export function distance(lat1, lat2, lon1, lon2) {
     // calculate the result and convert to miles
     return((c * r) * 0.6213711922);
 }
+
+// Return Estimated Travel Speed in Mph
+export function speed(speed, altitude) {
+    return speed * 1.15078;
+}
+
+// Return Estimated Travel Time in hours
+export function time(distance, speed) {
+    return distance / speed;
+}
+
+export function 
 
 export function compare(main, alt) {
     Alert.alert("Compare Success");
