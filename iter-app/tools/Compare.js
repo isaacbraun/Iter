@@ -59,30 +59,31 @@ export function pathsExact(main, alt) {
 
 // Calculate Distance Between Two Points on Earth
 // https://www.geeksforgeeks.org/program-distance-two-points-earth/
-export function distance(lat1, lat2, lon1, lon2) {
+export function distance(startLat, startLng, destLat, destLng) {
     // The math module contains a function
     // named toRadians which converts from
     // degrees to radians.
-    lon1 =  lon1 * Math.PI / 180;
-    lon2 = lon2 * Math.PI / 180;
-    lat1 = lat1 * Math.PI / 180;
-    lat2 = lat2 * Math.PI / 180;
+    startLat = Math.toRadians(startLat);
+    startLng = Math.toRadians(startLng);
+    destLat = Math.toRadians(destLat);
+    destLng = Math.toRadians(destLng);
 
     // Haversine formula
-    let dlon = lon2 - lon1;
-    let dlat = lat2 - lat1;
+    let dlon = destLng - startLng;
+    let dlat = destLat - startLat;
     let a = Math.pow(Math.sin(dlat / 2), 2)
-                + Math.cos(lat1) * Math.cos(lat2)
+                + Math.cos(startLat) * Math.cos(destLat)
                 * Math.pow(Math.sin(dlon / 2),2);
             
     let c = 2 * Math.asin(Math.sqrt(a));
 
-    // Radius of earth in kilometers. Use 3956
-    // for miles
-    let r = 6371;
+    // Radius of earth.
+    // Use 3956 for miles
+    // Use 6371 for Km
+    let r = 3956;
 
-    // calculate the result and convert to miles
-    return((c * r) * 0.6213711922);
+    // calculate the result
+    return(c * r);
 }
 
 // Return Estimated Travel Speed in Mph
@@ -95,7 +96,37 @@ export function time(distance, speed) {
     return distance / speed;
 }
 
-export function 
+// https://stackoverflow.com/questions/46590154/calculate-bearing-between-2-points-with-javascript
+export function bearing(startLat, startLng, destLat, destLng){
+    startLat = Math.toRadians(startLat);
+    startLng = Math.toRadians(startLng);
+    destLat = Math.toRadians(destLat);
+    destLng = Math.toRadians(destLng);
+  
+    const y = Math.sin(destLng - startLng) * Math.cos(destLat);
+    const x = Math.cos(startLat) * Math.sin(destLat) -
+          Math.sin(startLat) * Math.cos(destLat) * Math.cos(destLng - startLng);
+    const brng = Math.toDegrees(Math.atan2(y, x));
+    return (brng + 360) % 360;
+}
+
+export function pointsAlongPath(startLat, startLng, destLat, destLng) {
+    const radius = 3956;
+    const bearing = bearing(startLat, startLng, destLat, destLng);
+    const distance = distance(startLat, startLng, destLat, destLng);
+    const limit = distance % 10;
+    let points = [];
+
+    for (let i = 10; i < limit; i += 10) {
+        const lat = Math.asin(Math.sin(startLat) * Math.cos(i / radius) +
+                    Math.cos(startLat) * Math.sin(i / radius) * Math.cos(bearing));
+        const lng = startLng + Math.atan2(Math.sin(bearing) * Math.sin(i / radius) * Math.cos(startLat),
+                    Math.cos(i / radius) - Math.sin(startLat) * Math.sin(lat));
+        points.push([lat, lng]);
+    }
+    
+    return points;
+}
 
 export function compare(main, alt) {
     Alert.alert("Compare Success");
