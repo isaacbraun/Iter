@@ -35,3 +35,4 @@ A METAR Browsing &amp; Flight Charting Mobile Application
 - Possible Grading scale:
     - Assign point values to different criteria, greater in some areas.
     - Find grade by (points achieved / points possible) = 0.XXX value
+    - Each Station gets a grade, averaged and compared. Higher value is better.
