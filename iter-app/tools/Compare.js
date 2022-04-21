@@ -114,18 +114,23 @@ export function pointsAlongPath(startLat, startLng, destLat, destLng) {
     const radius = 3956;
     const bearing = bearing(startLat, startLng, destLat, destLng);
     const distance = distance(startLat, startLng, destLat, destLng);
-    const limit = distance % 10;
+    const interval = 20;
     let points = [];
 
-    for (let i = 10; i < limit; i += 10) {
-        const lat = Math.asin(Math.sin(startLat) * Math.cos(i / radius) +
-                    Math.cos(startLat) * Math.sin(i / radius) * Math.cos(bearing));
-        const lng = startLng + Math.atan2(Math.sin(bearing) * Math.sin(i / radius) * Math.cos(startLat),
-                    Math.cos(i / radius) - Math.sin(startLat) * Math.sin(lat));
+    for (let i = 1; i <= distance % interval; i ++) {
+        const destDistance = interval * i;
+        const lat = Math.asin(Math.sin(startLat) * Math.cos(destDistance / radius) +
+                    Math.cos(startLat) * Math.sin(destDistance / radius) * Math.cos(bearing));
+        const lng = startLng + Math.atan2(Math.sin(bearing) * Math.sin(destDistance / radius) * Math.cos(startLat),
+                    Math.cos(destDistance / radius) - Math.sin(startLat) * Math.sin(lat));
         points.push([lat, lng]);
     }
     
     return points;
+}
+
+export function getPoints(path) {
+
 }
 
 export function compare(main, alt) {
