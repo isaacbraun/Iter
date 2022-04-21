@@ -131,7 +131,17 @@ export function calculatePointsAlongPath(startLat, startLng, destLat, destLng) {
     return points;
 }
 
-export function fetchPoints(pointString) {
+export function getPoints(pointString) {
+    const converter = require('react-native-xml2js');
+
+    return fetch("https://www.aviationweather.gov/adds/dataserver_current/current/metars.cache.xml")
+    .then((response) => { return response.text() }).then(value => converter.parseString(value, function (err, result) {
+				setMetars(result.response.data[0].METAR);
+			}));
+    .catch((error) => {
+        console.error(error);
+        return null;
+    })
     // https://www.aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&requestType=retrieve&format=xml&flightPath=15;KCLE;KCHA&hoursBeforeNow=3&mostRecentForEachStation=constraint
 }
 
