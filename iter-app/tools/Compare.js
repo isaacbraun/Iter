@@ -110,27 +110,42 @@ export function bearing(startLat, startLng, destLat, destLng){
     return (brng + 360) % 360;
 }
 
-export function pointsAlongPath(startLat, startLng, destLat, destLng) {
+export function calculatePointsAlongPath(startLat, startLng, destLat, destLng) {
     const radius = 3956;
     const bearing = bearing(startLat, startLng, destLat, destLng);
     const distance = distance(startLat, startLng, destLat, destLng);
     const interval = 20;
     let points = [];
 
-    for (let i = 1; i <= distance % interval; i ++) {
+    for (let i = 1; i <= distance % interval; i++) {
         const destDistance = interval * i;
         const lat = Math.asin(Math.sin(startLat) * Math.cos(destDistance / radius) +
                     Math.cos(startLat) * Math.sin(destDistance / radius) * Math.cos(bearing));
         const lng = startLng + Math.atan2(Math.sin(bearing) * Math.sin(destDistance / radius) * Math.cos(startLat),
                     Math.cos(destDistance / radius) - Math.sin(startLat) * Math.sin(lat));
+
+        
         points.push([lat, lng]);
     }
     
     return points;
 }
 
-export function getPoints(path) {
+export function fetchPoints(pointString) {
+    // https://www.aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&requestType=retrieve&format=xml&flightPath=15;KCLE;KCHA&hoursBeforeNow=3&mostRecentForEachStation=constraint
+}
 
+export function getPoints(path) {
+    let points = [];
+    for (let i = 1; i < path.length - 2; i++) {
+        points.push(path[i])
+        points.concat(calculatePointsAlongPath(
+            path[i].lattitude[0],
+            path[i].longitude[0],
+            path[i + 1].latitude[0],
+            path[i + 1].longitude[0]
+        ))
+    }
 }
 
 export function compare(main, alt) {
