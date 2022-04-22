@@ -286,7 +286,7 @@ export default function FlightPlanScreen({ navigation }) {
                             {borderColor: Colors.blue},
                             !pathsMatch(mainPath, altPath, false) ? styles.disabled : null
                         ]}
-                        onPress={() => pathsMatch(mainPath, altPath, true) ? compare() : null}
+                        onPress={() => pathsMatch(mainPath, altPath, true) ? compare(mainPath, altPath) : null}
                     >
                         <Text
                             style={[

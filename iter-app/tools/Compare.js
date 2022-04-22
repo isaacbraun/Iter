@@ -117,6 +117,7 @@ export async function getPathStations(path, info) {
     let stations = [];
     let stationString = "";
 
+    console.log(path);
     for (const point of path) {
         stationString += `${point.station_id[0]};`;
     }
@@ -144,10 +145,12 @@ export function fetchTafs(id, start, end) {
 // Takes Array of Stations and Adds Tafs For Relevant Time
 export async function addTafs(stations_in, info, origin) {
     let stations_out = stations_in;
-    let startYear = info.date.getYear();
-    let startMonth = info.date.getMonth();
-    let startDay = info.date.getDate();
-    let startHours = info.date.getHours();
+    let date = info.date != '' ? info.date : new Date();
+
+    let startYear = date.getYear();
+    let startMonth = date.getMonth();
+    let startDay = date.getDate();
+    let startHours = date.getHours();
 
     for (let i = 0; i < stations_out.length; i++) {
         if (stations_out[i].station_id[0] != origin) {
@@ -169,7 +172,7 @@ export async function addTafs(stations_in, info, origin) {
                     destYear += 1;
                     destMonth = 0;
                 }
-                else if (isLastDayOfMonth(info.date)) {
+                else if (isLastDayOfMonth(date)) {
                     destMonth += 1;
                     destDay = 1;
                 }
@@ -179,11 +182,14 @@ export async function addTafs(stations_in, info, origin) {
                 
                 destHours = destHours - 24;
             }
+
+            const startDate = new Date(destYear, destMonth, destDay, destHours - 1, 30);
+            const endDate = new Date(destYear, destMonth, destDay, destHours, 30);
         
             await fetchTafs(
                 stations_out[i].station_id[0],
-                new Date(destYear, destMonth, destDay, destHours - 1, 30),
-                new Date(destYear, destMonth, destDay, destHours, 30)
+                startDate.toISOString(),
+                endDate.toISOString()
             ).then(value => converter.parseString(value, function (err, result) {
                 stations_out[i].tafs = result.response.data[0].TAF;
             }));
@@ -209,6 +215,7 @@ export function gradePath(path_in) {
     let amount = 0;
 
     const stations = getPathStations(path, info);
+    console.log(stations);
 
     for (const station of stations) {
         grade += gradeStation(station);
