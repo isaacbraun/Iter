@@ -26,13 +26,15 @@ export default function FlightPlanScreen({ navigation }) {
         }
     };
 
-    const [mainPath, setMainPath] = useState([{speed: '', alti: ''}, null, null]);
-    const [altPath, setAltPath] = useState([{speed: '', alti: ''}, null, null]);
+    const [mainPath, setMainPath] = useState([{speed: '', alti: '', date: ''}, null, null]);
+    const [altPath, setAltPath] = useState([{speed: '', alti: '', date: ''}, null, null]);
 
     const [mainSpeed, setMainSpeed] = useState('');
     const [mainAlti, setMainAlti] = useState('');
+    const [mainDate, setMainDate] = useState('');
     const [altSpeed, setAltSpeed] = useState('');
     const [altAlti, setAltAlti] = useState('');
+    const [altDate, setAltDate] = useState('');
     const [store, setStore] = useState(true);
 
     const handleSpeed = (speed) => {
@@ -47,6 +49,9 @@ export default function FlightPlanScreen({ navigation }) {
         activePath ? setMainPath(tempArray) : setAltPath(tempArray);
         setStore(!store);
     };
+    const handleDate = (date) => {
+        return null;
+    };
 
     const getPaths = async () => {
         try {
@@ -59,11 +64,13 @@ export default function FlightPlanScreen({ navigation }) {
             mainParsed !== null ? setMainPath(mainParsed) : null;
             altParsed !== null ? setAltPath(altParsed) : null;
             
-            setMainSpeed(mainParsed !== null ? mainParsed[0].speed : '')
-            setMainAlti(mainParsed != null ? mainParsed[0].alti : '')
+            setMainSpeed(mainParsed !== null ? mainParsed[0].speed : '');
+            setMainAlti(mainParsed != null ? mainParsed[0].alti : '');
+            setMainDate(mainParsed !== null ? mainParsed[0].date : '');
 
             setAltSpeed(altParsed !== null ? altParsed[0].speed : '');
             setAltAlti(altParsed !== null ? altParsed[0].alti : '');
+            setAltDate(altParsed !== null ? altParsed[0].date : '');
         } catch(e) {
             console.log("Search Read Error: ", e);
         }
@@ -117,14 +124,16 @@ export default function FlightPlanScreen({ navigation }) {
 
     const reset = () => {
         if (activePath) {
-            setMainPath([{speed: '', alti: ''}, null, null]);
+            setMainPath([{speed: '', alti: '', date: ''}, null, null]);
             setMainSpeed('');
             setMainAlti('');
+            setMainDate('');
             setStore(!store);
         } else {
-            setAltPath([{speed: '', alti: ''}, null, null]);
+            setAltPath([{speed: '', alti: '', date: ''}, null, null]);
             setAltSpeed('');
             setAltAlti('');
+            setAltDate('');
             setStore(!store);
         }
     };
