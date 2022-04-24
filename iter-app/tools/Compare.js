@@ -117,7 +117,6 @@ export async function getPathStations(path, info) {
     let stations = [];
     let stationString = "";
 
-    console.log(path);
     for (const point of path) {
         stationString += `${point.station_id[0]};`;
     }
@@ -126,7 +125,7 @@ export async function getPathStations(path, info) {
         stations = result.response.data[0].METAR;
     }))
 
-    stations = addTafs(stations, info, path[0].station_id[0])
+    stations = await addTafs(stations, info, path[0].station_id[0])
     
     return stations;
 }
@@ -201,11 +200,12 @@ export async function addTafs(stations_in, info, origin) {
 
 // Takes Station and Returns Grade for Weather Condition
 export function gradeStation(station) {
+    console.log(station);
     return 100;
 }
 
 // Take Flight Path and Returns Grade for Weather Condition
-export function gradePath(path_in) {
+export async function gradePath(path_in) {
     // const info = path_in[0];
     // const path = path_in.slice(1);
     let path = path_in;
@@ -214,12 +214,11 @@ export function gradePath(path_in) {
     let grade = 0;
     let amount = 0;
 
-    const stations = getPathStations(path, info);
-    console.log(stations);
+    const stations = await getPathStations(path, info);
 
     for (const station of stations) {
         grade += gradeStation(station);
-        amount ++;
+        amount++;
     }
 
     return grade / amount;
@@ -229,7 +228,7 @@ export function compare(main, alt) {
     const mainGrade = gradePath(main);
     const altGrade = gradePath(alt);
 
-    const result = mainGrade > altGrade;
+    const result = mainGrade >= altGrade;
 
     Alert.alert(`The ${result ? "Main" : "Alternate"} Path has more favorable weather.`);
     return `The ${result ? "Main" : "Alternate"} Path has more favorable weather.`;
