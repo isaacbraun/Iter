@@ -11,20 +11,22 @@ A METAR Browsing &amp; Flight Charting Mobile Application
     - Smaller gap between temp and dewpoint is worse. Most thunderstorms happen above 21 C
 - Wind Speed:
     - Points: 20
-    - Lower better, gust lower also
+    - Lower better
+- Wind Direction:
+    - Points: 30
+    - Tailwind Good, start from 90deg crosswind and add up.
+- Wind Gust:
+    - Points: 10
+    - Lower or None Better
 - Visibility:
-    - Points: 15
-    - Higher better, more important at origin and destination
-- Altimeter & Pressure:
-    - Points: 
-    - Might have to include with consideration of station elevation
+    - Points: 10
+    - Higher better, start grading at above 5 miles
 - Sky Cover:
     - Points: 15
     - CLR > SKC > FEW > SCT > BKN > OVC > OVX
-    - Miss should not be considered?
 - Ceiling:
     - Points: 15
-    - IF provided - higher is better
+    - Grading Starting at 3000 ft AGl Ceiling and 5 miles Visiblity
 - Flight Category:
     - Points: 30
     - VFR > MVFR > IFR > LIFR
