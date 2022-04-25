@@ -8,7 +8,7 @@ A METAR Browsing &amp; Flight Charting Mobile Application
     - Above 35/40 C Not Good
 - Dewpoint:
     - Points: 10
-    - High not good, close to temp not good. Most thunderstorms happen above 21 C
+    - Smaller gap between temp and dewpoint is worse. Most thunderstorms happen above 21 C
 - Wind Speed:
     - Points: 20
     - Lower better, gust lower also
@@ -19,7 +19,7 @@ A METAR Browsing &amp; Flight Charting Mobile Application
     - Points: 
     - Might have to include with consideration of station elevation
 - Sky Cover:
-    - Points: 10
+    - Points: 15
     - CLR > SKC > FEW > SCT > BKN > OVC > OVX
     - Miss should not be considered?
 - Ceiling:
