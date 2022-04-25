@@ -13,16 +13,16 @@ export function pathsMatch(main, alt, alert) {
         if (alert) Alert.alert("Main Path Cruise Speed Required");
         return false;
     }
-    else if (main[0].alti == '') {
-        if (alert) Alert.alert("Main Path Altitude Required");
+    else if (main[0].date == '') {
+        if (alert) Alert.alert("Main Path Date Required");
         return false;
     }
     else if (alt[0].speed == '') {
         if (alert) Alert.alert("Alternate Path Cruise Speed Required");
         return false;
     }
-    else if (alt[0].alti == '') {
-        if (alert) Alert.alert("Alternate Path Altitude Required");
+    else if (alt[0].date == '') {
+        if (alert) Alert.alert("Alternate Path Date Required");
         return false;
     }
     else if (main == null) {
@@ -62,14 +62,32 @@ export function pathsExact(main, alt) {
     return true;
 }
 
+export function toRadians(deg) {
+    return deg * Math.PI / 180;
+}
+
+// https://stackoverflow.com/questions/46590154/calculate-bearing-between-2-points-with-javascript
+export function bearing(startLat, startLng, destLat, destLng){
+    startLat = toRadians(startLat);
+    startLng = toRadians(startLng);
+    destLat = toRadians(destLat);
+    destLng = toRadians(destLng);
+
+    const y = Math.sin(destLng - startLng) * Math.cos(destLat);
+    const x = Math.cos(startLat) * Math.sin(destLat) -
+          Math.sin(startLat) * Math.cos(destLat) * Math.cos(destLng - startLng);
+    const brng = Math.toDegrees(Math.atan2(y, x));
+    return (brng + 360) % 360;
+}
+
 // Calculate Distance Between Two Points on Earth
 // https://www.geeksforgeeks.org/program-distance-two-points-earth/
 export function distance(startLat, startLng, destLat, destLng) {
     // Convert to Radians
-    startLat = startLat * Math.PI / 180;
-    startLng = startLng * Math.PI / 180;
-    destLat = destLat * Math.PI / 180;
-    destLng = destLng * Math.PI / 180;
+    startLat = toRadians(startLat);
+    startLng = toRadians(startLng);
+    destLat = toRadians(destLat);
+    destLng = toRadians(destLng);
 
     // Haversine formula
     let dlon = destLng - startLng;
@@ -89,14 +107,9 @@ export function distance(startLat, startLng, destLat, destLng) {
     return(c * r);
 }
 
-// Return Estimated Travel Speed in Mph
-export function speed(speed, altitude) {
-    return speed * 1.15078;
-}
-
 // Return Estimated Travel Time in Hours
-export function time(distance, info) {
-    return distance / speed(info.speed, info.alti);
+export function time(distance, speed) {
+    return distance / (speed * 1.15078);
 }
 
 // Get Stations Along Flight Path Within 15 Mile Radius
@@ -159,7 +172,7 @@ export async function addTafs(stations_in, info, origin) {
                     stations_out[i].latitude[0],
                     stations_out[i].longitude[0],
                 ),
-                info
+                info.speed
             );
             let destYear = startYear;
             let destMonth = startMonth;
@@ -198,12 +211,12 @@ export async function addTafs(stations_in, info, origin) {
 }
 
 // Takes Station and Returns Grade for Weather Condition
-export function gradeStation(station) {
-    const pointsPossible = 85;
+export function gradeStation(station, bearing) {
+    let pointsPossible = 100; // 160
     let points = 0;
     const taf = Object.prototype.hasOwnProperty.call(station, 'taf') ? station.taf : null;
 
-    // Temperature
+    // Temperature - 10 Points
     let temp = station.temp_c[0];
     if (taf && Object.prototype.hasOwnProperty.call(taf, 'temperature')) {
         temp = taf.temperature[1];
@@ -220,7 +233,7 @@ export function gradeStation(station) {
         points += 10;
     }
 
-    // Dewpoint
+    // Dewpoint - 10 Points
     const dewpoint = station.dewpoint_c;
     const dewpointGap = temp - dewpoint;
     if (dewpoint >= 21) {
@@ -242,21 +255,26 @@ export function gradeStation(station) {
         points += 1;
     }
 
-    // Wind Speed & Gust
+    // Wind Speed, Direction & Gust - 20 Points, 30 Points, 10 points respectively
     let windSpeed = null;
-    let windGrade = 20;
+    let direction = null;
+    let windSpeedGrade = 20;
+    
     if (Object.prototype.hasOwnProperty.call(station, 'wind_speed_kt')) {
+        direction = Number(station.wind_dir_degrees);
         windSpeed = station.wind_speed_kt;
     }
     if (taf && Object.prototype.hasOwnProperty.call(taf, 'wind_speed_kt')) {
+        direction = Number(taf.wind_dir_degrees[0]);
         windSpeed = taf.wind_speed_kt[0];
     }
     if (windSpeed) {
         for (let i = 0; i < windSpeed % 5; i++) {
-            if (windGrade > 3) {
-                windGrade -= 3;
+            if (windSpeedGrade > 3) {
+                windSpeedGrade -= 3;
             }
         }
+        console.log(direction, bearing)
     } else {
         points += 20;
     }
@@ -264,23 +282,20 @@ export function gradeStation(station) {
         console.log(station.wind_gust_kt);
     }
 
-    // Visibility
-    // if (Object.prototype.hasOwnProperty.call(station, 'visibility_statute_mi')) {
-    //     const visibility = station.visibility_statute_mi;
-    //     if (visibility >= 20) {
-    //         points += 15;
-    //     }
-    //     else if (visibility >= 15) {
-    //         points += 10;
-    //     }
-    //     else if (visibility >= 10) {
-    //         points += 5;
-    //     }
-    // } else {
-    //     points += 15;
-    // }
+    // Visibility - 10 Points
+    if (Object.prototype.hasOwnProperty.call(station, 'visibility_statute_mi')) {
+        const visibility = station.visibility_statute_mi;
+        if (visibility >= 15) {
+            points += 10;
+        }
+        else if (visibility >= 10) {
+            points += 5;
+        }
+    } else {
+        points += 10;
+    }
 
-    // Sky Cover
+    // Sky Cover - 15 points Condition - 15 Points Ceiling
     let skyCondition = null;
     if (Object.prototype.hasOwnProperty.call(station, "sky_condition")) {
         skyCondition = station.sky_condition[0]["$"];
@@ -313,34 +328,29 @@ export function gradeStation(station) {
                 break;
         }
 
-        // if (Object.prototype.hasOwnProperty.call(skyCondition, "cloud_base_ft_agl")) {
-        //     const ceiling = skyCondition.cloud_base_ft_agl;
-        //     if (ceiling <= 1000) {
-        //         points += 5
-        //     }
-        //     else if (ceiling <= 1500) {
-        //         points += 10;
-        //     }
-        //     else if (ceiling <= 2000) {
-        //         points += 13
-        //     } else {
-        //         points += 15;
-        //     }
-        // } else {
-        //     points += 15;
-        // }
+        if (Object.prototype.hasOwnProperty.call(skyCondition, "cloud_base_ft_agl")) {
+            const ceiling = skyCondition.cloud_base_ft_agl;
+            if (ceiling >= 15000) {
+                points += 15
+            }
+            else if (ceiling >= 10000) {
+                points += 10;
+            }
+            else if (ceiling >= 8000) {
+                points += 5;
+            }
+        } else {
+            points += 15;
+        }
     } else {
         points += 15;
     }
 
-    // FLight Category
+    // FLight Category - 30 Points
     let category = station.flight_category[0];
-    let vis = null;
     if (taf) {
-        if (Object.prototype.hasOwnProperty.call(station, 'visibility_statute_mi')) {
-            vis = station.visibility_statute_mi;
-        }
-        if (taf && Object.prototype.hasOwnProperty.call(taf, 'visibility_statute_mi')) {
+        let vis = null;
+        if (Object.prototype.hasOwnProperty.call(taf, 'visibility_statute_mi')) {
             vis = taf.visibility_statute_mi[0];
         }
         if (vis && Object.prototype.hasOwnProperty.call(skyCondition, "cloud_base_ft_agl")) {
@@ -377,9 +387,15 @@ export async function gradePath(path_in) {
     let amount = 0;
 
     const stations = await getPathStations(path, info);
+    const pathBearing = bearing(
+        path[0].latitude[0],
+        path[0].longitude[0],
+        path[path.length - 1].latitude[0],
+        path[path.length - 1].longitude[0]
+    );
 
     for (const station of stations) {
-        grade += gradeStation(station);
+        grade += gradeStation(station, pathBearing);
         amount++;
     }
     console.log(grade, amount);
