@@ -44,7 +44,7 @@ export default function DetailedViewScreen({ route, navigation }) {
                         <Text style={styles.text}>Observation Time: {dateString(new Date(data.observation_time[0]))}</Text>
                         <Text style={styles.text}>METAR Type: {data.metar_type[0]}</Text>
                         <Text style={styles.text}>Temperature: {data.temp_c[0]}&deg;C, {metar.temp()}&deg;F</Text>
-                        <Text style={styles.text}>Dewpoint: {metar.dew()}&deg;C</Text>
+                        <Text style={styles.text}>Dewpoint: {data.dewpoint_c}&deg;C, {metar.dew()}&deg;F</Text>
                         <Text style={styles.text}>Wind Direction: {metarDirection}&deg;</Text>
                         <Text style={styles.text}>Wind Speed: {metarSpeed} kts</Text>
                         { metar.gust() ?
