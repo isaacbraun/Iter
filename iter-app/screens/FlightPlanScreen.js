@@ -26,26 +26,18 @@ export default function FlightPlanScreen({ navigation }) {
         }
     };
 
-    const [mainPath, setMainPath] = useState([{speed: '', alti: '', date: ''}, null, null]);
-    const [altPath, setAltPath] = useState([{speed: '', alti: '', date: ''}, null, null]);
+    const [mainPath, setMainPath] = useState([{speed: '', date: ''}, null, null]);
+    const [altPath, setAltPath] = useState([{speed: '', date: ''}, null, null]);
 
     const [mainSpeed, setMainSpeed] = useState('');
-    const [mainAlti, setMainAlti] = useState('');
     const [mainDate, setMainDate] = useState('');
     const [altSpeed, setAltSpeed] = useState('');
-    const [altAlti, setAltAlti] = useState('');
     const [altDate, setAltDate] = useState('');
     const [store, setStore] = useState(true);
 
     const handleSpeed = (speed) => {
         let tempArray = activePath ? mainPath : altPath;
         tempArray[0].speed = speed;
-        activePath ? setMainPath(tempArray) : setAltPath(tempArray);
-        setStore(!store);
-    };
-    const handleAlti = (alti) => {
-        let tempArray = activePath ? mainPath : altPath;
-        tempArray[0].alti = alti;
         activePath ? setMainPath(tempArray) : setAltPath(tempArray);
         setStore(!store);
     };
@@ -65,11 +57,9 @@ export default function FlightPlanScreen({ navigation }) {
             altParsed !== null ? setAltPath(altParsed) : null;
             
             setMainSpeed(mainParsed !== null ? mainParsed[0].speed : '');
-            setMainAlti(mainParsed != null ? mainParsed[0].alti : '');
             setMainDate(mainParsed !== null ? mainParsed[0].date : '');
 
             setAltSpeed(altParsed !== null ? altParsed[0].speed : '');
-            setAltAlti(altParsed !== null ? altParsed[0].alti : '');
             setAltDate(altParsed !== null ? altParsed[0].date : '');
         } catch(e) {
             console.log("Search Read Error: ", e);
@@ -124,15 +114,13 @@ export default function FlightPlanScreen({ navigation }) {
 
     const reset = () => {
         if (activePath) {
-            setMainPath([{speed: '', alti: '', date: ''}, null, null]);
+            setMainPath([{speed: '', date: ''}, null, null]);
             setMainSpeed('');
-            setMainAlti('');
             setMainDate('');
             setStore(!store);
         } else {
-            setAltPath([{speed: '', alti: '', date: ''}, null, null]);
+            setAltPath([{speed: '', date: ''}, null, null]);
             setAltSpeed('');
-            setAltAlti('');
             setAltDate('');
             setStore(!store);
         }
@@ -239,7 +227,7 @@ export default function FlightPlanScreen({ navigation }) {
                                 />
                             </View>
                         </View>
-                        <View style={{width: 15}} />
+                        {/* <View style={{width: 15}} />
                         <View style={styles.speedAltiInner}>
                             <Text style={styles.inputText}>Cruise Altitude (ft)</Text>
                             <View style={styles.inputBoxContainer}>
@@ -259,7 +247,7 @@ export default function FlightPlanScreen({ navigation }) {
                                     returnKeyType={ 'done' }
                                 />
                             </View>
-                        </View>
+                        </View> */}
                     </View>
 
                     {/* Path Inputs */}
