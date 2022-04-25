@@ -36,10 +36,10 @@ export class Decoder {
         let temp = null;
         
         if (Object.prototype.hasOwnProperty.call(this.data, 'temp_c')) {
-            temp = (this.data.temp_c * 9/5) + 32;
+            temp = Math.round((this.data.temp_c * 9/5) + 32);
         }
         if (this.taf && Object.prototype.hasOwnProperty.call(this.taf, 'temperature')) {
-            temp = (this.taf.temperature[1] * 9/5) + 32;
+            temp = Math.round((this.taf.temperature[1] * 9/5) + 32);
         }
 
         return temp;
@@ -62,7 +62,7 @@ export class Decoder {
     
     dew() {
         if (Object.prototype.hasOwnProperty.call(this.data, 'dewpoint_c')) {
-            return (this.data.dewpoint_c * 9/5) + 32;
+            return Math.round((this.data.dewpoint_c * 9/5) + 32);
         }
     }
     
