@@ -141,6 +141,21 @@ const styles = StyleSheet.create({
         height: 200,
     },
 
+    date: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        flexGrow: 1,
+        borderRadius: 3,
+        borderWidth: 1,
+        borderColor: Colors.text,
+        backgroundColor: Colors.background,
+        height: 45,
+    },
+    dateText: {
+        padding: 10,
+    },
+
     bottom: {
         width: '100%',
         height: 45,

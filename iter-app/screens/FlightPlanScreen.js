@@ -10,9 +10,12 @@ import {
     Alert
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+
 import { Navbar, PlanningInputs } from '../components';
 import { FlightPlanStyles as styles } from '../styles';
 import { Colors } from '../tools/Values';
+import { dateTimeString } from '../tools/Tools';
 import { pathsMatch, compare } from '../tools/Compare';
 
 export default function FlightPlanScreen({ navigation }) {
@@ -26,13 +29,13 @@ export default function FlightPlanScreen({ navigation }) {
         }
     };
 
-    const [mainPath, setMainPath] = useState([{speed: '', date: ''}, null, null]);
-    const [altPath, setAltPath] = useState([{speed: '', date: ''}, null, null]);
+    const [mainPath, setMainPath] = useState([{speed: '', date: null}, null, null]);
+    const [altPath, setAltPath] = useState([{speed: '', date: null}, null, null]);
 
     const [mainSpeed, setMainSpeed] = useState('');
-    const [mainDate, setMainDate] = useState('');
+    const [mainDate, setMainDate] = useState(new Date());
     const [altSpeed, setAltSpeed] = useState('');
-    const [altDate, setAltDate] = useState('');
+    const [altDate, setAltDate] = useState(new Date());
     const [store, setStore] = useState(true);
 
     const handleSpeed = (speed) => {
@@ -41,8 +44,11 @@ export default function FlightPlanScreen({ navigation }) {
         activePath ? setMainPath(tempArray) : setAltPath(tempArray);
         setStore(!store);
     };
-    const handleDate = (date) => {
-        return null;
+
+    const [dateModalVisible, setDateModalVisible] = useState(false);
+    const handleDateConfirm = (date) => {
+        activePath ? setMainDate(date) : setAltDate(date);
+        setDateModalVisible(false);
     };
 
     const getPaths = async () => {
@@ -56,13 +62,16 @@ export default function FlightPlanScreen({ navigation }) {
             mainParsed !== null ? setMainPath(mainParsed) : null;
             altParsed !== null ? setAltPath(altParsed) : null;
             
-            setMainSpeed(mainParsed !== null ? mainParsed[0].speed : '');
-            setMainDate(mainParsed !== null ? mainParsed[0].date : '');
-
-            setAltSpeed(altParsed !== null ? altParsed[0].speed : '');
-            setAltDate(altParsed !== null ? altParsed[0].date : '');
+            if (mainParsed !== null) {
+                setMainSpeed(mainParsed[0].speed);
+                setMainDate(mainParsed[0].date !== null ? mainParsed[0].date : new Date());
+            }
+            if (altParsed !== null) {
+                setAltSpeed(altParsed[0].speed);
+                setAltDate(altParsed[0].date !== null ? altParsed[0].date : new Date());
+            }
         } catch(e) {
-            console.log("Search Read Error: ", e);
+            console.log("Flight Plan Read Error: ", e);
         }
     };
     
@@ -114,14 +123,14 @@ export default function FlightPlanScreen({ navigation }) {
 
     const reset = () => {
         if (activePath) {
-            setMainPath([{speed: '', date: ''}, null, null]);
+            setMainPath([{speed: '', date: null}, null, null]);
             setMainSpeed('');
-            setMainDate('');
+            setMainDate(new Date());
             setStore(!store);
         } else {
-            setAltPath([{speed: '', date: ''}, null, null]);
+            setAltPath([{speed: '', date: null}, null, null]);
             setAltSpeed('');
-            setAltDate('');
+            setAltDate(new Date());
             setStore(!store);
         }
     };
@@ -227,27 +236,36 @@ export default function FlightPlanScreen({ navigation }) {
                                 />
                             </View>
                         </View>
-                        {/* <View style={{width: 15}} />
+                        <View style={{width: 15}} />
                         <View style={styles.speedAltiInner}>
-                            <Text style={styles.inputText}>Cruise Altitude (ft)</Text>
-                            <View style={styles.inputBoxContainer}>
-                                <TextInput
-                                    style={[styles.inputBox, styles.speedAltiInput]}
-                                    value={activePath ? mainAlti : altAlti}
-                                    onChangeText={(text) => {
-                                        if (activePath) {
-                                            setMainAlti(text);
-                                            handleAlti(text);
-                                        } else {
-                                            setAltAlti(text);
-                                            handleAlti(text);
-                                        }
-                                    }}
-                                    keyboardType={'number-pad'}
-                                    returnKeyType={ 'done' }
-                                />
-                            </View>
-                        </View> */}
+                            <Text style={styles.inputText}>Departure Time</Text>
+                            <Pressable
+                                style={styles.date}
+                                onPress={() => {
+                                    setDateModalVisible(true);
+                                }}
+                            >
+                                <Text style={styles.dateText}>
+                                    {activePath?
+                                        mainDate !== null ? dateTimeString(mainDate) : null
+                                        :
+                                        altDate !== null ? dateTimeString(altDate) : null
+                                    }
+                                </Text>
+                            </Pressable>
+                        </View>
+
+                        <DateTimePickerModal
+                            isVisible={dateModalVisible}
+                            themeVariant="light"
+                            isDarkModeEnabled={false}
+                            display="inline"
+                            minuteInterval={5}
+                            mode={'datetime'}
+                            date={activePath ? mainDate : altDate}
+                            onConfirm={ handleDateConfirm }
+                            onCancel={() => setDateModalVisible(false)}
+                        />
                     </View>
 
                     {/* Path Inputs */}
