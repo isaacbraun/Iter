@@ -129,7 +129,7 @@ export function fetchStations(stationString) {
 
 // Takes Path and Returns Stations Along The Path
 // Includes Relevant Tafs to Estimated Time They Would Be Passed
-export async function getPathStations(path, info) {
+export async function getPathStations(path, info, pathType) {
     let stations = [];
     let stationString = "";
 
@@ -141,7 +141,7 @@ export async function getPathStations(path, info) {
         stations = result.response.data[0].METAR;
     }))
 
-    stations = await addTafs(stations, info, path[0].station_id[0])
+    stations = await addTafs(stations, info, path[0].station_id[0], pathType)
     
     return stations;
 }
@@ -158,7 +158,7 @@ export function fetchTafs(id, start, end) {
 }
 
 // Takes Array of Stations and Adds Tafs For Relevant Time
-export async function addTafs(stations_in, info, origin) {
+export async function addTafs(stations_in, info, origin, pathType) {
     let stations_out = stations_in;
     let date = info.date != null ? info.date : new Date();
 
@@ -208,7 +208,6 @@ export async function addTafs(stations_in, info, origin) {
                 startDate.toISOString(),
                 endDate.toISOString()
             ).then(value => converter.parseString(value, function (err, result) {
-                // console.log("Tafs:", result);
                 const tafs = result.response.data[0].TAF;
                 if (tafs !== undefined) {
                     tafsAdded = true;
@@ -219,8 +218,7 @@ export async function addTafs(stations_in, info, origin) {
     }
 
     if (!tafsAdded) {
-        // console.log("INSIDE")
-        Alert.alert("No Forecasted Data Available for Selected Departure Time");
+        Alert.alert(`${pathType}: No Forecasted Data Available for Selected Departure Time`);
     }
 
     return stations_out;
@@ -295,7 +293,7 @@ export function gradeStation(station, bearing) {
         points += 20;
     }
     if (Object.prototype.hasOwnProperty.call(station, 'wind_gust_kt')) {
-        console.log("Gust:", station.wind_gust_kt);
+        // console.log("Gust:", station.wind_gust_kt);
     }
 
     // Visibility - 10 Points
@@ -395,14 +393,15 @@ export function gradeStation(station, bearing) {
 }
 
 // Take Flight Path and Returns Grade for Weather Condition
-export async function gradePath(path_in) {
+export async function gradePath(path_in, pathType) {
     let path = path_in;
     const info = path.shift();
+    
     
     let grade = 0;
     let amount = 0;
 
-    const stations = await getPathStations(path, info);
+    const stations = await getPathStations(path, info, pathType);
     const pathBearing = bearing(
         path[0].latitude[0],
         path[0].longitude[0],
@@ -414,21 +413,27 @@ export async function gradePath(path_in) {
         grade += gradeStation(station, pathBearing);
         amount++;
     }
-    console.log("Grade:", grade, "Amount:", amount);
 
     return grade / amount;
 }
 
 export async function compare(main, alt) {
-    const mainCopy = JSON.parse(JSON.stringify(main));
-    const altCopy = JSON.parse(JSON.stringify(alt));
-    const mainGrade = await gradePath(mainCopy);
-    const altGrade = await gradePath(altCopy);
+    let mainCopy = JSON.parse(JSON.stringify(main));
+    let altCopy = JSON.parse(JSON.stringify(alt));
+
+    // Make Dates Objects
+    const tempMainDate = new Date(mainCopy[0].date);
+    mainCopy[0].date = tempMainDate;
+    const tempAltDate = new Date(altCopy[0].date);
+    altCopy[0].date = tempAltDate;
+
+    const mainGrade = await gradePath(mainCopy, "Main Path");
+    const altGrade = await gradePath(altCopy, "Alternate Path");
+
     console.log("Main:", mainGrade);
     console.log("Alt:", altGrade);
 
     const result = mainGrade >= altGrade;
 
-    Alert.alert(`The ${result ? "Main" : "Alternate"} Path has more favorable weather.`);
-    return `The ${result ? "Main" : "Alternate"} Path has more favorable weather.`;
+    return { result: result, string: `The ${result ? "Main" : "Alternate"} Path has more favorable weather.`};
 }
