@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
         height: 45,
         width: '85%',
         marginTop: 25,
+        marginBottom: 10,
 
         display: 'flex',
         flexDirection: 'row',
@@ -106,10 +107,24 @@ const styles = StyleSheet.create({
         color: Colors.background,
     },
 
+    compareResult: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        
+        // marginTop: 10,
+        width: '70%',
+    },
+    compareResultText: {
+        padding: 10,
+        fontSize: 16,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+
     speedAlti: {
         width: '85%',
-        marginTop: 25,
-
+        marginTop: 10,
         display: 'flex',
         flexDirection: 'row',
     },
