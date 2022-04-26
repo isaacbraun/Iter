@@ -56,7 +56,10 @@ export function hoursDisplay(date, timelineValue) {
     return `${formatted.month}. ${formatted.day} ${ formatted.hour < 10 ? `0${formatted.hour}` : formatted.hour}:00`;
 }
 
+// Turn Date Object into Formatted String for Display on Flight Charting Screen
 export function dateTimeString(date) {
+    const month = monthAbbr[date.getMonth()];
     const hours = date.getHours();
-    return `${monthAbbr[date.getMonth()]}. ${date.getDate()}, ${ hours < 10 ? `0${hours}` : hours}:${date.getMinutes()}`;
+    const minutes = date.getMinutes();
+    return `${month}. ${date.getDate()}, ${ hours < 10 ? `0${hours}` : hours}:${ minutes < 10 ? `0${minutes}` : minutes}`;
 }
