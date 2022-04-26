@@ -29,14 +29,15 @@ export default function FlightPlanScreen({ navigation }) {
         }
     };
 
-    const [mainPath, setMainPath] = useState([{speed: '', date: null}, null, null]);
-    const [altPath, setAltPath] = useState([{speed: '', date: null}, null, null]);
+    const [mainPath, setMainPath] = useState([{speed: '', date: new Date()}, null, null]);
+    const [altPath, setAltPath] = useState([{speed: '', date: new Date()}, null, null]);
 
     const [mainSpeed, setMainSpeed] = useState('');
     const [mainDate, setMainDate] = useState(new Date());
     const [altSpeed, setAltSpeed] = useState('');
     const [altDate, setAltDate] = useState(new Date());
     const [store, setStore] = useState(true);
+    const [compareResult, setCompareResult] = useState({result: null, string: ''});
 
     const handleSpeed = (speed) => {
         let tempArray = activePath ? mainPath : altPath;
@@ -62,19 +63,24 @@ export default function FlightPlanScreen({ navigation }) {
             const mainPath = await AsyncStorage.getItem('@MainPath');
             const altPath = await AsyncStorage.getItem('@AltPath');
 
-            const mainParsed = JSON.parse(mainPath);
-            const altParsed = JSON.parse(altPath);
-
-            mainParsed !== null ? setMainPath(mainParsed) : null;
-            altParsed !== null ? setAltPath(altParsed) : null;
+            let mainParsed = JSON.parse(mainPath);
+            let altParsed = JSON.parse(altPath);
             
             if (mainParsed !== null) {
+                const tempMainDate = new Date(mainParsed[0].date);
+                mainParsed[0].date = tempMainDate;
+
+                setMainPath(mainParsed);
                 setMainSpeed(mainParsed[0].speed);
-                setMainDate(mainParsed[0].date !== null ? mainParsed[0].date : new Date());
+                setMainDate(tempMainDate instanceof Date ? tempMainDate : new Date());
             }
             if (altParsed !== null) {
+                const tempAltDate = new Date(altParsed[0].date);
+                altParsed[0].date = tempAltDate;
+
+                setAltPath(altParsed);
                 setAltSpeed(altParsed[0].speed);
-                setAltDate(altParsed[0].date !== null ? altParsed[0].date : new Date());
+                setAltDate(tempAltDate instanceof Date ? tempAltDate : new Date());
             }
         } catch(e) {
             console.log("Flight Plan Read Error: ", e);
@@ -128,13 +134,14 @@ export default function FlightPlanScreen({ navigation }) {
     }
 
     const reset = () => {
+        setCompareResult({result: null, string: ''});
         if (activePath) {
-            setMainPath([{speed: '', date: null}, null, null]);
+            setMainPath([{speed: '', date: new Date()}, null, null]);
             setMainSpeed('');
             setMainDate(new Date());
             setStore(!store);
         } else {
-            setAltPath([{speed: '', date: null}, null, null]);
+            setAltPath([{speed: '', date: new Date()}, null, null]);
             setAltSpeed('');
             setAltDate(new Date());
             setStore(!store);
@@ -167,14 +174,17 @@ export default function FlightPlanScreen({ navigation }) {
         navigation.navigate("Home", { view: true, paths: 2 });
     };
 
+    const handleCompare = async () => {
+        if (pathsMatch(mainPath, altPath, true)) {
+            setCompareResult({result: null, string: 'Comparing Paths...'});
+            setCompareResult(await compare(mainPath, altPath));
+        }
+    }
+
     // Get Paths from Storage on Mount
     useEffect(() => {
         const fetchPaths = async () => {
-            // await AsyncStorage.removeItem('@MainPath');
-            // await AsyncStorage.removeItem('@AltPath');
             await getPaths();
-            console.log(mainPath[0])
-            console.log(mainDate)
         }
 
         fetchPaths();
@@ -224,6 +234,21 @@ export default function FlightPlanScreen({ navigation }) {
                         </Pressable>
                     </View>
 
+                    {compareResult.string ?
+                        <View style={styles.compareResult}>
+                            <Text
+                                style={[
+                                    styles.compareResultText,
+                                    {color: compareResult.result == null ? Colors.text
+                                        : compareResult.result ? Colors.blue : Colors.green
+                                    }
+                                ]}
+                            >
+                                {compareResult.string}
+                            </Text>
+                        </View> : null
+                    }
+
                     {/* Path Aircraft Info */}
                     <View style={styles.speedAlti}>
                         <View style={styles.speedAltiInner}>
@@ -256,11 +281,7 @@ export default function FlightPlanScreen({ navigation }) {
                                 }}
                             >
                                 <Text style={styles.dateText}>
-                                    {activePath ?
-                                        mainDate ? dateTimeString(mainDate) : null
-                                        :
-                                        altDate ? dateTimeString(altDate) : null
-                                    }
+                                    {dateTimeString(activePath ? mainDate : altDate)}
                                 </Text>
                             </Pressable>
                         </View>
@@ -302,7 +323,7 @@ export default function FlightPlanScreen({ navigation }) {
                             {borderColor: Colors.blue},
                             !pathsMatch(mainPath, altPath, false) ? styles.disabled : null
                         ]}
-                        onPress={() => pathsMatch(mainPath, altPath, true) ? compare(mainPath, altPath) : null}
+                        onPress={() => handleCompare()}
                     >
                         <Text
                             style={[
