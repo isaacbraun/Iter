@@ -87,8 +87,8 @@ export function getRouteArray(array) {
     for (const i in array) {
         if (i != 0) {
             result.push({
-                latitude: array[i] ? array[i].latitude[0] : null,
-                longitude: array[i] ? array[i].longitude[0] : null
+                latitude: array[i] ? parseFloat(array[i].latitude[0]) : null,
+                longitude: array[i] ? parseFloat(array[i].longitude[0]) : null
             })
         }
     }
