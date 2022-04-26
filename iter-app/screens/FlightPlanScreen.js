@@ -48,6 +48,12 @@ export default function FlightPlanScreen({ navigation }) {
     const [dateModalVisible, setDateModalVisible] = useState(false);
     const handleDateConfirm = (date) => {
         activePath ? setMainDate(date) : setAltDate(date);
+
+        let tempArray = activePath ? mainPath : altPath;
+        tempArray[0].date = date;
+        activePath ? setMainPath(tempArray) : setAltPath(tempArray);
+        setStore(!store);
+
         setDateModalVisible(false);
     };
 
@@ -164,7 +170,11 @@ export default function FlightPlanScreen({ navigation }) {
     // Get Paths from Storage on Mount
     useEffect(() => {
         const fetchPaths = async () => {
+            // await AsyncStorage.removeItem('@MainPath');
+            // await AsyncStorage.removeItem('@AltPath');
             await getPaths();
+            console.log(mainPath[0])
+            console.log(mainDate)
         }
 
         fetchPaths();
@@ -246,10 +256,10 @@ export default function FlightPlanScreen({ navigation }) {
                                 }}
                             >
                                 <Text style={styles.dateText}>
-                                    {activePath?
-                                        mainDate !== null ? dateTimeString(mainDate) : null
+                                    {activePath ?
+                                        mainDate ? dateTimeString(mainDate) : null
                                         :
-                                        altDate !== null ? dateTimeString(altDate) : null
+                                        altDate ? dateTimeString(altDate) : null
                                     }
                                 </Text>
                             </Pressable>
@@ -263,7 +273,7 @@ export default function FlightPlanScreen({ navigation }) {
                             minuteInterval={5}
                             mode={'datetime'}
                             date={activePath ? mainDate : altDate}
-                            onConfirm={ handleDateConfirm }
+                            onConfirm={handleDateConfirm}
                             onCancel={() => setDateModalVisible(false)}
                         />
                     </View>
