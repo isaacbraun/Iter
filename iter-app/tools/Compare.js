@@ -66,6 +66,10 @@ export function toRadians(deg) {
     return deg * Math.PI / 180;
 }
 
+export function toDegrees(deg) {
+    return deg * 180 / Math.PI;
+}
+
 // https://stackoverflow.com/questions/46590154/calculate-bearing-between-2-points-with-javascript
 export function bearing(startLat, startLng, destLat, destLng){
     startLat = toRadians(startLat);
@@ -76,7 +80,7 @@ export function bearing(startLat, startLng, destLat, destLng){
     const y = Math.sin(destLng - startLng) * Math.cos(destLat);
     const x = Math.cos(startLat) * Math.sin(destLat) -
           Math.sin(startLat) * Math.cos(destLat) * Math.cos(destLng - startLng);
-    const brng = Math.toDegrees(Math.atan2(y, x));
+    const brng = toDegrees(Math.atan2(y, x));
     return (brng + 360) % 360;
 }
 
@@ -156,12 +160,14 @@ export function fetchTafs(id, start, end) {
 // Takes Array of Stations and Adds Tafs For Relevant Time
 export async function addTafs(stations_in, info, origin) {
     let stations_out = stations_in;
-    let date = info.date != '' ? info.date : new Date();
+    let date = info.date != null ? info.date : new Date();
 
     let startYear = date.getFullYear();
     let startMonth = date.getMonth();
     let startDay = date.getDate();
     let startHours = date.getHours();
+
+    let tafsAdded = false;
 
     for (let i = 1; i < stations_out.length; i++) {
         if (stations_out[i].station_id[0] != origin) {
@@ -202,9 +208,19 @@ export async function addTafs(stations_in, info, origin) {
                 startDate.toISOString(),
                 endDate.toISOString()
             ).then(value => converter.parseString(value, function (err, result) {
-                stations_out[i].tafs = result.response.data[0].TAF;
+                // console.log("Tafs:", result);
+                const tafs = result.response.data[0].TAF;
+                if (tafs !== undefined) {
+                    tafsAdded = true;
+                    stations_out[i].tafs = tafs;
+                }
             }));
         }
+    }
+
+    if (!tafsAdded) {
+        // console.log("INSIDE")
+        Alert.alert("No Forecasted Data Available for Selected Departure Time");
     }
 
     return stations_out;
@@ -274,12 +290,12 @@ export function gradeStation(station, bearing) {
                 windSpeedGrade -= 3;
             }
         }
-        console.log(direction, bearing)
+        console.log("Direction:", direction, "Bearing:", bearing);
     } else {
         points += 20;
     }
     if (Object.prototype.hasOwnProperty.call(station, 'wind_gust_kt')) {
-        console.log(station.wind_gust_kt);
+        console.log("Gust:", station.wind_gust_kt);
     }
 
     // Visibility - 10 Points
@@ -398,14 +414,16 @@ export async function gradePath(path_in) {
         grade += gradeStation(station, pathBearing);
         amount++;
     }
-    console.log(grade, amount);
+    console.log("Grade:", grade, "Amount:", amount);
 
     return grade / amount;
 }
 
 export async function compare(main, alt) {
-    const mainGrade = await gradePath(main);
-    const altGrade = await gradePath(alt);
+    const mainCopy = JSON.parse(JSON.stringify(main));
+    const altCopy = JSON.parse(JSON.stringify(alt));
+    const mainGrade = await gradePath(mainCopy);
+    const altGrade = await gradePath(altCopy);
     console.log("Main:", mainGrade);
     console.log("Alt:", altGrade);
 
