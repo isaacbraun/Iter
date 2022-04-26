@@ -1,4 +1,4 @@
-import { dayAbbr } from "./Values";
+import { monthAbbr } from "./Values";
 
 // Get Metars from AWC
 export function getAllMetars() {
@@ -46,7 +46,7 @@ export function dateFormatter(date, hours) {
         hours = hours - 24;
     }
 
-    return {"month" : dayAbbr[month], "day" : day, "hour" : hour};
+    return {"month" : monthAbbr[month], "day" : day, "hour" : hour};
 }
 
 // Turn Date and Timeline Value into Formatted String for Timeline
@@ -54,4 +54,9 @@ export function hoursDisplay(date, timelineValue) {
     const formatted = dateFormatter(date, timelineValue);
 
     return `${formatted.month}. ${formatted.day} ${ formatted.hour < 10 ? `0${formatted.hour}` : formatted.hour}:00`;
+}
+
+export function dateTimeString(date) {
+    const hours = date.getHours();
+    return `${monthAbbr[date.getMonth()]}. ${date.getDate()}, ${ hours < 10 ? `0${hours}` : hours}:${date.getMinutes()}`;
 }
