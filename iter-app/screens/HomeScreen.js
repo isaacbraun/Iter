@@ -173,7 +173,7 @@ export default function HomeScreen({ route, navigation }) {
                     }}
                     onRegionChangeComplete={(region) => setRegion(region)}
                     mapPadding={{ left: 6, right: 6, top: 0, bottom: 40 }}
-                    maxZoomLevel={10}
+                    minDelta={0.01}
                     rotateEnabled={false}
                 >
                     {/* METAR Station Models */}
