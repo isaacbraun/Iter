@@ -26,7 +26,7 @@ A METAR Browsing &amp; Flight Charting Mobile Application
     - CLR > SKC > FEW > SCT > BKN > OVC > OVX
 - Ceiling:
     - Points: 15
-    - Grading Starting at 3000 ft AGl Ceiling and 5 miles Visiblity
+    - Grading Starting at 3000 ft AGl Ceiling and 5 miles Visibility
 - Flight Category:
     - Points: 30
     - VFR > MVFR > IFR > LIFR
