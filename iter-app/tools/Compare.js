@@ -13,18 +13,18 @@ export function pathsMatch(main, alt, alert) {
         if (alert) Alert.alert("Main Path Cruise Speed Required");
         return false;
     }
-    else if (main[0].date == '') {
-        if (alert) Alert.alert("Main Path Date Required");
-        return false;
-    }
+    // else if (main[0].date == '') {
+    //     if (alert) Alert.alert("Main Path Date Required");
+    //     return false;
+    // }
     else if (alt[0].speed == '') {
         if (alert) Alert.alert("Alternate Path Cruise Speed Required");
         return false;
     }
-    else if (alt[0].date == '') {
-        if (alert) Alert.alert("Alternate Path Date Required");
-        return false;
-    }
+    // else if (alt[0].date == '') {
+    //     if (alert) Alert.alert("Alternate Path Date Required");
+    //     return false;
+    // }
     else if (main == null) {
         if (alert) Alert.alert("No Main Path Provided");
         return false;
@@ -127,25 +127,6 @@ export function fetchStations(stationString) {
     })
 }
 
-// Takes Path and Returns Stations Along The Path
-// Includes Relevant Tafs to Estimated Time They Would Be Passed
-export async function getPathStations(path, info, pathType) {
-    let stations = [];
-    let stationString = "";
-
-    for (const point of path) {
-        stationString += `${point.station_id[0]};`;
-    }
-
-    await fetchStations(stationString).then(value => converter.parseString(value, function (err, result) {
-        stations = result.response.data[0].METAR;
-    }))
-
-    stations = await addTafs(stations, info, path[0].station_id[0], pathType)
-    
-    return stations;
-}
-
 // Get Tafs for Station With Valid Time Inside Start and End Time Parrams
 export function fetchTafs(id, start, end) {
     const url = `https://www.aviationweather.gov/adds/dataserver_current/httpparam?dataSource=tafs&requestType=retrieve&format=xml&startTime=${start}&endTime=${end}&timeType=valid&stationString=${id}`;
@@ -158,7 +139,7 @@ export function fetchTafs(id, start, end) {
 }
 
 // Takes Array of Stations and Adds Tafs For Relevant Time
-export async function addTafs(stations_in, info, origin, pathType) {
+export async function addTafs(stations_in, info, origin, path, pathType) {
     let stations_out = stations_in;
     let date = info.date != null ? info.date : new Date();
 
@@ -224,9 +205,61 @@ export async function addTafs(stations_in, info, origin, pathType) {
     return stations_out;
 }
 
+// Takes Path and Returns Stations Along The Path
+// Includes Relevant Tafs to Estimated Time They Would Be Passed
+export async function getPathStations(path, info, pathType) {
+    let stations = [];
+    let stationString = "";
+
+    for (const point of path) {
+        stationString += `${point.station_id[0]};`;
+    }
+
+    await fetchStations(stationString).then(value => converter.parseString(value, function (err, result) {
+        stations = result.response.data[0].METAR;
+    }))
+
+    stations = await addTafs(stations, info, path[0].station_id[0], path, pathType)
+    
+    return stations;
+}
+
+// Add Two Degrees
+export function addDegrees(a, b) {
+    let result = a + b;
+    if (result > 360) {
+        result -= 360;
+    }
+    return result;
+}
+
+// Subtract Two Degrees
+export function subtractDegrees(a, b) {
+    let result = a - b;
+    if (result < 0) {
+        result += 360;
+    }
+    return result;
+}
+
+// Checks if Degree is Within Range of Degrees
+export function withinDegreesRange(deg, left, right) {
+    if (deg >= left && deg <= right) {
+        return true;
+    }
+    else if (deg >= left && deg <= 360) {
+        return true;
+    }
+    else if (deg >= 0 && deg <= right) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 // Takes Station and Returns Grade for Weather Condition
 export function gradeStation(station, bearing) {
-    let pointsPossible = 100; // 160
+    let pointsPossible = 150 // 170 when WX added
     let points = 0;
     const taf = Object.prototype.hasOwnProperty.call(station, 'taf') ? station.taf : null;
 
@@ -283,17 +316,61 @@ export function gradeStation(station, bearing) {
         windSpeed = taf.wind_speed_kt[0];
     }
     if (windSpeed) {
+        // Speed
         for (let i = 0; i < windSpeed % 5; i++) {
             if (windSpeedGrade > 3) {
                 windSpeedGrade -= 3;
             }
         }
-        console.log("Direction:", direction, "Bearing:", bearing);
+        points += windSpeedGrade;
+
+        // Direction
+        if (withinDegreesRange(direction, addDegrees(bearing, 175), subtractDegrees(bearing, 175))) {
+            points += 30;
+        }
+        else if (withinDegreesRange(direction, addDegrees(bearing, 160), addDegrees(bearing, 175)) ||
+            withinDegreesRange(direction, subtractDegrees(bearing, 175), subtractDegrees(bearing, 160))) {
+            points += 25;
+        }
+        else if (withinDegreesRange(direction, addDegrees(bearing, 145), addDegrees(bearing, 160)) ||
+            withinDegreesRange(direction, subtractDegrees(bearing, 160), subtractDegrees(bearing, 145))) {
+            points += 20;
+        }
+        else if (withinDegreesRange(direction, addDegrees(bearing, 130), addDegrees(bearing, 145)) ||
+            withinDegreesRange(direction, subtractDegrees(bearing, 145), subtractDegrees(bearing, 130))) {
+            points += 15;
+        }
+        else if (withinDegreesRange(direction, addDegrees(bearing, 115), addDegrees(bearing, 130)) ||
+            withinDegreesRange(direction, subtractDegrees(bearing, 130), subtractDegrees(bearing, 115))) {
+            points += 10;
+        }
+        else if (withinDegreesRange(direction, addDegrees(bearing, 100), addDegrees(bearing, 115)) ||
+            withinDegreesRange(direction, subtractDegrees(bearing, 115), subtractDegrees(bearing, 100))) {
+            points += 5;
+        }
     } else {
         points += 20;
     }
+    // Gust
     if (Object.prototype.hasOwnProperty.call(station, 'wind_gust_kt')) {
-        // console.log("Gust:", station.wind_gust_kt);
+        const gust = station.wind_gust_kt[0] - windSpeed;
+        if (gust > 20) {
+            points += 2;
+        }
+        else if (gust > 15) {
+            points += 4;
+        }
+        else if (gust > 10) {
+            points += 6;
+        }
+        else if (gust > 5) {
+            points += 8;
+        }
+        else {
+            points += 10;
+        }
+    } else {
+        points += 10;
     }
 
     // Visibility - 10 Points
@@ -396,22 +473,36 @@ export function gradeStation(station, bearing) {
 export async function gradePath(path_in, pathType) {
     let path = path_in;
     const info = path.shift();
-    
-    
+
     let grade = 0;
     let amount = 0;
 
     const stations = await getPathStations(path, info, pathType);
-    const pathBearing = bearing(
-        path[0].latitude[0],
-        path[0].longitude[0],
-        path[path.length - 1].latitude[0],
-        path[path.length - 1].longitude[0]
-    );
 
+    let bearingArray = [];
+    for (let i = 1; i < path.length; i++) {
+        bearingArray.push({
+            id: path[i].station_id[0],
+            lat: path[i].latitude[0],
+            lng: path[i].longitude[0],
+            bearing: bearing(
+                path[i - 1].latitude[0],
+                path[i - 1].longitude[0],
+                path[i].latitude[0],
+                path[i].longitude[0]
+            )
+        })
+    }
+
+    let bearingIterator = 0;
     for (const station of stations) {
-        grade += gradeStation(station, pathBearing);
+        grade += gradeStation(station, bearingArray[bearingIterator].bearing);
         amount++;
+        
+        if ((station.latitude[0] - 1 < bearingArray[bearingIterator].lat && bearingArray[bearingIterator].lat < station.latitude[0] + 1)
+            && (station.longitude[0] - 1 < bearingArray[bearingIterator].lng && bearingArray[bearingIterator].lng < station.longitude[0] + 1)) {
+            bearingIterator += 1;
+        }
     }
 
     return grade / amount;
@@ -434,6 +525,5 @@ export async function compare(main, alt) {
     console.log("Alt:", altGrade);
 
     const result = mainGrade >= altGrade;
-
-    return { result: result, string: `The ${result ? "Main" : "Alternate"} Path has more favorable weather.`};
+    return { result: result, string: `${result ? "Main" : "Alternate"}`};
 }

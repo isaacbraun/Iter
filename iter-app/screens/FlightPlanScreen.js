@@ -241,7 +241,7 @@ export default function FlightPlanScreen({ navigation }) {
                                 : compareResult.result ? Colors.blue : Colors.green
                             }
                         ]}>
-                            {compareResult.result ?
+                            {compareResult.result !== null ?
                                 <Text style={{color: Colors.text}}>Favorable Path: </Text>
                                 : null
                             }
