@@ -521,9 +521,6 @@ export async function compare(main, alt) {
     const mainGrade = await gradePath(mainCopy, "Main Path");
     const altGrade = await gradePath(altCopy, "Alternate Path");
 
-    console.log("Main:", mainGrade);
-    console.log("Alt:", altGrade);
-
     const result = mainGrade >= altGrade;
     return { result: result, string: `${result ? "Main" : "Alternate"}`};
 }
