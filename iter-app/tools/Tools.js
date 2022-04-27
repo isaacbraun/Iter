@@ -32,18 +32,20 @@ export function dateFormatter(date, hours) {
     let day = date.getDate();
     let hour = hours;
 
-    if (hours >= 24) {
-        if (month == 11) {
-            month = 0;
-        }
-        else if (isLastDayOfMonth(day)) {
-            month += 1;
+    if (hour >= 24) {
+        // THIS MIGHT NOT WORK
+        if (isLastDayOfMonth(date)) {
+            if (month == 11) {
+                month = 0;
+            } else {
+                month += 1;
+            }
             day = 1;
         }
         else {
             day = day + 1;
         }
-        hours = hours - 24;
+        hour = hour - 24;
     }
 
     return {"month" : monthAbbr[month], "day" : day, "hour" : hour};

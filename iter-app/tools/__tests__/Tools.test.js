@@ -14,6 +14,10 @@ describe("Date Formatter", () => {
         const output = {"month" : "Dec", "day" : 6, "hour" : 8};
         expect(tools.dateFormatter(new Date(2022, 11, 5), 32)).toEqual(output);
     });
+    test("Last Day of Month with Hour > 24", () => {
+        const output = {"month" : "May", "day" : 1, "hour" : 8};
+        expect(tools.dateFormatter(new Date(2022, 4, 30), 32)).toEqual(output);
+    });
 });
 
 describe("Hours Display", () => {
