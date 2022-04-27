@@ -235,12 +235,21 @@ export default function FlightPlanScreen({ navigation }) {
                     </View>
 
                     {compareResult.string ?
-                        <View style={styles.compareResult}>
+                        <View style={[
+                            styles.compareResult,
+                            {borderColor: compareResult.result == null ? Colors.text
+                                : compareResult.result ? Colors.blue : Colors.green
+                            }
+                        ]}>
+                            {compareResult.result ?
+                                <Text style={{color: Colors.text}}>Favorable Path: </Text>
+                                : null
+                            }
                             <Text
                                 style={[
                                     styles.compareResultText,
                                     {color: compareResult.result == null ? Colors.text
-                                        : compareResult.result ? Colors.blue : Colors.green
+                                        : compareResult.result ? Colors.blue : Colors.green,
                                     }
                                 ]}
                             >
