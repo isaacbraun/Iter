@@ -32,9 +32,9 @@ A METAR Browsing &amp; Flight Charting Mobile Application
     - VFR > MVFR > IFR > LIFR
 - WX String:
     - Points: 20
-    - IF Provided - create scale from pdf
+    - Grading Scale from PDf of Wx Strings
 
-- Possible Grading scale:
+- Grading:
     - Assign point values to different criteria, greater in some areas.
     - Find grade by (points achieved / points possible) = 0.XXX value
     - Each Station gets a grade, averaged and compared. Higher value is better.
