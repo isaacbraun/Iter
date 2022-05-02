@@ -2,6 +2,7 @@
 import { Alert } from 'react-native';
 import { isLastDayOfMonth } from './Tools';
 import { Decoder } from './Decoder';
+import { wxString } from './Values';
 
 // eslint-disable-next-line no-undef
 const converter = require('react-native-xml2js');
@@ -464,7 +465,31 @@ export function gradeStation(station, bearing) {
     }
 
     // WX String
-    
+    let wxStringValue = null;
+    let wxPoints = null;
+    if (Object.prototype.hasOwnProperty.call(station, 'wx_string')) {
+        wxStringValue = String(station.wx_string);
+    }
+    if (taf && Object.prototype.hasOwnProperty.call(taf, 'wx_string')) {
+        wxStringValue = String(taf.wx_string[0]);
+    }   
+    if (wxStringValue) {
+        // eslint-disable-next-line no-unused-vars
+        const [wx, precip] = wxStringValue.split(/\s+(.*)/);
+        
+        for (const item in wxString) {
+            if (wxString[item].includes(wx)) {
+                wxPoints = item;
+            }
+        }
+        if (!wxPoints) {
+            wxPoints = 20;
+        }
+    }
+    else {
+        wxPoints = 20;
+    }
+    points += wxPoints;
 
     return (points / pointsPossible) * 100;
 }
