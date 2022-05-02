@@ -1,8 +1,23 @@
 # Iter
-A METAR Browsing &amp; Flight Charting Mobile Application
+A METAR Browsing &amp; Flight Charting Mobile Application.
+
+Small business and private pilots do not have a
+efficient and accessible method of viewing current and forecasted
+METAR data alongside flight path planning based on that
+weather data. The lack of this resource hinders a pilot’s capability
+to plan the most efficient and safe flight. Iter fulfills this
+desired need in the market. Features include graphical METAR
+browsing, viewing of decoded METAR data, dual flight path
+charting, and flight path comparison.
+
+Supported on iOS and Android.
 
 
 # Flight Path Comparison Info
+- Grading:
+    - Assign point values to different criteria, greater in some areas.
+    - Find grade by (points achieved / points possible) = 0.XXX value
+    - Each Station gets a grade, averaged and compared. Higher value is better.
 - Temp:
     - Points: 10
     - Above 35/40 C Not Good
@@ -33,8 +48,3 @@ A METAR Browsing &amp; Flight Charting Mobile Application
 - WX String:
     - Points: 20
     - Grading Scale from PDf of Wx Strings
-
-- Grading:
-    - Assign point values to different criteria, greater in some areas.
-    - Find grade by (points achieved / points possible) = 0.XXX value
-    - Each Station gets a grade, averaged and compared. Higher value is better.
