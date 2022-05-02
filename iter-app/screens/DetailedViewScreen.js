@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import { DetailedViewStyles as styles } from '../styles';
 import { Decoder } from '../tools/Decoder';
-import { dayAbbr } from "../tools/Values";
+import { monthAbbr } from "../tools/Values";
 import { Navbar } from '../components';
 
 export default function DetailedViewScreen({ route, navigation }) {
@@ -18,7 +18,7 @@ export default function DetailedViewScreen({ route, navigation }) {
     const [metarDirection, metarSpeed ] = metar.wind();
 
     const dateString = (date) => {
-        return `${dayAbbr[date.getMonth()]}. ${date.getUTCDate()} ${ date.getUTCHours() < 10 ? `0${date.getUTCHours()}` : date.getUTCHours()}:${date.getUTCMinutes() < 10 ? `0${date.getUTCMinutes()}` : date.getUTCMinutes()}`;
+        return `${monthAbbr[date.getMonth()]}. ${date.getUTCDate()} ${ date.getUTCHours() < 10 ? `0${date.getUTCHours()}` : date.getUTCHours()}:${date.getUTCMinutes() < 10 ? `0${date.getUTCMinutes()}` : date.getUTCMinutes()}`;
     };
 
     return(
