@@ -1,10 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SplashScreen from 'expo-splash-screen';
 
-import { HomeScreen, FlightPlanScreen, SettingsScreen, DetailedViewScreen, SplashScreen } from './screens';
+import { HomeScreen, FlightPlanScreen, SettingsScreen, DetailedViewScreen } from './screens';
 import { getAllMetars, getAllTafs } from './tools/Tools';
 import airportData from './assets/airportData.json';
 
@@ -66,6 +67,8 @@ export default function App() {
 
 	useEffect(() => {
 		const getData = async () => {
+			// await SplashScreen.preventAutoHideAsync();
+
 			await getAllMetars().then(value => converter.parseString(value, function (err, result) {
 				setMetars(result.response.data[0].METAR);
 			}));
@@ -80,12 +83,26 @@ export default function App() {
 	}, []);
 
 	useEffect(() => {
-		if (retrieved) {
-			mergeData(metars, tafs);
-			setLoading(false);
-		}
+		mergeData(metars, tafs);
+		setLoading(false);
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [retrieved])
+
+	// const onLayoutRootView = useCallback(async () => {
+	// 	if (retrieved) {
+	// 		// This tells the splash screen to hide immediately! If we call this after
+	// 		// `setAppIsReady`, then we may see a blank screen while the app is
+	// 		// loading its initial state and rendering its first pixels. So instead,
+	// 		// we hide the splash screen once we know the root view has already
+	// 		// performed layout.
+	// 		mergeData(metars, tafs);
+	// 		await SplashScreen.hideAsync();
+	// 	}
+	// }, [retrieved]);
+
+	// if (!retrieved) {
+	// 	return null;
+	// }
 
 	return (
 		<NavigationContainer>
