@@ -7,7 +7,7 @@ import logo from '../assets/iter.png';
 export default function SplashScreen() {
     return(
         <View style={styles.container}>
-            <Image source={logo} />
+            <Image source={logo}/>
         </View>
     );
 }
