@@ -12,6 +12,7 @@ import { LightColors, DarkColors } from '../tools/Values';
 export default function Navbar(props) {
     const Colors = props.theme ? DarkColors : LightColors;
     const styles = props.theme ? NavbarStylesDark : NavbarStyles;
+    const hideMenu = props.hideMenu ? false : true;
 
     return (
         <View style={styles.navbar}>
@@ -23,12 +24,16 @@ export default function Navbar(props) {
                     <Ionicons name="ios-arrow-back" size={24} color={Colors.blue} />
                 </Pressable>
                 <Text style={styles.navbarText}>{props.title}</Text>
-                <Pressable
-                    style={styles.navbarButton}
-                    onPress={() => props.navigation.navigate('Settings')}
-                >
-                    <Feather name="menu" size={24} color={ Colors.text } />
-                </Pressable>
+                {hideMenu ?
+                    <Pressable
+                        style={styles.navbarButton}
+                        onPress={() => props.navigation.navigate('Settings')}
+                    >
+                        <Feather name="menu" size={24} color={ Colors.text } />
+                    </Pressable>
+                    :
+                    <View style={styles.navbarButton} />
+                }
             </View>
         </View>
     )
