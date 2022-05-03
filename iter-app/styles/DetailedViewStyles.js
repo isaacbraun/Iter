@@ -1,10 +1,10 @@
 import { StyleSheet } from "react-native";
-import { Colors } from '../tools/Values';
+import { LightColors, DarkColors } from '../tools/Values';
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
     main: {
         flex: 1,
-        backgroundColor: Colors.background,
+        backgroundColor: LightColors.background,
         paddingTop: 40,
     },
     inner: {
@@ -26,10 +26,20 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     text: {
-        color: Colors.text,
+        color: LightColors.text,
         fontSize: 15,
         marginBottom: 3,
     },    
 });
 
-export default styles;
+export const darkStyles = StyleSheet.create({
+    ...styles,
+    main: {
+        ...styles.main,
+        backgroundColor: DarkColors.background,
+    },
+    text: {
+        ...styles.text,
+        color: DarkColors.text,
+    },
+});

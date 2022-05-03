@@ -13,12 +13,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import { Navbar, PlanningInputs } from '../components';
-import { FlightPlanStyles as styles } from '../styles';
-import { Colors } from '../tools/Values';
+import { FlightPlanStyles, FlightPlanStylesDark } from '../styles';
+import { LightColors, DarkColors } from '../tools/Values';
 import { dateTimeString } from '../tools/Tools';
 import { pathsMatch, compare } from '../tools/Compare';
 
-export default function FlightPlanScreen({ navigation }) {
+export default function FlightPlanScreen({ route, navigation }) {
+    const theme = route.params.theme;
+    const Colors = theme ? DarkColors : LightColors;
+    const styles = theme ? FlightPlanStylesDark : FlightPlanStyles;
+
     const [activePath, setActivePath] = useState(true);
     const pathSwitch = (pressed) => {
         if (pressed == 'main' && !activePath) {
@@ -208,7 +212,7 @@ export default function FlightPlanScreen({ navigation }) {
                 <View style={styles.inner}>
 
                     {/* Navbar */}
-                    <Navbar title={"Chart Paths"} navigation={navigation} />
+                    <Navbar title={"Chart Paths"} navigation={navigation} theme={theme} />
 
                     {/* Path Toggle Switch */}
                     <View style={styles.pathSwitch}>
@@ -297,8 +301,8 @@ export default function FlightPlanScreen({ navigation }) {
 
                         <DateTimePickerModal
                             isVisible={dateModalVisible}
-                            themeVariant="light"
-                            isDarkModeEnabled={false}
+                            themeVariant={theme ? 'dark' : 'light'}
+                            isDarkModeEnabled={theme ? true : false}
                             display="inline"
                             minuteInterval={5}
                             mode={'datetime'}
@@ -315,6 +319,7 @@ export default function FlightPlanScreen({ navigation }) {
                         add={add}
                         remove={remove}
                         clear={clear}
+                        theme={theme}
                     />
                 </View>
 

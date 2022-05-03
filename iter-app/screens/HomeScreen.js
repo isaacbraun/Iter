@@ -16,16 +16,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useInterval } from 'usehooks-ts';
 import { useFocusEffect } from '@react-navigation/native';
 
-import { Colors } from '../tools/Values';
+import { LightColors, DarkColors } from '../tools/Values';
 import { hoursDisplay } from '../tools/Tools';
 import { pathsExact } from '../tools/Compare';
 import { goToOrigin, markerFilters, getRouteArray } from '../tools/HomeScreenFunctions';
 import { Search } from '../components';
-import { HomeScreenStyles as styles } from '../styles';
-
-// Reduce Size / Hide Metars
+import { HomeScreenStyles, HomeScreenStylesDark } from '../styles';
 
 export default function HomeScreen({ route, navigation }) {
+    const [theme, setTheme] = useState(false);
+    const Colors = theme ? DarkColors : LightColors;
+    const styles = theme ? HomeScreenStylesDark : HomeScreenStyles;
+
     // Timeline Variables and Functions
     const date = new Date();
     const hours = date.getHours();  
@@ -46,7 +48,7 @@ export default function HomeScreen({ route, navigation }) {
 
     // Map Variables and Functions
     const mapRef = useRef(null);
-
+    
     const [location, setLocation] = useState(null);
     const [loading, setLoading] = useState(false);
     const [region, setRegion] = useState({
@@ -63,6 +65,16 @@ export default function HomeScreen({ route, navigation }) {
     const [displayMainPath, setDisplayMainPath] = useState(false);
     const [displayAltPath, setDisplayAltPath] = useState(false);
 
+    // Get Theme from Storage
+    const getTheme = async () => {
+        try {
+            const theme = await AsyncStorage.getItem('@Theme');
+            theme != null ? setTheme(theme === 'true') : null;
+        } catch(e) {
+            console.log("HomeScreen Theme Read Error: ", e);
+        }
+    };
+    
     // Get Metar and Taf data from Storage
     const getData = async () => {
         try {
@@ -112,6 +124,7 @@ export default function HomeScreen({ route, navigation }) {
 
     // Get User Location & Get All Metars
 	useEffect(() => {
+        getTheme();
         getData();
         getLocation();
 	}, []);
@@ -119,6 +132,7 @@ export default function HomeScreen({ route, navigation }) {
     // Get Paths on Navigation to Home
     useFocusEffect(
         React.useCallback(() => {
+            getTheme()
             if (route.params && route.params.view === true) {
                 const awaitPaths = async () => {
                     await getPaths();
@@ -132,6 +146,7 @@ export default function HomeScreen({ route, navigation }) {
                 awaitPaths();
             }
         }, [route.params])
+        
     );
 
     // Function Run When "View" Clicked in FlightPlanScreen
@@ -175,12 +190,12 @@ export default function HomeScreen({ route, navigation }) {
                     mapPadding={{ left: 6, right: 6, top: 0, bottom: 40 }}
                     minDelta={0.01}
                     rotateEnabled={false}
-                    // userInterfaceStyle={'dark'}
+                    userInterfaceStyle={theme ? 'dark' : 'light'}
                 >
                     {/* METAR Station Models */}
                     {metars ?
                         metars.map((elem, index) => {
-                            const marker = markerFilters(elem, index, region, hours < timelineValue ? timelineValue : null, navigation, metarType);
+                            const marker = markerFilters(elem, index, region, hours < timelineValue ? timelineValue : null, navigation, metarType, theme);
                             return marker ? marker : null;
                         })
                         : null
@@ -221,6 +236,7 @@ export default function HomeScreen({ route, navigation }) {
                     }}
                     placeholder={true}
                     style={{marginRight: 15}}
+                    theme={theme}
                 />
                 <Pressable
                     style={styles.button}
@@ -272,7 +288,7 @@ export default function HomeScreen({ route, navigation }) {
                 }
                 <Pressable
                     style={[styles.button, {backgroundColor: Colors.blue}]}
-                    onPress={() => navigation.navigate('FlightPlan')} // Add Path / Re-Evaluate
+                    onPress={() => navigation.navigate('FlightPlan', { theme: theme })} // Add Path / Re-Evaluate
                 >
                     <Feather name="plus" size={28} color={ Colors.background } />
                 </Pressable>

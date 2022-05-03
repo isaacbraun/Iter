@@ -1,9 +1,9 @@
-export { default as HomeScreenStyles } from "./HomeStyles";
-export { default as FlightPlanStyles } from "./FlightPlanStyles";
-export { default as SettingsStyles } from "./SettingsStyles";
-export { default as StationModelStyles } from "./StationModelStyles";
-export { default as DetailedViewStyles } from "./DetailedViewStyles";
-export { default as MarkerStyles } from "./MarkerStyles";
-export { default as NavbarStyles } from "./NavbarStyles";
-export { default as SearchStyles } from "./SearchStyles";
-export { default as PlanningInputsStyles } from "./PlanningInputsStyles";
+export { styles as HomeScreenStyles, darkStyles as HomeScreenStylesDark } from "./HomeStyles";
+export { styles as FlightPlanStyles, darkStyles as FlightPlanStylesDark } from "./FlightPlanStyles";
+export { styles as SettingsStyles, darkStyles as SettingsStylesDark } from "./SettingsStyles";
+export { styles as StationModelStyles, darkStyles as StationModelStylesDark } from "./StationModelStyles";
+export { styles as DetailedViewStyles, darkStyles as DetailedViewStylesDark } from "./DetailedViewStyles";
+export { styles as MarkerStyles, darkStyles as MarkerStylesDark } from "./MarkerStyles";
+export { styles as NavbarStyles, darkStyles as NavbarStylesDark } from "./NavbarStyles";
+export { styles as SearchStyles, darkStyles as SearchStylesDark } from "./SearchStyles";
+export { styles as PlanningInputsStyles, darkStyles as PlanningInputsStylesDark } from "./PlanningInputsStyles";

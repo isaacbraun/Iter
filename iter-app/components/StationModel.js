@@ -7,9 +7,11 @@ import {
 } from 'react-native';
 import { barbList, pennantList } from '../tools/Values';
 import { Decoder } from '../tools/Decoder';
-import { StationModelStyles as styles } from '../styles';
+import { StationModelStyles, StationModelStylesDark } from '../styles';
 
 export default function StationModel(props) {
+    const styles = props.theme ? StationModelStylesDark : StationModelStyles;
+
     const decoded = new Decoder(props.marker, true, props.hour);
 
     const temp = decoded.temp();

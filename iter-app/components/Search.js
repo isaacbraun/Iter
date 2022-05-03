@@ -8,8 +8,8 @@ import {
 } from 'react-native';
 import { EvilIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SearchStyles as styles} from '../styles';
-import { Colors } from '../tools/Values';
+import { SearchStyles, SearchStylesDark } from '../styles';
+import { LightColors, DarkColors } from '../tools/Values';
 
 export function matches(airport, query) {
     let icao, iata, name, municipality;
@@ -47,6 +47,9 @@ export default function Search(props) {
     const isLoading = airports == null;
     const placeholder = isLoading ? 'Loading data...' : 'Search Airports';
     let timeout = null;    
+
+    const Colors = props.theme ? DarkColors : LightColors;
+    const styles = props.theme ? SearchStylesDark : SearchStyles;
 
     const findAirport = (query) => {
         // Method called every time when we change the value of the input

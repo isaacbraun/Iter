@@ -1,13 +1,19 @@
 import { StyleSheet } from "react-native";
-import { Colors } from '../tools/Values';
+import { LightColors, DarkColors } from '../tools/Values';
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.background,
+        backgroundColor: LightColors.background,
         alignItems: 'center',
         justifyContent: 'center',
     },
 });
 
-export default styles;
+export const darkStyles = StyleSheet.create({
+    ...styles,
+    container: {
+        ...styles.container,
+        backgroundColor: DarkColors.background,
+    },
+});

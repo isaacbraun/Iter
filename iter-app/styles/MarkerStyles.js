@@ -1,20 +1,20 @@
 import { StyleSheet, Dimensions } from "react-native";
-import { Colors } from "../tools/Values";
+import { LightColors, DarkColors } from '../tools/Values';
 
 const ScreenWidth = Dimensions.get("window").width;
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
     station: {
         fontWeight: 'bold',
     },
     text: {
         marginBottom: 5,
-        color: Colors.text,
+        color: LightColors.text,
     },
     callout: {
-        width: ScreenWidth - 100,
-        backgroundColor: Colors.background,
-        borderColor: Colors.background,
+        width: ScreenWidth - 75,
+        backgroundColor: LightColors.background,
+        borderColor: LightColors.background,
         margin: -30,
         padding: 30
     },
@@ -26,4 +26,15 @@ const styles = StyleSheet.create({
     },
 });
 
-export default styles;
+export const darkStyles = StyleSheet.create({
+    ...styles,
+    text: {
+        ...styles.text,
+        color: DarkColors.text,
+    },
+    callout: {
+        ...styles.callout,
+        backgroundColor: DarkColors.background,
+        borderColor: DarkColors.background,
+    },
+});

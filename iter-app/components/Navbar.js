@@ -5,11 +5,14 @@ import {
     View,
     Pressable,
 } from 'react-native';
-import { NavbarStyles as styles } from '../styles';
+import { NavbarStyles, NavbarStylesDark } from '../styles';
 import { Feather, Ionicons } from '@expo/vector-icons';
-import { Colors } from '../tools/Values';
+import { LightColors, DarkColors } from '../tools/Values';
 
 export default function Navbar(props) {
+    const Colors = props.theme ? DarkColors : LightColors;
+    const styles = props.theme ? NavbarStylesDark : NavbarStyles;
+
     return (
         <View style={styles.navbar}>
             <View style={styles.navbarInner}>

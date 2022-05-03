@@ -6,13 +6,15 @@ import {
     Pressable,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { Colors } from '../tools/Values';
+import { LightColors, DarkColors } from '../tools/Values';
 import Search from './Search';
 import { Feather } from '@expo/vector-icons';
-import { PlanningInputsStyles as styles } from '../styles';
+import { PlanningInputsStyles, PlanningInputsStylesDark } from '../styles';
 
 function Input(props) {
     const [value, setValue] = useState(props.value ? props.value : '');
+    const Colors = props.theme ? DarkColors : LightColors;
+    const styles = props.theme ? PlanningInputsStylesDark : PlanningInputsStyles;
 
     let inputText = "Waypoint";
     if (props.start) {
@@ -55,6 +57,7 @@ function Input(props) {
                         function={(item) => { props.select(item, props.index) }}
                         amount={6}
                         clear={() => props.clear(props.index)}
+                        theme={props.theme}
                     />
                     <Pressable
                         style={styles.pathAction}
@@ -78,6 +81,8 @@ function Input(props) {
 }
 
 export default function PlanningInputs(props) {
+    const styles = props.theme ? PlanningInputsStylesDark : PlanningInputsStyles;
+
     return(
         <KeyboardAwareScrollView
             style={styles.inputsContainer}
@@ -98,6 +103,7 @@ export default function PlanningInputs(props) {
                             add={props.add}
                             remove={props.remove}
                             clear={props.clear}
+                            theme={props.theme}
                         />
                     )
                 }

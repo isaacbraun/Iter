@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
-import { Colors } from '../tools/Values';
+import { LightColors, DarkColors } from '../tools/Values';
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
@@ -15,13 +15,14 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
 
         borderRadius: 3,
-        backgroundColor: Colors.background,
-        borderBottomColor: Colors.text,
+        backgroundColor: LightColors.background,
+        borderBottomColor: LightColors.text,
         borderBottomWidth: 0,
     },
     searchInner: {
         fontSize: 14,
         flex: 1,
+        color: LightColors.text,
     },
     close: {
         width: 45,
@@ -34,7 +35,7 @@ const styles = StyleSheet.create({
     suggestions: {
         borderBottomLeftRadius: 3,
         borderBottomRightRadius: 3,
-        backgroundColor: Colors.background,
+        backgroundColor: LightColors.background,
         zIndex: 5,
     },
     item: {
@@ -43,4 +44,19 @@ const styles = StyleSheet.create({
     },
 });
 
-export default styles;
+export const darkStyles = StyleSheet.create({
+    ...styles,
+    search: {
+        ...styles.search,
+        backgroundColor: DarkColors.background,
+        borderBottomColor: DarkColors.text,
+    },
+    searchInner: {
+        ...styles.searchInner,
+        color: DarkColors.text,
+    },
+    suggestions: {
+        ...styles.suggestions,
+        backgroundColor: DarkColors.background,
+    },
+});

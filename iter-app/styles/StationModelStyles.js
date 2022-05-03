@@ -1,9 +1,9 @@
 import { StyleSheet } from "react-native";
-import { Colors } from '../tools/Values';
+import { LightColors, DarkColors } from '../tools/Values';
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
     container: {
-        backgroundColor: Colors.background,
+        backgroundColor: LightColors.background,
         borderRadius: 5,
         opacity: 0.9,
         display: 'flex',
@@ -14,13 +14,13 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 12,
         fontWeight: 'bold',
-        color: Colors.darkText,
+        color: LightColors.darkText,
     },
     taf: {
-        color: Colors.green,
+        color: LightColors.green,
     },
     windTaf: {
-        backgroundColor: Colors.green,
+        backgroundColor: LightColors.green,
     },
     left: {
         display: 'flex',
@@ -45,12 +45,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     circle: {
-        backgroundColor: Colors.white,
+        backgroundColor: LightColors.white,
         width: 12,
         height: 12,
         borderWidth: 2,
         borderRadius: 6,
-        borderColor: Colors.barb,
+        borderColor: LightColors.barb,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
         height: 12,
     },
     bknOver: {
-        backgroundColor: Colors.white,
+        backgroundColor: LightColors.white,
         position: 'absolute',
         top: 0,
         left: 0,
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     windbarb: {
         width: 2,
         height: 28,
-        backgroundColor: Colors.barb,
+        backgroundColor: LightColors.barb,
     },
     windFeather: {
         position: 'absolute',
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
         right: -8,
         width: 2,
         height: 6,
-        backgroundColor: Colors.barb,
+        backgroundColor: LightColors.barb,
         transform: [
             { translateX: -8 / 2 },
             { rotateZ: "-120deg" },
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
         ],
     },
     gust: {
-        backgroundColor: Colors.red,
+        backgroundColor: LightColors.red,
     },
     
     right: {
@@ -138,4 +138,42 @@ const styles = StyleSheet.create({
     },
 });
 
-export default styles;
+export const darkStyles = StyleSheet.create({
+    ...styles,
+    container: {
+        ...styles.container,
+        backgroundColor: DarkColors.background,
+    },
+    text: {
+        ...styles.text,
+        color: DarkColors.darkText,
+    },
+    taf: {
+        ...styles.taf,
+        color: DarkColors.green,
+    },
+    windTaf: {
+        backgroundColor: DarkColors.green,
+    },
+    circle: {
+        ...styles.circle,
+        backgroundColor: DarkColors.white,
+        borderColor: DarkColors.barb,
+    },
+    bknOver: {
+        ...styles.bknOver,
+        backgroundColor: DarkColors.white,
+    },
+    windbarb: {
+        ...styles.windbarb,
+        backgroundColor: DarkColors.barb,
+    },
+    windFeather: {
+        ...styles.windFeather,
+        backgroundColor: DarkColors.barb,
+    },
+    gust: {
+        ...styles.gust,
+        backgroundColor: DarkColors.red,
+    },
+});

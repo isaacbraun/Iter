@@ -1,9 +1,9 @@
 import { StyleSheet, Dimensions } from "react-native";
-import { Colors } from '../tools/Values';
+import { LightColors, DarkColors } from '../tools/Values';
 
 const ScreenWidth = Dimensions.get("window").width;
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
     main: {
         flex: 1,
     },
@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
         width: 45,
 
         borderRadius: 3,
-        backgroundColor: Colors.background,
+        backgroundColor: LightColors.background,
     },
 
     map: {
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
         marginHorizontal: '15%',
 
         borderRadius: 3,
-        backgroundColor: Colors.background,
+        backgroundColor: LightColors.background,
     },
     
     buttonsContainer: {
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
         zIndex: 1,
 
         borderRadius: 3,
-        backgroundColor: Colors.background,
+        backgroundColor: LightColors.background,
     },
     play: {
         width: 24,
@@ -101,8 +101,26 @@ const styles = StyleSheet.create({
     },
     time: {
         fontSize: 16,
-        color: Colors.text,
+        color: LightColors.text,
     },
 });
 
-export default styles;
+export const darkStyles = StyleSheet.create({
+    ...styles,
+    button: {
+        ...styles.button,
+        backgroundColor: DarkColors.background,
+    },
+    loadingInner: {
+        ...styles.loadingInner,
+        backgroundColor: DarkColors.background,
+    },
+    timelineContainer: {
+        ...styles.timelineContainer,
+        backgroundColor: DarkColors.background,
+    },
+    time: {
+        ...styles.time,
+        color: DarkColors.text,
+    },
+});

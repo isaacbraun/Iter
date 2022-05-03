@@ -1,4 +1,4 @@
-import { imageList, Colors } from './Values';
+import { imageList, LightColors } from '../tools/Values';
 import { dateFormatter } from './Tools';
 import { StationModelStyles as styles } from '../styles';
 
@@ -129,13 +129,13 @@ export class Decoder {
     flightCategoryColor(category) {
         switch (category) {
             case 'LIFR':
-                return Colors.purple;
+                return LightColors.purple;
             case 'IFR':
-                return Colors.red;
+                return LightColors.red;
             case 'MVFR':
-                return Colors.blue;
+                return LightColors.blue;
             case 'VFR':
-                return Colors.green;
+                return LightColors.green;
             default:
                 return null;
         }

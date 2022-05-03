@@ -63,12 +63,25 @@ export default function App() {
 	const [metars, setMetars] = useState(null);
 	const [tafs, setTafs] = useState(null);
 	const [loading, setLoading] = useState(false);
+	const [theme, setTheme] = useState(false);
+
+	// Get Theme from Storage
+	const getTheme = async () => {
+		try {
+			const theme = await AsyncStorage.getItem('@Theme');
+			theme != null ? setTheme(theme === 'true') : null;
+		} catch(e) {
+			console.log("HomeScreen Theme Read Error: ", e);
+		}
+	};
 
 	useEffect(() => {
 		async function prepare() {
 			try {
 				// Keep the splash screen visible while we fetch resources
 				await SplashScreen.preventAutoHideAsync();
+
+				await getTheme();
 
 				await getAllMetars().then(value => converter.parseString(value, function (err, result) {
 					setMetars(result.response.data[0].METAR);
@@ -103,7 +116,7 @@ export default function App() {
 
 	return (
 		<NavigationContainer onReady={onLayoutRootView}>
-			<StatusBar style="auto" />
+			<StatusBar style={theme ? 'light' : 'dark'} />
 
 			<Stack.Navigator initialRouteName={"Home"} screenOptions={{headerShown: false}}>
 				<Stack.Screen name="Home" component={HomeScreen} />

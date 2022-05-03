@@ -1,11 +1,14 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Text,
     View,
     ScrollView,
 } from 'react-native';
-import { DetailedViewStyles as styles } from '../styles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
+
+import { DetailedViewStyles, DetailedViewStylesDark } from '../styles';
 import { Decoder } from '../tools/Decoder';
 import { monthAbbr } from "../tools/Values";
 import { Navbar } from '../components';
@@ -17,14 +20,33 @@ export default function DetailedViewScreen({ route, navigation }) {
     const [metarCover, metarCeiling ] = metar.sky();
     const [metarDirection, metarSpeed ] = metar.wind();
 
+    const [theme, setTheme] = useState(false);
+    const styles = theme ? DetailedViewStylesDark : DetailedViewStyles;
+
     const dateString = (date) => {
         return `${monthAbbr[date.getMonth()]}. ${date.getUTCDate()} ${ date.getUTCHours() < 10 ? `0${date.getUTCHours()}` : date.getUTCHours()}:${date.getUTCMinutes() < 10 ? `0${date.getUTCMinutes()}` : date.getUTCMinutes()}`;
     };
 
+    // Get Theme from Storage
+    const getTheme = async () => {
+        try {
+            const theme = await AsyncStorage.getItem('@Theme');
+            theme != null ? setTheme(theme === 'true') : null;
+        } catch(e) {
+            console.log("DetailedView Theme Read Error: ", e);
+        }
+    };
+
+    useFocusEffect(
+        React.useCallback(() => {
+            getTheme();
+        }, [])
+    );
+
     return(
         <View style={styles.main}>
             {/* Navbar */}
-            <Navbar title={"Decoded Details"} navigation={navigation} />
+            <Navbar title={"Decoded Details"} navigation={navigation} theme={theme} />
             
             <ScrollView >
                 <View style={styles.inner}>

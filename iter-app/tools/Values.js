@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-export const Colors = {
+export const LightColors = {
     background: "#fff",
     text: "#6F7371",
     darkText: "#000",

@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
-import { Colors } from '../tools/Values';
+import { LightColors, DarkColors } from '../tools/Values';
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
     navbar: {
         width: '100%',
         overflow: 'hidden',
@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingBottom: 5,
 
-        backgroundColor: Colors.background,
+        backgroundColor: LightColors.background,
         shadowColor: '#000',
         shadowOffset: { width: 1, height: 1 },
         shadowOpacity:  0.4,
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     navbarText: {
-        color: Colors.text,
+        color: LightColors.text,
         fontSize: 16,
         fontWeight: 'bold',
     },
@@ -40,9 +40,24 @@ const styles = StyleSheet.create({
 
         borderRadius: 3,
         borderWidth: 0,
-        borderColor: Colors.text,
-        backgroundColor: Colors.background,
+        borderColor: LightColors.text,
+        backgroundColor: LightColors.background,
     },
 });
 
-export default styles;
+export const darkStyles = StyleSheet.create({
+    ...styles,
+    navbarInner: {
+        ...styles.navbarInner,
+        backgroundColor: DarkColors.background,
+    },
+    navbarText: {
+        ...styles.navbarText,
+        color: DarkColors.text,
+    },
+    navbarButton: {
+        ...styles.navbarButton,
+        borderColor: DarkColors.text,
+        backgroundColor: DarkColors.background,
+    },
+});

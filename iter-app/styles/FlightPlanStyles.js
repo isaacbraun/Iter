@@ -1,10 +1,10 @@
 import { StyleSheet } from "react-native";
-import { Colors } from '../tools/Values';
+import { LightColors, DarkColors } from '../tools/Values';
     
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
     main: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: LightColors.background,
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingTop: 40,
@@ -21,15 +21,15 @@ const styles = StyleSheet.create({
 
         borderRadius: 3,
         borderWidth: 1,
-        borderColor: Colors.text,
-        backgroundColor: Colors.background
+        borderColor: LightColors.text,
+        backgroundColor: LightColors.background
     },
     buttonText: {
-        color: Colors.text,
+        color: LightColors.text,
     },
     disabled: {
         backgroundColor: "#959696",
-        borderColor: Colors.text,
+        borderColor: LightColors.text,
     },
 
     inner: {
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingBottom: 5,
 
-        backgroundColor: Colors.background,
+        backgroundColor: LightColors.background,
         shadowColor: '#000',
         shadowOffset: { width: 1, height: 1 },
         shadowOpacity:  0.4,
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     navbarText: {
-        color: Colors.text,
+        color: LightColors.text,
         fontSize: 16,
     },
     navbarButton: {
@@ -83,9 +83,9 @@ const styles = StyleSheet.create({
         height: 45,
         width: '50%',
 
-        backgroundColor: Colors.backgroundColor,
+        backgroundColor: LightColors.backgroundColor,
         borderWidth: 1,
-        borderColor: Colors.text,
+        borderColor: LightColors.text,
 
         display: 'flex',
         flexDirection: 'row',
@@ -93,18 +93,18 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     mainActive: {
-        borderColor: Colors.blue,
-        backgroundColor: Colors.blue,
+        borderColor: LightColors.blue,
+        backgroundColor: LightColors.blue,
     },
     altActive: {
-        borderColor: Colors.green,
-        backgroundColor: Colors.green,
+        borderColor: LightColors.green,
+        backgroundColor: LightColors.green,
     },
     pathButtonText: {
-        color: Colors.text,
+        color: LightColors.text,
     },
     pathActiveText: {
-        color: Colors.background,
+        color: LightColors.background,
     },
 
     compareResult: {
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
 
     inputText: {
         marginBottom: 5,
-        color: Colors.text,
+        color: LightColors.text,
     },
     inputBoxContainer: {
         display: 'flex',
@@ -152,8 +152,9 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         borderRadius: 3,
         borderWidth: 1,
-        borderColor: Colors.text,
-        backgroundColor: Colors.background,
+        borderColor: LightColors.text,
+        backgroundColor: LightColors.background,
+        color: LightColors.text,
     },
     inputsSpacer: {
         height: 200,
@@ -166,8 +167,8 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         borderRadius: 3,
         borderWidth: 1,
-        borderColor: Colors.text,
-        backgroundColor: Colors.background,
+        borderColor: LightColors.text,
+        backgroundColor: LightColors.background,
         height: 45,
     },
     dateText: {
@@ -187,4 +188,73 @@ const styles = StyleSheet.create({
     },
 });
 
-export default styles;
+export const darkStyles = StyleSheet.create({
+    ...styles,
+    main: {
+        ...styles.main,
+        backgroundColor: DarkColors.background,
+    },
+    button: {
+        ...styles.button,
+        borderColor: DarkColors.text,
+        backgroundColor: DarkColors.background
+    },
+    buttonText: {
+        ...styles.buttonText,
+        color: DarkColors.text,
+    },
+    disabled: {
+        ...styles.disabled,
+        borderColor: DarkColors.text,
+    },
+    navbarInner: {
+        ...styles.navbarInner,
+        backgroundColor: DarkColors.background,
+    },
+    navbarText: {
+        ...styles.navbarText,
+        color: DarkColors.text,
+    },
+    pathButton: {
+        ...styles.pathButton,
+        backgroundColor: DarkColors.backgroundColor,
+        borderColor: DarkColors.text,
+    },
+    mainActive: {
+        ...styles.mainActive,
+        borderColor: DarkColors.blue,
+        backgroundColor: DarkColors.blue,
+    },
+    altActive: {
+        ...styles.altActive,
+        borderColor: DarkColors.green,
+        backgroundColor: DarkColors.green,
+    },
+    pathButtonText: {
+        ...styles.pathButtonText,
+        color: DarkColors.text,
+    },
+    pathActiveText: {
+        ...styles.pathActiveText,
+        color: DarkColors.background,
+    },
+    inputText: {
+        ...styles.inputText,
+        color: DarkColors.text,
+    },
+    inputBox: {
+        ...styles.inputBox,
+        borderColor: DarkColors.text,
+        backgroundColor: DarkColors.background,
+        color: DarkColors.text
+    },
+    date: {
+        ...styles.date,
+        borderColor: DarkColors.text,
+        backgroundColor: DarkColors.background,
+    },
+    dateText: {
+        ...styles.dateText,
+        color: DarkColors.text,
+    }
+});

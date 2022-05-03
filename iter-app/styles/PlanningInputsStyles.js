@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
-import { Colors } from '../tools/Values';
+import { LightColors, DarkColors } from '../tools/Values';
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
     inputsContainer: {
         marginTop: 30,
         paddingHorizontal: 15,
@@ -29,18 +29,18 @@ const styles = StyleSheet.create({
         height: 12,
         borderRadius: 6,
         marginVertical: 5,
-        backgroundColor: Colors.text,
+        backgroundColor: LightColors.text,
     },
     startDot: {
-        backgroundColor: Colors.blue,
+        backgroundColor: LightColors.blue,
     },
     destDot: {
-        backgroundColor: Colors.green,
+        backgroundColor: LightColors.green,
     },
     flowLine: {
         width: 1,
         height: 30,
-        backgroundColor: Colors.text,
+        backgroundColor: LightColors.text,
     },
     flowLineHidden: {
         opacity: 0,
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     },
     inputText: {
         marginBottom: 5,
-        color: Colors.text,
+        color: LightColors.text,
     },
     inputBoxContainer: {
         display: 'flex',
@@ -64,8 +64,8 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         borderRadius: 3,
         borderWidth: 1,
-        borderColor: Colors.text,
-        backgroundColor: Colors.background,
+        borderColor: LightColors.text,
+        backgroundColor: LightColors.background,
     },
     pathAction: {
         height: 45,
@@ -77,4 +77,31 @@ const styles = StyleSheet.create({
     },
 });
 
-export default styles;
+export const darkStyles = StyleSheet.create({
+    ...styles,
+    flowDot: {
+        ...styles.flowDot,
+        backgroundColor: DarkColors.text,
+    },
+    startDot: {
+        ...styles.startDot,
+        backgroundColor: DarkColors.blue,
+    },
+    destDot: {
+        ...styles.destDot,
+        backgroundColor: DarkColors.green,
+    },
+    flowLine: {
+        ...styles.flowLine,
+        backgroundColor: DarkColors.text,
+    },
+    inputText: {
+        ...styles.inputText,
+        color: DarkColors.text,
+    },
+    inputBox: {
+        ...styles.inputBox,
+        borderColor: DarkColors.text,
+        backgroundColor: DarkColors.background,
+    },
+});
