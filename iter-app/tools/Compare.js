@@ -14,18 +14,10 @@ export function pathsMatch(main, alt, alert) {
         if (alert) Alert.alert("Main Path Cruise Speed Required");
         return false;
     }
-    // else if (main[0].date == '') {
-    //     if (alert) Alert.alert("Main Path Date Required");
-    //     return false;
-    // }
     else if (alt[0].speed == '') {
         if (alert) Alert.alert("Alternate Path Cruise Speed Required");
         return false;
     }
-    // else if (alt[0].date == '') {
-    //     if (alert) Alert.alert("Alternate Path Date Required");
-    //     return false;
-    // }
     else if (main == null) {
         if (alert) Alert.alert("No Main Path Provided");
         return false;

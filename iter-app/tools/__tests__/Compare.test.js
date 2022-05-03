@@ -6,7 +6,6 @@ const kcha = {station_id: ["KCHA"]};
 const klax = {station_id: ["KLAX"]};
 
 describe("Paths Match", () => {
-    // [{speed: '', date: new Date()}, null, null];
     test("Main: Null Speed", () => {
         expect(compare.pathsMatch(
             [{speed: '', date: new Date()}, kcle, kcha],
@@ -14,13 +13,6 @@ describe("Paths Match", () => {
             false
         )).toBeFalsy();
     });
-    // test("Main: Null Date", () => {
-    //     expect(compare.pathsMatch(
-    //         [{speed: '300', date: null}, kcle, kcha],
-    //         [{speed: '400', date: new Date()}, kcle, kcha],
-    //         false
-    //     )).toBeFalsy();
-    // });
     test("Main: Null Origin", () => {
         expect(compare.pathsMatch(
             [{speed: '300', date: new Date()}, null, kcha],
@@ -49,13 +41,6 @@ describe("Paths Match", () => {
             false
         )).toBeFalsy();
     });
-    // test("Alternate: Null Date", () => {
-    //     expect(compare.pathsMatch(
-    //         [{speed: '300', date: new Date()}, kcle, kcha],
-    //         [{speed: '400', date: null}, kcle, kcha],
-    //         false
-    //     )).toBeFalsy();
-    // });
     test("Alternate: Null Origin", () => {
         expect(compare.pathsMatch(
             [{speed: '300', date: new Date()}, kcle, kcha],
@@ -191,7 +176,3 @@ describe("withinDegreesRange", () => {
         expect(compare.withinDegreesRange(245, 230, 245)).toBeTruthy();
     });
 });
-
-// describe("Distance", () => {
-//     test("1",)
-// }
