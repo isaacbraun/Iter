@@ -1,10 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SplashScreen from 'expo-splash-screen';
 
-import { HomeScreen, FlightPlanScreen, SettingsScreen, DetailedViewScreen, SplashScreen } from './screens';
+import { HomeScreen, FlightPlanScreen, SettingsScreen, DetailedViewScreen } from './screens';
 import { getAllMetars, getAllTafs } from './tools/Tools';
 import airportData from './assets/airportData.json';
 
@@ -61,46 +62,55 @@ async function mergeData(metars, tafs) {
 export default function App() {
 	const [metars, setMetars] = useState(null);
 	const [tafs, setTafs] = useState(null);
-	const [retrieved, setRetrieved] = useState(false);
-	const [loading, setLoading] = useState(true);
+	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
-		const getData = async () => {
-			await getAllMetars().then(value => converter.parseString(value, function (err, result) {
-				setMetars(result.response.data[0].METAR);
-			}));
-	
-			await getAllTafs().then(value => converter.parseString(value, function (err, result) {
-				setTafs(result.response.data[0].TAF);
-			}));
-			setRetrieved(true);
-		};
+		async function prepare() {
+			try {
+				// Keep the splash screen visible while we fetch resources
+				await SplashScreen.preventAutoHideAsync();
 
-		getData();
+				await getAllMetars().then(value => converter.parseString(value, function (err, result) {
+					setMetars(result.response.data[0].METAR);
+				}));
+		
+				await getAllTafs().then(value => converter.parseString(value, function (err, result) {
+					setTafs(result.response.data[0].TAF);
+				}));
+			} catch (e) {
+				console.warn(e);
+			} finally {
+				// Tell the application to render
+				setLoading(true);
+			}
+		}
+
+		prepare();
 	}, []);
 
-	useEffect(() => {
-		if (retrieved) {
+	// eslint-disable-next-line no-unused-vars
+	const onLayoutRootView = useCallback(async () => {
+		if (loading) {
 			mergeData(metars, tafs);
-			setLoading(false);
+			await SplashScreen.hideAsync();
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [retrieved])
+	}, [loading]);
+
+	if (!loading) {
+		return null;
+	}
 
 	return (
-		<NavigationContainer>
+		<NavigationContainer onReady={onLayoutRootView}>
 			<StatusBar style="auto" />
 
-			{ loading ?
-				<SplashScreen />
-				:
-				<Stack.Navigator initialRouteName={"Home"} screenOptions={{headerShown: false}}>
-					<Stack.Screen name="Home" component={HomeScreen} />
-					<Stack.Screen name="FlightPlan" component={FlightPlanScreen} />
-					<Stack.Screen name="Settings" component={SettingsScreen} />
-					<Stack.Screen name="DetailedView" component={DetailedViewScreen} />
-				</Stack.Navigator>
-			}
+			<Stack.Navigator initialRouteName={"Home"} screenOptions={{headerShown: false}}>
+				<Stack.Screen name="Home" component={HomeScreen} />
+				<Stack.Screen name="FlightPlan" component={FlightPlanScreen} />
+				<Stack.Screen name="Settings" component={SettingsScreen} />
+				<Stack.Screen name="DetailedView" component={DetailedViewScreen} />
+			</Stack.Navigator>
 		</NavigationContainer>
 	);
 }
