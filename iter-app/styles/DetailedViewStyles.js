@@ -4,7 +4,7 @@ import { Colors } from '../tools/Values';
 const styles = StyleSheet.create({
     main: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: Colors.background,
         paddingTop: 40,
     },
     inner: {

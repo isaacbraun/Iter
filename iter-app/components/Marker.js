@@ -27,10 +27,10 @@ export default function CustomMarker(props) {
             />
             <Callout>
                 <View style={styles.callout}>
-                    <Text style={styles.station}>{props.marker.station_id[0]}</Text>
+                    <Text style={[styles.text, styles.station]}>{props.marker.station_id[0]}</Text>
                     <Text style={styles.text}>METAR: {props.marker.raw_text[0]}</Text>                    
                     <Pressable style={styles.button} onPress={() => props.navigation.navigate('DetailedView', { data: props.marker })}>
-                        <Text style={styles.buttonText}>Decoded Details</Text>
+                        <Text style={[styles.text, styles.buttonText]}>Decoded Details</Text>
                     </Pressable>
                 </View>
             </Callout>

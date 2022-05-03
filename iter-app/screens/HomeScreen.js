@@ -175,6 +175,7 @@ export default function HomeScreen({ route, navigation }) {
                     mapPadding={{ left: 6, right: 6, top: 0, bottom: 40 }}
                     minDelta={0.01}
                     rotateEnabled={false}
+                    // userInterfaceStyle={'dark'}
                 >
                     {/* METAR Station Models */}
                     {metars ?

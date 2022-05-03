@@ -103,7 +103,7 @@ export default function App() {
 
 	return (
 		<NavigationContainer onReady={onLayoutRootView}>
-			<StatusBar style="auto" />
+			<StatusBar style="light" />
 
 			<Stack.Navigator initialRouteName={"Home"} screenOptions={{headerShown: false}}>
 				<Stack.Screen name="Home" component={HomeScreen} />

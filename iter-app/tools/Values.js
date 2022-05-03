@@ -2,11 +2,25 @@
 export const Colors = {
     background: "#fff",
     text: "#6F7371",
+    darkText: "#000",
+    white: "#fff",
     blue: "#487CE1",
     green: "#1EA66D",
     red: "red",
     purple: "purple",
     barb: "#383838",
+};
+
+export const DarkColors = {
+    background: "#001420",
+    text: "#D5D7DD",
+    darkText: "#E9EBF0",
+    white: "#fff",
+    blue: "#487CE1",
+    green: "#1EA66D",
+    red: "red",
+    purple: "purple",
+    barb: "#D5D7DD",
 };
 
 export const monthAbbr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];

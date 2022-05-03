@@ -45,7 +45,7 @@ export default function Search(props) {
     const [filteredAirports, setFilteredAirports] = useState([]);
     const [inputValue, setInputValue] = useState(props.value ? props.value : '');
     const isLoading = airports == null;
-    const placeholder = isLoading ? 'Loading data...' : 'Search Airports By Code/Name';
+    const placeholder = isLoading ? 'Loading data...' : 'Search Airports';
     let timeout = null;    
 
     const findAirport = (query) => {
@@ -88,9 +88,6 @@ export default function Search(props) {
         setFilteredAirports([]);
         setInputValue(`${item.station_id[0]}: ${item.name}`)
         Keyboard.dismiss();
-
-        // setCursor({start: 0, end: 0})
-
         props.function(item);
     };
 
@@ -135,6 +132,7 @@ export default function Search(props) {
                         timeout = setTimeout(() => {findAirport(text)}, 600); 
                     }}
                     placeholder={props.placeholder ? placeholder : null}
+                    placeholderTextColor={Colors.text}
                 />
                 { inputValue ?
                     <Pressable style={styles.close} onPress={() => handleClear()}>

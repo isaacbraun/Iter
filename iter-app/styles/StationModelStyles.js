@@ -14,6 +14,7 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 12,
         fontWeight: 'bold',
+        color: Colors.darkText,
     },
     taf: {
         color: Colors.green,
@@ -44,7 +45,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     circle: {
-        backgroundColor: Colors.background,
+        backgroundColor: Colors.white,
         width: 12,
         height: 12,
         borderWidth: 2,
@@ -74,7 +75,7 @@ const styles = StyleSheet.create({
         height: 12,
     },
     bknOver: {
-        backgroundColor: Colors.background,
+        backgroundColor: Colors.white,
         position: 'absolute',
         top: 0,
         left: 0,
