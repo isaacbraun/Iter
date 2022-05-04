@@ -236,7 +236,7 @@ export const darkStyles = StyleSheet.create({
     },
     pathActiveText: {
         ...styles.pathActiveText,
-        color: DarkColors.background,
+        color: DarkColors.darkText,
     },
     inputText: {
         ...styles.inputText,

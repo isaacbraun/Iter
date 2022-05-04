@@ -74,6 +74,16 @@ export default function HomeScreen({ route, navigation }) {
             console.log("HomeScreen Theme Read Error: ", e);
         }
     };
+
+    // Get MetarType from Storage
+    const getMetarType = async () => {
+        try {
+            const metarType = await AsyncStorage.getItem('@MetarType');
+            metarType != null ? setMetarType(metarType === 'true') : null;
+        } catch(e) {
+            console.log("HomeScreen MetarType Read Error: ", e);
+        }
+    };
     
     // Get Metar and Taf data from Storage
     const getData = async () => {
@@ -125,6 +135,7 @@ export default function HomeScreen({ route, navigation }) {
     // Get User Location & Get All Metars
 	useEffect(() => {
         getTheme();
+        getMetarType();
         getData();
         getLocation();
 	}, []);
@@ -136,6 +147,7 @@ export default function HomeScreen({ route, navigation }) {
             if (route.params && route.params.view === true) {
                 const awaitPaths = async () => {
                     await getPaths();
+                    await getMetarType();
 
                     setDisplayMainPath(true);
                     if (route.params.paths == 2) {

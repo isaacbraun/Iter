@@ -351,7 +351,7 @@ export default function FlightPlanScreen({ route, navigation }) {
                         style={[styles.button, {borderColor: Colors.blue, backgroundColor: Colors.blue}]}
                         onPress={() => view()}
                     >
-                        <Text style={[styles.buttonText, {color: Colors.background}]}>View</Text>
+                        <Text style={[styles.buttonText, {color: theme ? Colors.darkText : Colors.background}]}>View</Text>
                     </Pressable>
                 </View>
             </View>
