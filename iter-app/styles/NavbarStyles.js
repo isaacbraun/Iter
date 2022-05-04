@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
         paddingBottom: 5,
 
         backgroundColor: LightColors.background,
-        shadowColor: '#000',
+        shadowColor: LightColors.black,
         shadowOffset: { width: 1, height: 1 },
         shadowOpacity:  0.4,
         shadowRadius: 3,
@@ -49,6 +49,7 @@ export const darkStyles = StyleSheet.create({
     ...styles,
     navbarInner: {
         ...styles.navbarInner,
+        shadowColor: DarkColors.black,
         backgroundColor: DarkColors.background,
     },
     navbarText: {
