@@ -22,7 +22,7 @@ export const styles = StyleSheet.create({
     searchInner: {
         fontSize: 14,
         flex: 1,
-        color: LightColors.text,
+        color: LightColors.darkText,
     },
     close: {
         width: 45,
@@ -43,7 +43,7 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 10,
     },
     itemText: {
-        color: LightColors.text,
+        color: LightColors.darkText,
     }
 });
 
