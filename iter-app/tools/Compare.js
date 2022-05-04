@@ -47,12 +47,15 @@ export function pathsMatch(main, alt, alert) {
 
 // Checks if Two Paths are Exactly the Same
 export function pathsExact(main, alt) {
-    for (let i = 1; i < main.length; i++) {
-        if (main[i].station_id[0] != alt[i].station_id[0]) {
-            return false;
+    if (!main.includes(null) && !alt.includes(null)) {
+        for (let i = 1; i < main.length; i++) {
+            if (main[i].station_id[0] != alt[i].station_id[0]) {
+                return false;
+            }
         }
+        return true;
     }
-    return true;
+    return false;
 }
 
 export function toRadians(deg) {
