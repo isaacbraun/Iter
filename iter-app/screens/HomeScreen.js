@@ -147,9 +147,10 @@ export default function HomeScreen({ route, navigation }) {
             if (route.params && route.params.view === true) {
                 const awaitPaths = async () => {
                     await getPaths();
-                    await getMetarType();
 
-                    setDisplayMainPath(true);
+                    if (route.params.paths == 1 || route.params.paths == 3) {
+                        setDisplayMainPath(true);
+                    }
                     if (route.params.paths == 2) {
                         setDisplayAltPath(true);
                     }
@@ -164,11 +165,25 @@ export default function HomeScreen({ route, navigation }) {
     // Function Run When "View" Clicked in FlightPlanScreen
     const userInput = useRef(false);
     useEffect(() => {
-        if (userInput.current && mainPath) {
-            const startLat = parseFloat(mainPath[1].latitude[0]);
-            const startLng = parseFloat(mainPath[1].longitude[0])
-            const destLat = parseFloat(mainPath[mainPath.length - 1].latitude[0]);
-            const destLng = parseFloat(mainPath[mainPath.length - 1].longitude[0])
+        if (userInput.current) {
+            let startLat = null;
+            let startLng = null;
+            let destLat = null;
+            let destLng = null;
+
+            if (displayMainPath) {
+                startLat = parseFloat(mainPath[1].latitude[0]);
+                startLng = parseFloat(mainPath[1].longitude[0]);
+                destLat = parseFloat(mainPath[mainPath.length - 1].latitude[0]);
+                destLng = parseFloat(mainPath[mainPath.length - 1].longitude[0]);
+            }
+            else if (displayAltPath) {
+                startLat = parseFloat(altPath[1].latitude[0]);
+                startLng = parseFloat(altPath[1].longitude[0]);
+                destLat = parseFloat(altPath[altPath.length - 1].latitude[0]);
+                destLng = parseFloat(altPath[altPath.length - 1].longitude[0]);
+            }
+            
             mapRef.current.animateToRegion(
                 {
                     latitude: (startLat + destLat) / 2,
@@ -182,7 +197,7 @@ export default function HomeScreen({ route, navigation }) {
             userInput.current = true;
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [mainPath]);
+    }, [displayMainPath, displayAltPath]);
     
 
     return(
