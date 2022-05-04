@@ -211,7 +211,7 @@ export default function FlightPlanScreen({ route, navigation }) {
                 <View style={styles.inner}>
 
                     {/* Navbar */}
-                    <Navbar title={"Chart Paths"} navigation={navigation} theme={theme} />
+                    <Navbar title={"Chart Paths"} navigation={navigation} theme={theme} hideMenu={true} />
 
                     {/* Path Toggle Switch */}
                     <View style={styles.pathSwitch}>
@@ -343,7 +343,7 @@ export default function FlightPlanScreen({ route, navigation }) {
                             style={[
                                 styles.buttonText,
                                 {color: Colors.blue},
-                                !pathsMatch(mainPath, altPath, false) ? {color: Colors.text} : null
+                                !pathsMatch(mainPath, altPath, false) ? styles.disabledText : null
                             ]}
                         >Compare</Text>
                     </Pressable>

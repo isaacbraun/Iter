@@ -9,6 +9,7 @@ export const LightColors = {
     red: "red",
     purple: "purple",
     barb: "#383838",
+    disabled: "#3B4349",
 };
 
 export const DarkColors = {
@@ -21,6 +22,7 @@ export const DarkColors = {
     red: "red",
     purple: "purple",
     barb: "#D5D7DD",
+    disabled: "#3B4349",
 };
 
 export const monthAbbr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];

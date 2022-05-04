@@ -28,8 +28,11 @@ export const styles = StyleSheet.create({
         color: LightColors.text,
     },
     disabled: {
-        backgroundColor: "#959696",
-        borderColor: LightColors.text,
+        backgroundColor: LightColors.disabled,
+        borderColor: LightColors.disabled,
+    },
+    disabledText: {
+        color: "#959696",
     },
 
     inner: {
@@ -205,7 +208,12 @@ export const darkStyles = StyleSheet.create({
     },
     disabled: {
         ...styles.disabled,
-        borderColor: DarkColors.text,
+        backgroundColor: DarkColors.disabled,
+        borderColor: DarkColors.disabled,
+    },
+    disabledText: {
+        ...styles.disabledText,
+        color: "#959696",
     },
     navbarInner: {
         ...styles.navbarInner,
