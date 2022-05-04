@@ -35,6 +35,7 @@ export default function FlightPlanScreen({ route, navigation }) {
 
     const [mainPath, setMainPath] = useState([{speed: '', date: new Date()}, null, null]);
     const [altPath, setAltPath] = useState([{speed: '', date: new Date()}, null, null]);
+    const [airports, setAirports]= useState(null);
 
     const [mainSpeed, setMainSpeed] = useState('');
     const [mainDate, setMainDate] = useState(new Date());
@@ -66,9 +67,11 @@ export default function FlightPlanScreen({ route, navigation }) {
         try {
             const mainPath = await AsyncStorage.getItem('@MainPath');
             const altPath = await AsyncStorage.getItem('@AltPath');
+            const airports = await AsyncStorage.getItem('@Merged');
 
             let mainParsed = JSON.parse(mainPath);
             let altParsed = JSON.parse(altPath);
+            airports !== null ? setAirports(JSON.parse(airports)) : null;
             
             if (mainParsed !== null) {
                 const tempMainDate = new Date(mainParsed[0].date);
@@ -187,11 +190,7 @@ export default function FlightPlanScreen({ route, navigation }) {
 
     // Get Paths from Storage on Mount
     useEffect(() => {
-        const fetchPaths = async () => {
-            await getPaths();
-        }
-
-        fetchPaths();
+        getPaths();
     }, []);
 
     // Store Path After Any Modification
@@ -315,6 +314,7 @@ export default function FlightPlanScreen({ route, navigation }) {
                     {/* Path Inputs */}
                     <PlanningInputs
                         pathArray={activePath ? mainPath : altPath}
+                        airports={airports}
                         select={select}
                         add={add}
                         remove={remove}

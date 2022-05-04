@@ -52,6 +52,7 @@ function Input(props) {
                 <View style={styles.inputBoxContainer}>
                     <Search
                         style={styles.inputBox}
+                        airports={props.airports}
                         value={value}
                         placeholder={false}
                         function={(item) => { props.select(item, props.index) }}
@@ -94,6 +95,7 @@ export default function PlanningInputs(props) {
                         <Input
                             key={Math.random(index)}
                             index={index}
+                            airports={props.airports}
                             len={props.pathArray.length}
                             item={item}
                             value={item != null ? `${item.station_id[0]}: ${item.name}` : ''}

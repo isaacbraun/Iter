@@ -235,6 +235,7 @@ export default function HomeScreen({ route, navigation }) {
             {/* Search Bar + Menu Button */}
             <View style={styles.searchContainer}>
                 <Search
+                    airports={metars}
                     function={(item) => {
                         mapRef.current.animateToRegion(
                             {

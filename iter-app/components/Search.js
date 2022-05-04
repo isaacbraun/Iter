@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
     View,
     Text,
@@ -7,7 +7,6 @@ import {
     Keyboard
 } from 'react-native';
 import { EvilIcons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SearchStyles, SearchStylesDark } from '../styles';
 import { LightColors, DarkColors } from '../tools/Values';
 
@@ -41,11 +40,9 @@ export function matches(airport, query) {
 }
 
 export default function Search(props) {
-    const [airports, setAirports] = useState(null);
+    const airports = props.airports;
     const [filteredAirports, setFilteredAirports] = useState([]);
     const [inputValue, setInputValue] = useState(props.value ? props.value : '');
-    const isLoading = airports == null;
-    const placeholder = isLoading ? 'Loading data...' : 'Search Airports';
     let timeout = null;    
 
     const Colors = props.theme ? DarkColors : LightColors;
@@ -100,19 +97,6 @@ export default function Search(props) {
         props.clear ? props.clear() : null;
     }
 
-    useEffect(() => {
-        const fetchAirports = async () => {
-            try {
-                const airportData = await AsyncStorage.getItem('@Merged');
-                airportData != null ? setAirports(JSON.parse(airportData)) : null;
-            } catch(e) {
-                console.log("Search Read Error: ", e);
-            }
-        }
-
-        fetchAirports();
-    }, []);
-
     return (
         <View style={[styles.container, props.style]}>
             <View style={styles.search}>
@@ -126,7 +110,7 @@ export default function Search(props) {
                         } : null
                     ]}
                     value={inputValue}
-                    editable={!isLoading}
+                    editable={true}
                     autoCapitalize="none"
                     autoCorrect={false}
                     onChangeText={(text) => {
@@ -134,7 +118,7 @@ export default function Search(props) {
                         clearTimeout(timeout);
                         timeout = setTimeout(() => {findAirport(text)}, 600); 
                     }}
-                    placeholder={props.placeholder ? placeholder : null}
+                    placeholder={props.placeholder ? 'Search Airports' : null}
                     placeholderTextColor={Colors.text}
                 />
                 { inputValue ?
@@ -158,7 +142,9 @@ export default function Search(props) {
                                 onPress={() => selectItem(item)}
                                 style={styles.item}
                             >
-                                <Text>{item.station_id[0]}: {item.name}</Text>
+                                <Text style={styles.itemText}>
+                                    {item.station_id[0]}: {item.name}
+                                </Text>
                             </Pressable>
                         )
                     }
