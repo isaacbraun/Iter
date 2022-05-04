@@ -42,6 +42,9 @@ export const styles = StyleSheet.create({
         paddingVertical: 8,
         paddingHorizontal: 10,
     },
+    itemText: {
+        color: LightColors.text,
+    }
 });
 
 export const darkStyles = StyleSheet.create({
@@ -59,4 +62,8 @@ export const darkStyles = StyleSheet.create({
         ...styles.suggestions,
         backgroundColor: DarkColors.background,
     },
+    itemText: {
+        ...styles.itemText,
+        color: DarkColors.text,
+    }
 });
