@@ -22,7 +22,8 @@ export const styles = StyleSheet.create({
 
     map: {
         width: ScreenWidth,
-        height: Dimensions.get('window').height,
+        // height: Dimensions.get('window').height,
+        height: '100%',
         zIndex: 0,
     },
     
