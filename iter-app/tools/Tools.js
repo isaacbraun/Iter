@@ -214,8 +214,6 @@ export function getRegionFromPaths(main, alt) {
     const mainDist = !main.includes(null) ? distance(main[1].latitude[0], main[1].longitude[0], main[main.length - 1].latitude[0], main[main.length - 1].longitude[0]) : null;
     const altDist = !alt.includes(null) ? distance(alt[1].latitude[0], alt[1].longitude[0], alt[alt.length - 1].latitude[0], alt[alt.length - 1].longitude[0]) : null;
 
-    console.log(mainDist, altDist);
-
     let longerPath = null;
     if (mainDist !== null && altDist !== null) {
         longerPath = mainDist > altDist;
