@@ -69,3 +69,107 @@ export function dateTimeString(date) {
         return 'Select Date';
     }
 }
+
+// Input Validation for Flight Planning Inputs
+export function validateInputs(mainPath, altPath) {
+    let main = true;
+    let alt = true;
+
+    let mainMessage = null
+    let altMessage = null;
+
+    let tempMain = JSON.parse(JSON.stringify(mainPath));
+    let tempAlt = JSON.parse(JSON.stringify(altPath));
+    tempMain.shift();
+    tempAlt.shift();
+
+    // Main: smallest length
+    if (tempMain.length == 2) {
+        // Origin Null
+        if (tempMain[0] == null && tempMain[1] != null) {
+            mainMessage = "Origin Input Must Have a Value";
+            main = false;
+        }
+        // Dest Null
+        else if (tempMain[0] != null && tempMain[1] == null) {
+            mainMessage = "Destination Input Must Have a Value";
+            main = false;
+        }
+        // Both Null
+        else if (tempMain[1] == null && tempMain[2] == null) {
+            mainMessage = null;
+            main = false;
+        }
+    }
+    // Main: larger lengths
+    else if (tempMain.length != 2) {
+        if (tempMain.includes(null)) {
+            mainMessage = "All Main Path Inputs Must Have Values";
+            main = false;
+        }
+    }
+
+    // Alternate: smallest length
+    if (tempAlt.length == 2) {
+        // Origin Null
+        if (tempAlt[0] == null && tempAlt[1] != null) {
+            altMessage = "Origin Input Must Have a Value";
+            alt = false;
+        }
+        // Dest Null
+        else if (tempAlt[0] != null && tempAlt[1] == null) {
+            altMessage = "Destination Input Must Have a Value";
+            alt = false;
+        }
+        // Both Null
+        else if (tempAlt[1] == null && tempAlt[2] == null) {
+            altMessage = null;
+            alt = false;
+        }
+    }
+    // Alternate: larger lengths
+    else if (tempAlt.length != 2) {
+        if (tempAlt.includes(null)) {
+            altMessage = "All Alternate Path Inputs Must Have Values";
+            alt = false;
+        }
+    }
+
+    return [main, mainMessage, alt, altMessage];
+}
+
+// https://github.com/react-native-maps/react-native-maps/issues/505
+// Returns map region object that displays full path provided
+export function getRegionForCoordinates(path) {
+    let minX, maxX, minY, maxY;
+    let points = JSON.parse(JSON.stringify(path));
+    points.shift();
+  
+    // init first point
+    ((point) => {
+        minX = parseFloat(point.latitude[0]);
+        maxX = parseFloat(point.latitude[0]);
+        minY = parseFloat(point.longitude[0]);
+        maxY = parseFloat(point.longitude[0]);
+    })(points[0]);
+  
+    // calculate rect
+    points.map((point) => {
+        minX = Math.min(minX, parseFloat(point.latitude[0]));
+        maxX = Math.max(maxX, parseFloat(point.latitude[0]));
+        minY = Math.min(minY, parseFloat(point.longitude[0]));
+        maxY = Math.max(maxY, parseFloat(point.longitude[0]));
+    });
+  
+    const midX = (minX + maxX) / 2;
+    const midY = (minY + maxY) / 2;
+    const deltaX = (maxX - minX);
+    const deltaY = (maxY - minY);
+  
+    return {
+        latitude: midX,
+        longitude: midY,
+        latitudeDelta: deltaX + 2,
+        longitudeDelta: deltaY + 2
+    };
+}
