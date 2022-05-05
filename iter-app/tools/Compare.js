@@ -489,11 +489,12 @@ export async function gradePath(path_in, pathType) {
 
     let bearingIterator = 0;
     for (const station of stations) {
-        grade += gradeStation(station, bearingArray[bearingIterator].bearing);
+        const bearingObj = bearingArray[bearingIterator < bearingArray.length ? bearingIterator : bearingArray.length - 1];
+        grade += gradeStation(station, bearingObj.bearing);
         amount++;
         
-        if ((station.latitude[0] - 1 < bearingArray[bearingIterator].lat && bearingArray[bearingIterator].lat < station.latitude[0] + 1)
-            && (station.longitude[0] - 1 < bearingArray[bearingIterator].lng && bearingArray[bearingIterator].lng < station.longitude[0] + 1)) {
+        if ((station.latitude[0] - 1 < bearingObj.lat && bearingObj.lat < station.latitude[0] + 1)
+            && (station.longitude[0] - 1 < bearingObj.lng && bearingObj.lng < station.longitude[0] + 1)) {
             bearingIterator += 1;
         }
     }
