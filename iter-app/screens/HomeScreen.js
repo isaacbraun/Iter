@@ -133,6 +133,13 @@ export default function HomeScreen({ route, navigation }) {
         setRegion(location);
     };
 
+    // Clear Paths From View
+    const clearPaths = () => {
+        navigation.setParams({ view: false, paths: null });
+        setDisplayMainPath(false);
+        setDisplayAltPath(false);
+    };
+
     // Get User Location & Get All Metars
 	useEffect(() => {
         getTheme();
@@ -144,7 +151,7 @@ export default function HomeScreen({ route, navigation }) {
     // Get Paths on Navigation to Home
     useFocusEffect(
         React.useCallback(() => {
-            getTheme()
+            getTheme();
             if (route.params && route.params.view === true) {
                 const awaitPaths = async () => {
                     await getPaths();
@@ -284,13 +291,8 @@ export default function HomeScreen({ route, navigation }) {
                 {displayMainPath ?
                     <Pressable
                         style={[styles.button, {marginBottom: 15, backgroundColor: Colors.red}]}
-                        onPress={() => {
-                            setDisplayMainPath(false);
-                            setDisplayAltPath(false);
-                            navigation.setParams({ view: false, paths: null })
-                        }}
+                        onPress={() => clearPaths()}
                     >
-                        {/* <Feather name="x" size={24} color={ Colors.background } /> */}
                         <MaterialIcons name="not-interested" size={24} color={ Colors.background } />
                     </Pressable> : null
                 }
