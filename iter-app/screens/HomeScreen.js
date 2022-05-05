@@ -17,7 +17,7 @@ import { useInterval } from 'usehooks-ts';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { LightColors, DarkColors } from '../tools/Values';
-import { hoursDisplay } from '../tools/Tools';
+import { hoursDisplay, getRegionForCoordinates } from '../tools/Tools';
 import { pathsExact } from '../tools/Compare';
 import { goToOrigin, markerFilters, getRouteArray } from '../tools/HomeScreenFunctions';
 import { Search } from '../components';
@@ -64,6 +64,7 @@ export default function HomeScreen({ route, navigation }) {
     const [altPath, setAltPath] = useState(null);
     const [displayMainPath, setDisplayMainPath] = useState(false);
     const [displayAltPath, setDisplayAltPath] = useState(false);
+    const [renderPaths, setRenderPaths] = useState(false);
 
     // Get Theme from Storage
     const getTheme = async () => {
@@ -151,53 +152,32 @@ export default function HomeScreen({ route, navigation }) {
                     if (route.params.paths == 1 || route.params.paths == 3) {
                         setDisplayMainPath(true);
                     }
-                    if (route.params.paths == 2) {
+                    if (route.params.paths == 2 || route.params.paths == 3) {
                         setDisplayAltPath(true);
                     }
-
+                    setRenderPaths(!renderPaths);
                 }
                 awaitPaths();
             }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [route.params])
-        
     );
 
     // Function Run When "View" Clicked in FlightPlanScreen
     const userInput = useRef(false);
     useEffect(() => {
         if (userInput.current) {
-            let startLat = null;
-            let startLng = null;
-            let destLat = null;
-            let destLng = null;
-
-            if (displayMainPath) {
-                startLat = parseFloat(mainPath[1].latitude[0]);
-                startLng = parseFloat(mainPath[1].longitude[0]);
-                destLat = parseFloat(mainPath[mainPath.length - 1].latitude[0]);
-                destLng = parseFloat(mainPath[mainPath.length - 1].longitude[0]);
-            }
-            else if (displayAltPath) {
-                startLat = parseFloat(altPath[1].latitude[0]);
-                startLng = parseFloat(altPath[1].longitude[0]);
-                destLat = parseFloat(altPath[altPath.length - 1].latitude[0]);
-                destLng = parseFloat(altPath[altPath.length - 1].longitude[0]);
-            }
-            
-            mapRef.current.animateToRegion(
-                {
-                    latitude: (startLat + destLat) / 2,
-                    longitude: (startLng + destLng) / 2,
-                    latitudeDelta: (startLat - destLat) + 2,
-                    longitudeDelta: (startLng - destLng) + 2,
-                },
-                2000
-            );
+            if (displayMainPath || displayAltPath) {
+                mapRef.current.animateToRegion(
+                    getRegionForCoordinates(displayMainPath ? mainPath : altPath),
+                    2000
+                );
+            }            
         } else {
             userInput.current = true;
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [displayMainPath, displayAltPath]);
+    }, [renderPaths]);
     
 
     return(
