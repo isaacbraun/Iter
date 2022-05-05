@@ -21,7 +21,7 @@ import { hoursDisplay, getRegionFromPaths } from '../tools/Tools';
 import { pathsExact } from '../tools/Compare';
 import { goToOrigin, markerFilters, getRouteArray } from '../tools/HomeScreenFunctions';
 import { Search } from '../components';
-import { HomeScreenStyles, HomeScreenStylesDark } from '../styles';
+import { HomeScreenStyles, HomeScreenStylesDark, darkMapStyles } from '../styles';
 
 export default function HomeScreen({ route, navigation }) {
     const [theme, setTheme] = useState(false);
@@ -209,6 +209,7 @@ export default function HomeScreen({ route, navigation }) {
                     minDelta={0.01}
                     rotateEnabled={false}
                     userInterfaceStyle={theme ? 'dark' : 'light'}
+                    customMapStyle={theme ? darkMapStyles : []}
                 >
                     {/* METAR Station Models */}
                     {metars ?

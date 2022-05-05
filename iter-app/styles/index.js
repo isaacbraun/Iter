@@ -1,4 +1,4 @@
-export { styles as HomeScreenStyles, darkStyles as HomeScreenStylesDark } from "./HomeStyles";
+export { styles as HomeScreenStyles, darkStyles as HomeScreenStylesDark, darkMapStyles } from "./HomeStyles";
 export { styles as FlightPlanStyles, darkStyles as FlightPlanStylesDark } from "./FlightPlanStyles";
 export { styles as SettingsStyles, darkStyles as SettingsStylesDark } from "./SettingsStyles";
 export { styles as StationModelStyles, darkStyles as StationModelStylesDark } from "./StationModelStyles";
