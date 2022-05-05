@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-// import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 
 import { Navbar, PlanningInputs } from '../components';
 import { FlightPlanStyles, FlightPlanStylesDark } from '../styles';
@@ -122,14 +122,14 @@ export default function FlightPlanScreen({ route, navigation }) {
         setStore(!store);
     };
 
-    // const swapPaths = () => {
-    //     const tempMain = mainPath;
-    //     const tempAlt = altPath;
-    //     storeArray('@MainPath', tempAlt);
-    //     storeArray('@AltPath', tempMain);
-    //     setMainPath(tempAlt);
-    //     setAltPath(tempMain);
-    // };
+    const swapPaths = () => {
+        const tempMain = mainPath;
+        const tempAlt = altPath;
+        storeArray('@MainPath', tempAlt);
+        storeArray('@AltPath', tempMain);
+        setMainPath(tempAlt);
+        setAltPath(tempMain);
+    };
 
     const remove = (index) => {
         activePath ?
@@ -214,19 +214,6 @@ export default function FlightPlanScreen({ route, navigation }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [store]);
 
-//     useEffect(() => navigation.addListener('beforeRemove', (e) => {
-//         // the navigation.navigate will fire beforeRemove which causes an infinite loop. we guard this here
-//         if (e.data.action.type === "NAVIGATE") {
-//           return
-//         }
-//         // Prevent default behavior of leaving the screen
-//         e.preventDefault();
-//         // navigate manually
-//         // navigation.navigate("Home", { view: false, paths: null });
-//         view();
-        
-//    }), []);
-
     return(
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.main}>
@@ -247,12 +234,12 @@ export default function FlightPlanScreen({ route, navigation }) {
                         >
                             <Text style={[styles.pathButtonText, !activePath ? styles.pathActiveText : null]}>Alternate Path</Text>
                         </Pressable>
-                        {/* <Pressable
+                        <Pressable
                             style={[styles.pathButton, styles.pathSwapButton]}
                             onPress={() => swapPaths()}
                         >
                             <MaterialIcons name="swap-horiz" size={20} color={Colors.text} />
-                        </Pressable> */}
+                        </Pressable>
                         <Pressable
                             style={[
                                 styles.pathButton,

@@ -81,12 +81,10 @@ export const styles = StyleSheet.create({
 
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-between', // Without Swap Button
     },
     pathButton: {
         height: 45,
-        // width: '40%', - With Swap Button
-        width: '48%',
+        width: '40%',
 
         backgroundColor: LightColors.backgroundColor,
         borderWidth: 1,

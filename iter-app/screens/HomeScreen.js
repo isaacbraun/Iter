@@ -17,7 +17,7 @@ import { useInterval } from 'usehooks-ts';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { LightColors, DarkColors } from '../tools/Values';
-import { hoursDisplay, getRegionForCoordinates } from '../tools/Tools';
+import { hoursDisplay, getRegionFromPaths } from '../tools/Tools';
 import { pathsExact } from '../tools/Compare';
 import { goToOrigin, markerFilters, getRouteArray } from '../tools/HomeScreenFunctions';
 import { Search } from '../components';
@@ -152,6 +152,9 @@ export default function HomeScreen({ route, navigation }) {
     useFocusEffect(
         React.useCallback(() => {
             getTheme();
+            setDisplayMainPath(false);
+            setDisplayAltPath(false);
+
             if (route.params && route.params.view === true) {
                 const awaitPaths = async () => {
                     await getPaths();
@@ -175,8 +178,9 @@ export default function HomeScreen({ route, navigation }) {
     useEffect(() => {
         if (modified.current) {
             if (displayMainPath || displayAltPath) {
+                const pathRegion = getRegionFromPaths(mainPath, altPath);
                 mapRef.current.animateToRegion(
-                    getRegionForCoordinates(displayMainPath ? mainPath : altPath),
+                    pathRegion,
                     2000
                 );
             }            
