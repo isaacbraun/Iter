@@ -1,6 +1,6 @@
 // import React from 'react';
 import { Alert } from 'react-native';
-import { isLastDayOfMonth } from './Tools';
+import { isLastDayOfMonth, distance, toRadians, toDegrees } from './Tools';
 import { Decoder } from './Decoder';
 import { wxString } from './Values';
 
@@ -58,14 +58,6 @@ export function pathsExact(main, alt) {
     return false;
 }
 
-export function toRadians(deg) {
-    return deg * Math.PI / 180;
-}
-
-export function toDegrees(deg) {
-    return deg * 180 / Math.PI;
-}
-
 // https://stackoverflow.com/questions/46590154/calculate-bearing-between-2-points-with-javascript
 export function bearing(startLat, startLng, destLat, destLng){
     startLat = toRadians(startLat);
@@ -78,33 +70,6 @@ export function bearing(startLat, startLng, destLat, destLng){
           Math.sin(startLat) * Math.cos(destLat) * Math.cos(destLng - startLng);
     const brng = toDegrees(Math.atan2(y, x));
     return (brng + 360) % 360;
-}
-
-// Calculate Distance Between Two Points on Earth
-// https://www.geeksforgeeks.org/program-distance-two-points-earth/
-export function distance(startLat, startLng, destLat, destLng) {
-    // Convert to Radians
-    startLat = toRadians(startLat);
-    startLng = toRadians(startLng);
-    destLat = toRadians(destLat);
-    destLng = toRadians(destLng);
-
-    // Haversine formula
-    let dlon = destLng - startLng;
-    let dlat = destLat - startLat;
-    let a = Math.pow(Math.sin(dlat / 2), 2)
-                + Math.cos(startLat) * Math.cos(destLat)
-                * Math.pow(Math.sin(dlon / 2),2);
-            
-    let c = 2 * Math.asin(Math.sqrt(a));
-
-    // Radius of earth.
-    // Use 3956 for miles
-    // Use 6371 for Km
-    let r = 3956;
-
-    // calculate the result
-    return(c * r);
 }
 
 // Return Estimated Travel Time in Hours
@@ -260,42 +225,46 @@ export function gradeStation(station, bearing) {
     const taf = Object.prototype.hasOwnProperty.call(station, 'taf') ? station.taf : null;
 
     // Temperature - 10 Points
-    let temp = station.temp_c[0];
-    if (taf && Object.prototype.hasOwnProperty.call(taf, 'temperature')) {
-        temp = taf.temperature[1];
-    }
-    if (temp >= 40) {
-        points += 2;
-    }
-    else if (temp >= 35) {
-        points += 5;
-    }
-    else if (temp >= 30) {
-        points += 8;
-    } else {
-        points += 10;
-    }
+    if (Object.prototype.hasOwnProperty.call(station, "temp_c")) {
+        let temp = station.temp_c[0];
+        if (taf && Object.prototype.hasOwnProperty.call(taf, 'temperature')) {
+            temp = taf.temperature[1];
+        }
+        if (temp >= 40) {
+            points += 2;
+        }
+        else if (temp >= 35) {
+            points += 5;
+        }
+        else if (temp >= 30) {
+            points += 8;
+        } else {
+            points += 10;
+        }
 
-    // Dewpoint - 10 Points
-    const dewpoint = station.dewpoint_c;
-    const dewpointGap = temp - dewpoint;
-    if (dewpoint >= 21) {
-        points += 2;
-    }
-    else if (dewpointGap >= 10) {
-        points += 10;
-    }
-    else if (dewpointGap >= 8) {
-        points += 8;
-    }
-    else if (dewpointGap >= 6) {
-        points += 5;
-    }
-    else if (dewpointGap >= 4) {
-        points += 3;
-    }
-    else if (dewpointGap >= 2) {
-        points += 1;
+        // Dewpoint - 10 Points
+        const dewpoint = station.dewpoint_c;
+        const dewpointGap = temp - dewpoint;
+        if (dewpoint >= 21) {
+            points += 2;
+        }
+        else if (dewpointGap >= 10) {
+            points += 10;
+        }
+        else if (dewpointGap >= 8) {
+            points += 8;
+        }
+        else if (dewpointGap >= 6) {
+            points += 5;
+        }
+        else if (dewpointGap >= 4) {
+            points += 3;
+        }
+        else if (dewpointGap >= 2) {
+            points += 1;
+        }
+    } else {
+        points += 20;
     }
 
     // Wind Speed, Direction & Gust - 20 Points, 30 Points, 10 points respectively
@@ -434,29 +403,33 @@ export function gradeStation(station, bearing) {
     }
 
     // FLight Category - 30 Points
-    let category = station.flight_category[0];
-    if (taf) {
-        let vis = null;
-        if (Object.prototype.hasOwnProperty.call(taf, 'visibility_statute_mi')) {
-            vis = taf.visibility_statute_mi[0];
+    if (Object.prototype.hasOwnProperty.call(station, "flight_category")) {
+        let category = station.flight_category[0];
+        if (taf) {
+            let vis = null;
+            if (Object.prototype.hasOwnProperty.call(taf, 'visibility_statute_mi')) {
+                vis = taf.visibility_statute_mi[0];
+            }
+            if (vis && Object.prototype.hasOwnProperty.call(skyCondition, "cloud_base_ft_agl")) {
+                category = Decoder.flightCategoryCalc(skyCondition.cloud_base_ft_agl, vis);
+            }
         }
-        if (vis && Object.prototype.hasOwnProperty.call(skyCondition, "cloud_base_ft_agl")) {
-            category = Decoder.flightCategoryCalc(skyCondition.cloud_base_ft_agl, vis);
+        switch (category) {
+            case 'VFR':
+                points += 30;
+                break;
+            case 'MVFR':
+                points += 25;
+                break;
+            case 'IFR':
+                points += 15;
+                break;
+            case 'LIFR':
+                points += 5;
+                break;
         }
-    }
-    switch (category) {
-        case 'VFR':
-            points += 30;
-            break;
-        case 'MVFR':
-            points += 25;
-            break;
-        case 'IFR':
-            points += 15;
-            break;
-        case 'LIFR':
-            points += 5;
-            break;
+    } else {
+        points += 30;
     }
 
     // WX String

@@ -138,6 +138,41 @@ export function validateInputs(mainPath, altPath) {
     return [main, mainMessage, alt, altMessage];
 }
 
+export function toRadians(deg) {
+    return deg * Math.PI / 180;
+}
+
+export function toDegrees(deg) {
+    return deg * 180 / Math.PI;
+}
+
+// Calculate Distance Between Two Points on Earth
+// https://www.geeksforgeeks.org/program-distance-two-points-earth/
+export function distance(startLat, startLng, destLat, destLng) {
+    // Convert to Radians
+    startLat = toRadians(startLat);
+    startLng = toRadians(startLng);
+    destLat = toRadians(destLat);
+    destLng = toRadians(destLng);
+
+    // Haversine formula
+    let dlon = destLng - startLng;
+    let dlat = destLat - startLat;
+    let a = Math.pow(Math.sin(dlat / 2), 2)
+                + Math.cos(startLat) * Math.cos(destLat)
+                * Math.pow(Math.sin(dlon / 2),2);
+            
+    let c = 2 * Math.asin(Math.sqrt(a));
+
+    // Radius of earth.
+    // Use 3956 for miles
+    // Use 6371 for Km
+    let r = 3956;
+
+    // calculate the result
+    return(c * r);
+}
+
 // https://github.com/react-native-maps/react-native-maps/issues/505
 // Returns map region object that displays full path provided
 export function getRegionForCoordinates(path) {
@@ -172,4 +207,29 @@ export function getRegionForCoordinates(path) {
         latitudeDelta: parseFloat(deltaX + 2),
         longitudeDelta: parseFloat(deltaY + 2)
     };
+}
+
+// Logic to decide which path to zoom to
+export function getRegionFromPaths(main, alt) {
+    const mainDist = !main.includes(null) ? distance(main[1].latitude[0], main[1].longitude[0], main[main.length - 1].latitude[0], main[main.length - 1].longitude[0]) : null;
+    const altDist = !alt.includes(null) ? distance(alt[1].latitude[0], alt[1].longitude[0], alt[alt.length - 1].latitude[0], alt[alt.length - 1].longitude[0]) : null;
+
+    console.log(mainDist, altDist);
+
+    let longerPath = null;
+    if (mainDist !== null && altDist !== null) {
+        longerPath = mainDist > altDist;
+    }
+    else if (mainDist !== null) {
+        longerPath = true;
+    }
+    else if (altDist !== null) {
+        longerPath = false;
+    }
+
+    if (longerPath) {
+        return getRegionForCoordinates(main);
+    } else {
+        return getRegionForCoordinates(alt);
+    }
 }
