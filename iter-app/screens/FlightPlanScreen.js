@@ -11,11 +11,12 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { MaterialIcons } from '@expo/vector-icons';
 
 import { Navbar, PlanningInputs } from '../components';
 import { FlightPlanStyles, FlightPlanStylesDark } from '../styles';
 import { LightColors, DarkColors } from '../tools/Values';
-import { dateTimeString } from '../tools/Tools';
+import { dateTimeString, validateInputs } from '../tools/Tools';
 import { pathsMatch, compare } from '../tools/Compare';
 
 export default function FlightPlanScreen({ route, navigation }) {
@@ -121,6 +122,15 @@ export default function FlightPlanScreen({ route, navigation }) {
         setStore(!store);
     };
 
+    const swapPaths = () => {
+        const tempMain = mainPath;
+        const tempAlt = altPath;
+        storeArray('@MainPath', tempAlt);
+        storeArray('@AltPath', tempMain);
+        setMainPath(tempAlt);
+        setAltPath(tempMain);
+    };
+
     const remove = (index) => {
         activePath ?
             setMainPath([
@@ -156,29 +166,29 @@ export default function FlightPlanScreen({ route, navigation }) {
     };
 
     const view = () => {
-        if (mainPath.includes(null)) {
-            Alert.alert("All Main Path Inputs Must Have Values");
+        let [main, mainMessage, alt, altMessage] = validateInputs(mainPath, altPath);
+
+        if (!main && mainMessage !== null) {
+            Alert.alert(mainMessage);
+            return;
+        }
+        if (!alt && altMessage !== null) {
+            Alert.alert(altMessage);
             return;
         }
 
-        if (altPath.length == 3) {
-            if ((altPath[1] != null && altPath[2] == null) || (altPath[1] == null && altPath[2] != null)) {
-                Alert.alert("All Alternate Path Inputs Must Have Values");
-                return;
-            }
-            else if (altPath[1] == null && altPath[2] == null) {
-                navigation.navigate("Home", { view: true, paths: 1 });
-                return;
-            }
+        if (main && alt) {
+            navigation.navigate("Home", { view: true, paths: 3 });
         }
-        else if (altPath.length != 3) {
-            if (altPath.includes(null)) {
-                Alert.alert("All Alternate Path Inputs Must Have Values");
-                return;
-            }
+        else if (alt) {
+            navigation.navigate("Home", { view: true, paths: 2 });
         }
-
-        navigation.navigate("Home", { view: true, paths: 2 });
+        else if (main) {
+            navigation.navigate("Home", { view: true, paths: 1 });
+        }
+        else {
+            Alert.alert("No Path to View");
+        }
     };
 
     const handleCompare = async () => {
@@ -194,12 +204,12 @@ export default function FlightPlanScreen({ route, navigation }) {
     }, []);
 
     // Store Path After Any Modification
-    const userInput = useRef(false);
+    const modified = useRef(false);
     useEffect(() => {
-        if (userInput.current) {
+        if (modified.current) {
             storeArray(activePath ? '@MainPath' : '@AltPath', activePath ? mainPath : altPath);
         } else {
-            userInput.current = true;
+            modified.current = true;
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [store]);
@@ -218,7 +228,6 @@ export default function FlightPlanScreen({ route, navigation }) {
                         <Pressable
                             style={[
                                 styles.pathButton,
-                                {borderTopLeftRadius: 3, borderBottomLeftRadius: 3, borderRightWidth: 0},
                                 !activePath ? styles.altActive : null
                             ]}
                             onPress={() => pathSwitch('alt') }
@@ -226,9 +235,14 @@ export default function FlightPlanScreen({ route, navigation }) {
                             <Text style={[styles.pathButtonText, !activePath ? styles.pathActiveText : null]}>Alternate Path</Text>
                         </Pressable>
                         <Pressable
+                            style={[styles.pathButton, styles.pathSwapButton]}
+                            onPress={() => swapPaths()}
+                        >
+                            <MaterialIcons name="swap-horiz" size={20} color={Colors.text} />
+                        </Pressable>
+                        <Pressable
                             style={[
                                 styles.pathButton,
-                                {borderTopRightRadius: 3, borderBottomRightRadius: 3, borderLeftWidth: 0},
                                 activePath ? styles.mainActive : null
                             ]}
                             onPress={() => pathSwitch('main') }

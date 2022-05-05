@@ -84,16 +84,21 @@ export const styles = StyleSheet.create({
     },
     pathButton: {
         height: 45,
-        width: '50%',
+        width: '40%',
 
         backgroundColor: LightColors.backgroundColor,
         borderWidth: 1,
+        borderRadius: 3,
         borderColor: LightColors.text,
 
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    pathSwapButton: {
+        width: '12%',
+        marginHorizontal: '4%',
     },
     mainActive: {
         borderColor: LightColors.blue,
