@@ -167,9 +167,9 @@ export function getRegionForCoordinates(path) {
     const deltaY = (maxY - minY);
   
     return {
-        latitude: midX,
-        longitude: midY,
-        latitudeDelta: deltaX + 2,
-        longitudeDelta: deltaY + 2
+        latitude: parseFloat(midX),
+        longitude: parseFloat(midY),
+        latitudeDelta: parseFloat(deltaX + 2),
+        longitudeDelta: parseFloat(deltaY + 2)
     };
 }

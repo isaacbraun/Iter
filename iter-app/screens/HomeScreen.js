@@ -164,9 +164,9 @@ export default function HomeScreen({ route, navigation }) {
     );
 
     // Function Run When "View" Clicked in FlightPlanScreen
-    const userInput = useRef(false);
+    const modified = useRef(false);
     useEffect(() => {
-        if (userInput.current) {
+        if (modified.current) {
             if (displayMainPath || displayAltPath) {
                 mapRef.current.animateToRegion(
                     getRegionForCoordinates(displayMainPath ? mainPath : altPath),
@@ -174,7 +174,7 @@ export default function HomeScreen({ route, navigation }) {
                 );
             }            
         } else {
-            userInput.current = true;
+            modified.current = true;
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [renderPaths]);
