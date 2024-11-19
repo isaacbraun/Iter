@@ -12,8 +12,15 @@ charting, and flight path comparison.
 
 Supported on iOS and Android.
 
+## Screenshots
+<section>
+    <img src="./Marketing/App_Images/Large_Zoom_Forecasted.PNG" width="300px" />
+    <img src="./Marketing/App_Images/Compared_Result.PNG" width="300px" />
+    <img src="./Marketing/App_Images/View_Paths.PNG" width="300px" />
+    <img src="./Marketing/App_Images/Search_Dropdown.PNG" width="300px" />
+</section>
 
-# Flight Path Comparison Info
+## Flight Path Comparison Info
 - Grading:
     - Assign point values to different criteria, greater in some areas.
     - Find grade by (points achieved / points possible) = 0.XXX value
