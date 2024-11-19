@@ -14,10 +14,10 @@ Supported on iOS and Android.
 
 ## Screenshots
 <section>
-    <img src="./Marketing/App_Images/Large_Zoom_Forecasted.PNG" width="300px" />
-    <img src="./Marketing/App_Images/Compared_Result.PNG" width="300px" />
-    <img src="./Marketing/App_Images/View_Paths.PNG" width="300px" />
-    <img src="./Marketing/App_Images/Search_Dropdown.PNG" width="300px" />
+    <img src="./Marketing/App_Images/Large_Zoom_Forecasted.PNG" width="200px" />
+    <img src="./Marketing/App_Images/Compared_Result.PNG" width="200px" />
+    <img src="./Marketing/App_Images/View_Paths.PNG" width="200px" />
+    <img src="./Marketing/App_Images/Search_Dropdown.PNG" width="200px" />
 </section>
 
 ## Flight Path Comparison Info
